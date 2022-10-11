@@ -1,0 +1,16 @@
+name: dg-appeal-admin-web
+version: 0.1.0
+description: 企莞家问题诉求政府端
+group: js-repos
+programLanguage: javascript
+pipeline: web-spec
+build:
+  image: node:16.15.0-slim
+  commands:
+    - npm install --registry=https://registry.npmmirror.com
+    - npm run build
+  push:
+    - name: Push Aliyun Repository
+      buildEnv: test
+      repository: registry.cn-shenzhen.aliyuncs.com/nekoimi/yoyohr
+#      tag: latest
