@@ -12,7 +12,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
-              <RouterLink to="/dashboard">概览</RouterLink>
+              <RouterLink to="/appeal-preview">概览</RouterLink>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>

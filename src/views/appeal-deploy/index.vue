@@ -2,7 +2,7 @@
   <div class="page_main">
     <PageTitle
       class="tw-mb-[40px]"
-      title="用户反馈">
+      title="诉求配置">
     </PageTitle>
     <el-tabs
       v-model="activeTab"
