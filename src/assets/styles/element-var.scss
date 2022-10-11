@@ -4,6 +4,13 @@
   $colors: (
     'primary': (
       'base': #4584F8,
-    )
+    ),
+  ),
+  $table: (
+    'border-color': #e6e6e6
   )
 );
+
+// :root {
+//   --el-color-primary: #4584F8 !important;
+// }

@@ -5,5 +5,14 @@ module.exports = {
   theme: {
     extend: {}
   },
-  plugins: [require('@tailwindcss/line-clamp')]
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    function ({ addBase }) {
+      addBase({
+        '.el-button': {
+          'background-color': 'var(--el-button-bg-color,var(--el-color-white))'
+        }
+      })
+    }
+  ]
 }
