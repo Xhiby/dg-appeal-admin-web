@@ -31,9 +31,17 @@
   })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   #app {
     width: 100%;
     height: 100%;
+    background-color: #eeeeee;
+    padding: 20px;
+    .menu_btn {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 1000;
+    }
   }
 </style>

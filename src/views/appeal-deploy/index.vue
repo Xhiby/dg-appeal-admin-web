@@ -10,26 +10,26 @@
       <el-tab-pane
         lazy
         label="诉求分类"
-        name="feedback">
-        <FeedbackTable></FeedbackTable>
+        name="classify">
+        <AppealClassify></AppealClassify>
       </el-tab-pane>
       <el-tab-pane
         lazy
         label="诉求部门"
-        name="complaint">
-        <ComplaintTable></ComplaintTable>
+        name="department">
+        <AppealDepartment></AppealDepartment>
       </el-tab-pane>
       <el-tab-pane
         lazy
         label="诉求标签"
-        name="complaint">
-        <ComplaintTable></ComplaintTable>
+        name="tag">
+        <AppealTag></AppealTag>
       </el-tab-pane>
       <el-tab-pane
         lazy
         label="诉求黑名单"
-        name="complaint">
-        <ComplaintTable></ComplaintTable>
+        name="blacklist">
+        <AppealBlackList></AppealBlackList>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -38,7 +38,11 @@
 <script setup>
   import { ref } from 'vue'
   import PageTitle from '@/components/page-title.vue'
-  const activeTab = ref('feedback')
+  import AppealBlackList from './appeal-blacklist.vue'
+  import AppealClassify from './appeal-classify.vue'
+  import AppealDepartment from './appeal-department.vue'
+  import AppealTag from './appeal-tag.vue'
+  const activeTab = ref('classify')
 </script>
 
 <style lang="scss" scoped>
