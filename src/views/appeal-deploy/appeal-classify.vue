@@ -31,13 +31,20 @@
       </el-form>
     </div>
     <div class="tab_pane_content">
-      <el-button
-        class="button"
-        type="primary"
-        size="large"
-        @click="onAdd">
-        新增
-      </el-button>
+      <el-dropdown @command="handleCommand">
+        <el-button
+          class="button"
+          type="primary"
+          size="large">
+          新增<el-icon class="el-icon--right"><arrow-down></arrow-down></el-icon>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="one">一级分类</el-dropdown-item>
+            <el-dropdown-item command="two">二级分类</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -99,17 +106,22 @@
       </el-pagination>
     </div>
   </div>
+
+  <type-one-dialog v-model:show="typeOne"></type-one-dialog>
+
+  <type-two-dialog v-model:show="typeTwo"></type-two-dialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
-
+  import typeOneDialog from './components/appeal-classify/type-one-dialog.vue'
+  import typeTwoDialog from './components/appeal-classify/type-two-dialog.vue'
+  import { ElMessage, ElMessageBox } from 'element-plus'
   const loading = ref(false)
   // 分页对象
   const { pagination, indexMethod } = usePagination()
-
   // 搜索条件
   const conditionForm = reactive({
     keyword: ''
@@ -117,6 +129,10 @@
   const FormRef = ref(null)
   // 表格数据
   const tableData = ref([])
+  //一级分类dialog
+  const typeOne = ref(false)
+  //二级分类dialog
+  const typeTwo = ref(false)
   onMounted(() => {
     tableData.value = useMockTableData(
       {
@@ -136,17 +152,47 @@
   }
   //请求列表数据
   const getEvaluateList = () => {}
+
+  //下拉菜单
+  const handleCommand = (command) => {
+    if (command === 'one') {
+      typeOne.value = true
+    } else {
+      typeTwo.value = true
+    }
+  }
+
   // 重置
   const onReset = () => {
     FormRef.value.resetFields()
     onSearch()
   }
 
-  // 点击新增
-  const onAdd = () => {}
-
   // 点击删除
-  const onDetail = () => {}
+  const onDetail = () => {
+    ElMessageBox({
+      title: '确认',
+      type: 'warning',
+      message: '确认删除？',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          instance.confirmButtonLoading = true
+          setTimeout(() => {
+            ElMessage.success('删除成功')
+            instance.confirmButtonLoading = false
+            done()
+          }, 2000)
+        } else {
+          done()
+        }
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -157,8 +203,9 @@
     }
     .tab_pane_content {
       border-top: 1px solid #dcdfe6;
+      padding-top: 20px;
+
       .button {
-        margin-top: 20px;
         margin-bottom: 34px;
       }
     }

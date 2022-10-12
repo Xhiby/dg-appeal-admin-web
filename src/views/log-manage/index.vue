@@ -12,17 +12,53 @@
           class="my-el-form-item-flex"
           size="large"
           :inline="true"
-          :model="conditionForm">
-          <el-row :gutter="8">
+          :model="logForm">
+          <el-row :gutter="2">
             <el-col :span="4">
-              <el-form-item prop="keyword">
+              <el-form-item prop="code">
                 <el-input
-                  v-model="conditionForm.keyword"
-                  placeholder="请输入类型名称搜索">
+                  v-model="logForm.code"
+                  placeholder="请输入诉求主题/企业名称/诉求编号">
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="3">
+              <el-form-item prop="people">
+                <el-select
+                  v-model="logForm.people"
+                  placeholder="办理人">
+                  <el-option
+                    v-for="(item, index) in peopleList"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="3">
+              <el-form-item prop="type">
+                <el-select
+                  v-model="logForm.type"
+                  placeholder="诉求分类">
+                  <el-option
+                    v-for="(item, index) in appealTypeList"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="4">
+              <el-form-item prop="time">
+                <el-input
+                  v-model="logForm.time"
+                  placeholder="更新时间">
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
               <el-form-item>
                 <el-button @click="onReset"> 重置 </el-button>
                 <el-button
@@ -77,6 +113,9 @@
           <el-table-column
             prop="appealStatus"
             label="诉求状态">
+            <template #default="scope">
+              <el-tag>{{ scope.row.appealStatus }}</el-tag>
+            </template>
           </el-table-column>
           <el-table-column
             prop="transactor"
@@ -126,14 +165,34 @@
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
+  import { appealTypeList } from '@/config/global-var.js'
 
   const loading = ref(false)
   // 分页对象
   const { pagination } = usePagination()
 
+  // 办理人
+  const peopleList = reactive([
+    {
+      label: '办理人',
+      value: 0
+    },
+    {
+      label: '张三',
+      value: 1
+    },
+    {
+      label: '李四',
+      value: 2
+    }
+  ])
+  //诉求分类
   // 搜索条件
-  const conditionForm = reactive({
-    keyword: ''
+  const logForm = reactive({
+    code: '',
+    people: '',
+    type: '',
+    time: ''
   })
   const FormRef = ref(null)
   // 表格数据
@@ -175,5 +234,23 @@
     background-color: #fff;
     padding: 15px 20px;
     overflow: auto;
+
+    .tab_pane_content {
+      margin-top: 33px;
+      border-top: 1px solid #dcdfe6;
+
+      .button {
+        margin-top: 20px;
+        margin-bottom: 33px;
+      }
+    }
+    .tab_pane_footer {
+      width: 100%;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
   }
 </style>
