@@ -46,6 +46,14 @@ const router = createRouter({
           component: () => import('@/views/appeal/dashboard/index.vue')
         }
       ]
+    },
+    {
+      path: '/appeal-deploy',
+      component: () => import('../views/appeal-deploy/index.vue')
+    },
+    {
+      path: '/appeal-preview',
+      component: () => import('../views/appeal-preview/index.vue')
     }
   ]
 })
