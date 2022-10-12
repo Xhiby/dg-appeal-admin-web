@@ -14,6 +14,10 @@ const router = createRouter({
     {
       path: '/appeal-preview',
       component: () => import('../views/appeal-preview/index.vue')
+    },
+    {
+      path: '/log-manage',
+      component: () => import('../views/log-manage/index.vue')
     }
   ]
 })
