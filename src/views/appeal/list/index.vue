@@ -221,16 +221,20 @@
         v-loading="loading"
         class="tw-w-full"
         border
+        stripe
+        row-class-name="my-el-table-stripe-row-name"
+        header-cell-class-name="my-el-table-header-cell-name"
         :data="appealTableData"
-        :height="containerHeight - headerHeight - 40">
+        :height="containerHeight - headerHeight - 80">
         <el-table-column
           show-overflow-tooltip
           label="编号"
-          width="100px">
+          width="120px">
           <template #default="scope">
             <img
+              v-if="scope.row.timeout === 1"
               src="../../../assets/images/appeal-list/icon_warn@2x.png"
-              class="tw-w-[14px] tw-h-[14px]"
+              class="tw-w-[14px] tw-h-[14px] tw-inline-block"
               alt="" />
             {{ scope.row.appealCode }}
           </template>
@@ -425,7 +429,12 @@
     await _getAppealTableData()
   }
   const handleSearch = () => {}
-  const handleProxyCommit = () => {}
+  const handleProxyCommit = () => {
+    router.push({
+      name: 'CreateProxyAppeal',
+      query: {}
+    })
+  }
   const handleExport = () => {}
   const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
