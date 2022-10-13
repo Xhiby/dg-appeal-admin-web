@@ -31,7 +31,7 @@
       </el-form>
       <hr />
       <el-button
-        class="button"
+        class="tw-mt-[20px]"
         type="primary"
         size="default"
         @click="onAdd">
@@ -183,9 +183,7 @@
   }
 
   // 点击删除
-  const onDelete = () => {
-    
-  }
+  const onDelete = () => {}
 </script>
 
 <style lang="scss" scoped>
