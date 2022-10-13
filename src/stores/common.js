@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useCommonStore = defineStore('common', {
   state: () => ({
     /** @type {'领导' | '倍增办' | '处理部门'} */
-    role: '',
+    role: '领导',
     /** @type {{ name: string, id: string }[]} */
     leaders: [
       {
