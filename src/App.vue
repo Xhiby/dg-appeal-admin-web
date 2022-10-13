@@ -15,6 +15,15 @@
               <RouterLink to="/appeal-preview">概览</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
+              <RouterLink to="/appeal-leader-manager">诉求列表【领导视图】</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/appeal">诉求列表【处理，市倍增办】</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/appeal/dashboard">诉求统计</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
               <RouterLink to="/log-manage">日志管理</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>
