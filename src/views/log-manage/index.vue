@@ -15,45 +15,39 @@
           :model="logForm">
           <el-row :gutter="2">
             <el-col :span="4">
-              <el-form-item prop="code">
+              <el-form-item prop="keyword">
                 <el-input
-                  v-model="logForm.code"
+                  v-model="logForm.keyword"
                   placeholder="请输入诉求主题/企业名称/诉求编号">
                 </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="3">
-              <el-form-item prop="people">
-                <el-select
-                  v-model="logForm.people"
+              <el-form-item prop="transactors">
+                <el-input
+                  v-model="logForm.transactors"
                   placeholder="办理人">
-                  <el-option
-                    v-for="(item, index) in peopleList"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
+                </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="3">
-              <el-form-item prop="type">
+              <el-form-item prop="childCategoryCode">
                 <el-select
-                  v-model="logForm.type"
+                  v-model="logForm.childCategoryCode"
                   placeholder="诉求分类">
                   <el-option
                     v-for="(item, index) in appealTypeList"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value">
+                    :label="item.categoryName"
+                    :value="item.categoryCode">
                   </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="4">
-              <el-form-item prop="time">
+              <el-form-item prop="updateAt">
                 <el-input
-                  v-model="logForm.time"
+                  v-model="logForm.updateAt"
                   placeholder="更新时间">
                 </el-input>
               </el-form-item>
@@ -153,7 +147,7 @@
           small
           layout="total, sizes, prev, pager, next, jumper"
           @size-change="onSearch"
-          @current-change="getEvaluateList">
+          @current-change="getWorkLogList">
         </el-pagination>
       </div>
     </div>
@@ -170,35 +164,20 @@
   import PageTitle from '@/components/page-title.vue'
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
-  import { useMockTableData } from '@/utils/hooks'
-  import { appealTypeList } from '@/config/global-var.js'
   import logDialog from './components/log-dialog.vue'
+  import * as apis from '@/apis/index'
+  import { ElMessage } from 'element-plus'
 
   const loading = ref(false)
   // 分页对象
   const { pagination } = usePagination()
-  // 办理人
-  const peopleList = reactive([
-    {
-      label: '办理人',
-      value: 0
-    },
-    {
-      label: '张三',
-      value: 1
-    },
-    {
-      label: '李四',
-      value: 2
-    }
-  ])
   //诉求分类
   // 搜索条件
   const logForm = reactive({
-    code: '',
-    people: '',
-    type: '',
-    time: ''
+    keyword: '',
+    transactors: '',
+    childCategoryCode: '',
+    updateAt: ''
   })
   const FormRef = ref(null)
   // 表格数据
@@ -207,33 +186,53 @@
   const isShow = ref(false)
   // 传输给dialog数据
   const logCode = ref(null)
+  //诉求分类
+  const appealTypeList = ref([])
   onMounted(() => {
-    tableData.value = useMockTableData(
-      {
-        logCode: '9527',
-        companyName: '米哈游',
-        companyTheme: '德古拉',
-        appealType: '投诉电话',
-        appealContent: 'RNM退钱',
-        appealStatus: '良好',
-        transactor: '赵师傅',
-        logManage: '今天的太阳可真圆啊',
-        appealHandleTime: '非常差'
-      },
-      25
-    )
+    getCategoryList()
+    getWorkLogList()
   })
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
-    //请求接口
+    getWorkLogList()
   }
-  //请求列表数据
-  const getEvaluateList = () => {}
+  const getWorkLogList = () => {
+    loading.value = true
+    //请求接口
+    apis
+      .getWorkLogList({ ...logForm, ...pagination })
+      .then((res) => {
+        if (res.data.code === 0) {
+          tableData.value = res.data.data.list
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        loading.value = false
+      })
+  }
+  //获取诉求分类列表
+  const getCategoryList = () => {
+    apis
+      .getCategoryList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          appealTypeList.value = res.data.data
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {})
+  }
   // 重置
   const onReset = () => {
     FormRef.value.resetFields()
-    onSearch()
+    pagination.pageNum = 1
+    getWorkLogList()
   }
   // 查看列表数据
   const onDetail = (row) => {
