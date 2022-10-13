@@ -61,7 +61,7 @@
           prop="operate"
           width="180px"
           label="操作">
-          <template #default>
+          <template #default="scope">
             <el-button
               type="primary"
               text
@@ -94,8 +94,7 @@
 
   <appealTagDialog
     v-model:show="isShowDialog"
-    :dialog-tag="dialogTag"
-    :dialog-tag-list="dialogTagList">
+    :dialog-tag="dialogTag">
   </appealTagDialog>
 </template>
 
@@ -113,8 +112,6 @@
   const isShowDialog = ref(false)
   // 标签
   const dialogTag = ref()
-  // 可选的标签列表
-  const dialogTagList = ref()
 
   const loading = ref(false)
   // 分页对象
@@ -148,25 +145,11 @@
     onSearch()
   }
 
-  // 诉求标签列表
-  let tagList = reactive([
-    {
-      label: '市领导关注（张局长）',
-      value: '市领导关注（张局长）'
-    },
-    {
-      label: '街镇领导关注（李主任）',
-      value: '街镇领导关注（李主任）'
-    }
-  ])
-
   // 点击新增
   const onAdd = () => {
     resetDialogData()
 
     isShowDialog.value = true
-
-    dialogTagList.value = tagList
   }
 
   // 点击编辑
@@ -176,11 +159,10 @@
     isShowDialog.value = true
 
     dialogTag.value = row.tag
-    dialogTagList.value = tagList
   }
 
   // 点击删除
-  const onDelete = (row) => {
+  const onDelete = () => {
     ElMessageBox({
       title: '确定',
       type: 'warning',
@@ -206,7 +188,6 @@
   // 重置dialog的数据
   const resetDialogData = () => {
     dialogTag.value = null
-    dialogTagList.value = null
   }
 </script>
 

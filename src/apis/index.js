@@ -52,3 +52,15 @@ export const getGovernmentList = (data) => post('/api/v1/government/label/all', 
  * @param {*} data
  */
 export const getCategoryList = (data) => get('/api/v1/government/category/getCategory', data)
+
+/**
+ * 获取诉求标签列表
+ * @param {*} data
+ */
+export const getGovernmentLabelList = (data) => get('/api/v1/government/label/getAllLabel', data)
+
+/**
+ * 创建诉求标签
+ * @param {*} data
+ */
+export const createGovernmentLabel = (data) => post('/api/v1/government/label/add', data)
