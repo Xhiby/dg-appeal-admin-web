@@ -18,52 +18,52 @@
         label-width="150px"
         label-position="left">
         <el-form-item
-          prop="type"
+          prop="categoryCode"
           label="诉求分类">
           <el-select
-            v-model="formData.type"
+            v-model="formData.categoryCode"
             style="flex-grow: 1"
             placeholder="请选择诉求分类">
             <el-option
               v-for="(item, index) in appealTypeList"
               :key="index"
-              :label="item.label"
-              :value="item.value">
+              :label="item.categoryName"
+              :value="item.categoryCode">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item
-          prop="name"
+          prop="childCategoryName"
           label="子类名称">
           <el-input
-            v-model="formData.name"
+            v-model="formData.childCategoryName"
             style="width: 100%"
             placeholder="请输入子类名称">
           </el-input>
         </el-form-item>
         <el-form-item
-          prop="pjsx"
+          prop="appealEvaluateLimitTime"
           label="评价时限">
           <el-input
-            v-model="formData.pjsx"
+            v-model="formData.appealEvaluateLimitTime"
             style="width: 100%"
             placeholder="请输入评价时限">
           </el-input>
         </el-form-item>
         <el-form-item
-          prop="sqqssx"
+          prop="appealSignLimitTime"
           label="诉求签收时限">
           <el-input
-            v-model="formData.sqqssx"
+            v-model="formData.appealSignLimitTime"
             style="width: 100%"
             placeholder="请输入诉求签收时限">
           </el-input>
         </el-form-item>
         <el-form-item
-          prop="sqclsx"
+          prop="appealHandleLimitTime"
           label="诉求处理时限">
           <el-input
-            v-model="formData.sqclsx"
+            v-model="formData.appealHandleLimitTime"
             style="width: 100%"
             placeholder="请输入诉求处理时限">
           </el-input>
@@ -88,8 +88,8 @@
 </template>
 
 <script setup>
+  import * as apis from '@/apis/index'
   import { reactive, ref, computed, toRefs } from 'vue'
-  import { appealTypeList } from '@/config/global-var'
   import { ElMessage } from 'element-plus'
   const props = defineProps({
     show: {
@@ -98,7 +98,7 @@
     }
   })
   const { show } = toRefs(props)
-  const emit = defineEmits(['update:show'])
+  const emit = defineEmits(['update:show', 'onReload'])
   const $show = computed({
     get() {
       return show.value
@@ -109,11 +109,11 @@
   })
   // 必填项
   const rules = reactive({
-    type: [{ required: true, message: '请选择诉求分类', trigger: 'change' }],
-    name: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
-    pjsx: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
-    sqqssx: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
-    sqclsx: [{ required: true, message: '请选择类型名称', trigger: 'blur' }]
+    categoryCode: [{ required: true, message: '请选择诉求分类', trigger: 'change' }],
+    childCategoryName: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
+    appealEvaluateLimitTime: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
+    appealSignLimitTime: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
+    appealHandleLimitTime: [{ required: true, message: '请选择类型名称', trigger: 'blur' }]
   })
   // 按钮加载
   const btnLoading = ref(false)
@@ -121,27 +121,61 @@
   const formRef = ref(null)
   // 表单数据
   const formData = ref({
-    id: 0,
-    type: '',
-    name: '',
-    pjsx: '',
-    sqqssx: '',
-    sqclsx: ''
+    //分类编号
+    categoryCode: '',
+    //子分类名称
+    childCategoryName: '',
+    //诉求评价时限
+    appealEvaluateLimitTime: '',
+    //诉求签收时限
+    appealSignLimitTime: '',
+    //诉求处理时限
+    appealHandleLimitTime: ''
   })
+  // 诉求分类列表
+  const appealTypeList = ref([])
   const submitForm = (formRef) => {
     formRef.validate((valid) => {
       if (valid) {
         btnLoading.value = true
-        setTimeout(() => {
-          btnLoading.value = false
-          $show.value = false
-          ElMessage.success('新增成功')
-        }, 2000)
+        createCategoryChild()
       }
     })
   }
+  const getCategoryList = () => {
+    apis
+      .getCategoryList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          appealTypeList.value = res.data.data
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+  }
+  // 新增诉求子类
+  const createCategoryChild = () => {
+    apis
+      .createCategoryChild(formData.value)
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('新增成功')
+          $show.value = false
+          emit('onReload')
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        btnLoading.value = false
+      })
+  }
   // 打开dialog时回调函数
-  const onOpen = () => {}
+  const onOpen = () => {
+    getCategoryList()
+  }
 
   // 关闭dialog时回调函数
   const onClose = () => {

@@ -18,10 +18,11 @@
         label-width="150px"
         label-position="left">
         <el-form-item
-          prop="name"
+          label-width="100px"
+          prop="categoryName"
           label="分类名称">
           <el-input
-            v-model="formData.name"
+            v-model="formData.categoryName"
             style="width: 100%"
             placeholder="请输入分类名称">
           </el-input>
@@ -48,6 +49,7 @@
 <script setup>
   import { reactive, ref, computed, toRefs } from 'vue'
   import { ElMessage } from 'element-plus'
+  import * as apis from '@/apis/index'
   const props = defineProps({
     show: {
       type: Boolean,
@@ -55,7 +57,7 @@
     }
   })
   const { show } = toRefs(props)
-  const emit = defineEmits(['update:show'])
+  const emit = defineEmits(['update:show', 'onReload'])
   const $show = computed({
     get() {
       return show.value
@@ -66,7 +68,7 @@
   })
   // 必填项
   const rules = reactive({
-    name: [{ required: true, message: '请选择类型名称', trigger: 'blur' }]
+    categoryName: [{ required: true, message: '请选择类型名称', trigger: 'blur' }]
   })
   // 按钮加载
   const btnLoading = ref(false)
@@ -74,20 +76,36 @@
   const formRef = ref(null)
   // 表单数据
   const formData = ref({
-    id: 0,
-    name: ''
+    categoryName: ''
   })
   const submitForm = (formRef) => {
     formRef.validate((valid) => {
       if (valid) {
         btnLoading.value = true
-        setTimeout(() => {
-          ElMessage.success('新增成功')
-          btnLoading.value = false
-          $show.value = false
-        }, 2000)
+        createCategory()
       }
     })
+  }
+  // 新增分类
+  const createCategory = () => {
+    apis
+      .createCategory(formData.value)
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage({
+            message: '添加成功',
+            type: 'success'
+          })
+          emit('onReload')
+          $show.value = false
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        btnLoading.value = false
+      })
   }
   // 打开dialog时回调函数
   const onOpen = () => {}

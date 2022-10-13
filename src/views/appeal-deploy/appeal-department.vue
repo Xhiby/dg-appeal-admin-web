@@ -5,11 +5,11 @@
       <el-form
         ref="FormRef"
         class="my-el-form-item-flex"
-        size="large"
+        size="default"
         :inline="true"
         :model="conditionForm">
         <el-row :gutter="8">
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item prop="keyword">
               <el-input
                 v-model="conditionForm.keyword"
@@ -29,15 +29,16 @@
           </el-col>
         </el-row>
       </el-form>
-    </div>
-    <div class="tab_pane_content">
+      <hr />
       <el-button
-        class="button"
+        class="tw-mt-[20px]"
         type="primary"
-        size="large"
+        size="default"
         @click="onAdd">
         新增
       </el-button>
+    </div>
+    <div class="tab_pane_content">
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -203,13 +204,6 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
-    }
-    .tab_pane_content {
-      border-top: 1px solid #dcdfe6;
-      .button {
-        margin-top: 20px;
-        margin-bottom: 34px;
-      }
     }
     .tab_pane_footer {
       width: 100%;

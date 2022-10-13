@@ -5,14 +5,14 @@
       <el-form
         ref="FormRef"
         class="my-el-form-item-flex"
-        size="large"
+        size="default"
         :inline="true"
-        :model="conditionForm">
+        :model="form">
         <el-row :gutter="8">
-          <el-col :span="4">
-            <el-form-item prop="keyword">
+          <el-col :span="8">
+            <el-form-item prop="childCategoryName">
               <el-input
-                v-model="conditionForm.keyword"
+                v-model="form.childCategoryName"
                 placeholder="请输入类型名称搜索">
               </el-input>
             </el-form-item>
@@ -29,13 +29,14 @@
           </el-col>
         </el-row>
       </el-form>
-    </div>
-    <div class="tab_pane_content">
-      <el-dropdown @command="handleCommand">
+      <hr />
+      <el-dropdown
+        class="tw-mt-[20px]"
+        @command="handleCommand">
         <el-button
           class="button"
           type="primary"
-          size="large">
+          size="default">
           新增<el-icon class="el-icon--right"><arrow-down></arrow-down></el-icon>
         </el-button>
         <template #dropdown>
@@ -45,6 +46,8 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+    </div>
+    <div class="tab_pane_content">
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -64,19 +67,19 @@
           label="诉求分类">
         </el-table-column>
         <el-table-column
-          prop="appealSubType"
+          prop="childCategoryName"
           label="诉求子类">
         </el-table-column>
         <el-table-column
-          prop="appealSignTime"
+          prop="appealSignLimitTime"
           label="诉求签收时限">
         </el-table-column>
         <el-table-column
-          prop="evaluateTime"
+          prop="appealEvaluateLimitTime"
           label="评价时限">
         </el-table-column>
         <el-table-column
-          prop="appealHandleTime"
+          prop="appealHandleLimitTime"
           label="诉求处理时限">
         </el-table-column>
         <el-table-column
@@ -102,56 +105,69 @@
         small
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="onSearch"
-        @current-change="getEvaluateList">
+        @current-change="getCategoryChildList">
       </el-pagination>
     </div>
   </div>
 
-  <type-one-dialog v-model:show="typeOne"></type-one-dialog>
+  <type-one-dialog
+    v-model:show="typeOne"
+    @on-reload="getCategoryChildList">
+  </type-one-dialog>
 
-  <type-two-dialog v-model:show="typeTwo"></type-two-dialog>
+  <type-two-dialog
+    v-model:show="typeTwo"
+    @on-reload="getCategoryChildList">
+  </type-two-dialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
-  import { useMockTableData } from '@/utils/hooks'
   import typeOneDialog from './components/appeal-classify/type-one-dialog.vue'
   import typeTwoDialog from './components/appeal-classify/type-two-dialog.vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
+  import * as apis from '@/apis/index'
   const loading = ref(false)
   // 分页对象
   const { pagination, indexMethod } = usePagination()
   // 搜索条件
-  const conditionForm = reactive({
-    keyword: ''
+  const form = reactive({
+    childCategoryName: ''
   })
   const FormRef = ref(null)
-  // 表格数据
+  // getEvaluateList
   const tableData = ref([])
   //一级分类dialog
   const typeOne = ref(false)
   //二级分类dialog
   const typeTwo = ref(false)
   onMounted(() => {
-    tableData.value = useMockTableData(
-      {
-        appealType: '诉求分类',
-        appealSubType: '诉求子类',
-        appealSignTime: '诉求签收时限',
-        evaluateTime: '评价时限',
-        appealHandleTime: '诉求处理时限'
-      },
-      25
-    )
+    getCategoryChildList()
   })
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
     //请求接口
+    getCategoryChildList()
   }
   //请求列表数据
-  const getEvaluateList = () => {}
+  const getCategoryChildList = () => {
+    loading.value = true
+    apis
+      .getCategoryChildList({ ...form, ...pagination })
+      .then((res) => {
+        if (res.data.code === 0) {
+          tableData.value = res.data.data.list
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        loading.value = false
+      })
+  }
 
   //下拉菜单
   const handleCommand = (command) => {
@@ -200,14 +216,6 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
-    }
-    .tab_pane_content {
-      border-top: 1px solid #dcdfe6;
-      padding-top: 20px;
-
-      .button {
-        margin-bottom: 34px;
-      }
     }
     .tab_pane_footer {
       width: 100%;

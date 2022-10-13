@@ -158,6 +158,12 @@
       </div>
     </div>
   </div>
+
+  <!-- dialog -->
+  <log-dialog
+    v-model:show="isShow"
+    :log-code="logCode">
+  </log-dialog>
 </template>
 
 <script setup>
@@ -166,11 +172,11 @@
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
   import { appealTypeList } from '@/config/global-var.js'
+  import logDialog from './components/log-dialog.vue'
 
   const loading = ref(false)
   // 分页对象
   const { pagination } = usePagination()
-
   // 办理人
   const peopleList = reactive([
     {
@@ -197,6 +203,10 @@
   const FormRef = ref(null)
   // 表格数据
   const tableData = ref([])
+  // 控制dialog
+  const isShow = ref(false)
+  // 传输给dialog数据
+  const logCode = ref(null)
   onMounted(() => {
     tableData.value = useMockTableData(
       {
@@ -224,6 +234,11 @@
   const onReset = () => {
     FormRef.value.resetFields()
     onSearch()
+  }
+  // 查看列表数据
+  const onDetail = (row) => {
+    isShow.value = true
+    logCode.value = row.id
   }
 </script>
 

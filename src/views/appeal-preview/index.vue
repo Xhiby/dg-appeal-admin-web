@@ -71,7 +71,7 @@
           <div class="item">
             <div
               class="top tw-bg-[#DFF8FF]"
-              @click="skip('/')">
+              @click="skip('/log-manage')">
               <img
                 class="headerPhoto"
                 src="@/assets/images/appeal-preview/iconlist2.png"
