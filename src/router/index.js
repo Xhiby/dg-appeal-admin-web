@@ -39,6 +39,12 @@ const router = createRouter({
           path: 'details',
           component: () => import('@/views/appeal/details/index.vue')
         },
+        // 新增代理诉求
+        {
+          name: 'CreateProxyAppeal',
+          path: 'create-appeal-by-proxy',
+          component: () => import('@/views/appeal/modify/index.vue')
+        },
         // 诉求统计
         {
           name: 'AppealDashBoard',
