@@ -82,7 +82,7 @@
             <el-col :span="8">
               <el-form-item label="请求来源:">
                 <el-select
-                  v-model="formSearchData.street"
+                  v-model="formSearchData.appealSource"
                   class="tw-w-full"
                   placeholder="请选择请求来源"
                   @change="handleStreetChange">
@@ -110,7 +110,7 @@
             <el-col :span="8">
               <el-form-item label="需求分类:">
                 <el-select
-                  v-model="formSearchData.street"
+                  v-model="formSearchData.categoryChildCode"
                   class="tw-w-full"
                   placeholder="请选择所属街镇"
                   @change="handleStreetChange">
@@ -136,7 +136,7 @@
             <el-col :span="8">
               <el-form-item label="市领导关注:">
                 <el-select
-                  v-model="formSearchData.street"
+                  v-model="formSearchData.appealSource"
                   class="tw-w-full"
                   placeholder="请选择请求来源"
                   @change="handleStreetChange">
@@ -162,7 +162,7 @@
             <el-col :span="8">
               <el-form-item label="更新时间:">
                 <el-date-picker
-                  v-model="formSearchData.updateDate"
+                  v-model="formSearchData.submitTime"
                   type="date"
                   class="tw-w-full"
                   value-format="YYYY-MM-DD"
@@ -197,7 +197,7 @@
         </el-form>
       </div>
       <el-divider></el-divider>
-      <div class="tw-w-[200px] tw-flex tw-items-center tw-justify-between">
+      <div class="tw-w-[200px] tw-flex tw-items-center tw-justify-start">
         <el-button
           type="primary"
           @click="handleProxyCommit">
@@ -209,34 +209,236 @@
           导出
         </el-button>
         <el-button
+          v-if="commonStore.role === '市倍增办'"
           type="primary"
           @click="handleGenerateReport">
           生成简报
         </el-button>
       </div>
     </div>
-    <div class="tw-mt-[20px]"></div>
+    <div class="tw-mt-[20px]">
+      <el-table
+        v-loading="loading"
+        class="tw-w-full"
+        border
+        :data="appealTableData"
+        :height="containerHeight - headerHeight - 40">
+        <el-table-column
+          show-overflow-tooltip
+          label="编号"
+          width="100px">
+          <template #default="scope">
+            <img
+              src="../../../assets/images/appeal-list/icon_warn@2x.png"
+              class="tw-w-[14px] tw-h-[14px]"
+              alt="" />
+            {{ scope.row.appealCode }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="street"
+          label="街镇"
+          width="100px">
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="organizationName"
+          label="企业名称"
+          width="220px">
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="appealTheme"
+          label="诉求主题"
+          width="220px">
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="appealContent"
+          label="诉求内容"
+          width="180px">
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="appealChildCategoryName"
+          label="诉求分类"
+          width="180px">
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          label="诉求状态"
+          width="120px">
+          <template #default="scope">
+            <div
+              v-if="scope.row.appealStatus === -1"
+              class="tw-text-[14px] tw-text-[#FF8F00]">
+              失效
+            </div>
+            <div
+              v-if="scope.row.appealStatus === 0"
+              class="tw-text-[14px] tw-text-[#FF8F00]">
+              待处理
+            </div>
+            <div
+              v-if="scope.row.appealStatus === 1"
+              class="tw-text-[14px] tw-text-[#4584F8]">
+              推进中
+            </div>
+            <div
+              v-if="scope.row.appealStatus === 3"
+              class="tw-text-[14px] tw-text-[#57D3A2]">
+              待评价
+            </div>
+            <div
+              v-if="scope.row.appealStatus === 4"
+              class="tw-text-[14px] tw-text-[#57D3A2]">
+              已完结
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="createdAt"
+          label="创建时间"
+          width="180px">
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="appealLabelName"
+          label="关注标签"
+          width="150px">
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作">
+          <template #default="scope">
+            <el-button
+              class="tw-text-[14px]"
+              link
+              type="primary"
+              size="small"
+              @click="handleShowAppealDetails(scope.row)">
+              查看
+            </el-button>
+            <el-button
+              class="tw-text-[14px] tw-text-[#57D3A2]"
+              link
+              size="small"
+              @click="handleDeleteAppeal(scope.row)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        v-model:currentPage="paginator.pageNum"
+        v-model:page-size="paginator.pageSize"
+        class="tw-mt-[20px] tw-flex tw-flex-1 tw-justify-end"
+        :page-sizes="[10, 20, 50, 100]"
+        :small="false"
+        :background="false"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="paginator.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script setup>
   import PageTitle from '@/components/page-title.vue'
-  import { reactive, ref } from 'vue'
+  import { useElementSize } from '@vueuse/core'
+  import { useRouter } from 'vue-router'
+  import { onMounted, reactive, ref, toRaw } from 'vue'
+  import { getAppeals } from '@/apis/appeal-crud'
+  import { useCommonStore } from '@/stores/common'
 
+  import '@/utils/mock.js'
+
+  const loading = ref(false)
+  const containerRef = ref(null)
+  const headerRef = ref(null)
+  const formSearchRef = ref(null)
+  const router = useRouter()
+  const { height: containerHeight } = useElementSize(containerRef)
+  const { height: headerHeight } = useElementSize(headerRef)
+  const commonStore = useCommonStore()
+  const appealTableData = ref([])
   const activeAppealCategory = ref('1')
   const formSearchData = reactive({
     keyword: '',
     street: '',
-    updateDate: ''
+    appealSource: '',
+    appealStatus: '',
+    categoryChildCode: '',
+    departmentCode: '',
+    submitTime: ''
+  })
+  const paginator = reactive({
+    pageNum: 1,
+    pages: 0,
+    pageSize: 20,
+    total: 0
+  })
+
+  const _getAppealTableData = async () => {
+    loading.value = true
+    const { data: resp } = await getAppeals({
+      ...toRaw(formSearchData),
+      ...toRaw(paginator)
+    })
+    loading.value = false
+    if (resp.code === 0) {
+      appealTableData.value = resp.data.list
+      paginator.pageNum = resp.data.currentPage
+      paginator.pages = resp.data.lastPage
+      paginator.total = resp.data.total
+      paginator.pagesSize = resp.data.perPage
+    }
+  }
+
+  onMounted(async () => {
+    await _getAppealTableData()
   })
 
   const handleAppealCategoryChange = () => {}
   const handleStreetChange = () => {}
-  const handleReset = () => {}
+  const handleReset = async () => {
+    formSearchData.keyword = ''
+    formSearchData.street = ''
+    formSearchData.updateDate = ''
+    paginator.pageNum = 1
+    paginator.pages = 0
+    paginator.pageSize = 20
+    paginator.total = 0
+    await _getAppealTableData()
+  }
+  const handleSizeChange = async (currentSize) => {
+    paginator.pageSize = currentSize
+    await _getAppealTableData()
+  }
+
+  const handleCurrentChange = async (current) => {
+    paginator.pageNum = current
+    await _getAppealTableData()
+  }
   const handleSearch = () => {}
   const handleProxyCommit = () => {}
   const handleExport = () => {}
   const handleGenerateReport = () => {}
+  const handleShowAppealDetails = (row) => {
+    router.push({
+      name: 'AppealDetails',
+      query: {
+        sid: row.id
+      }
+    })
+  }
+  const handleDeleteAppeal = (row) => {
+    console.log(row)
+  }
 </script>
 
 <style lang="scss" scoped></style>

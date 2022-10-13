@@ -6,12 +6,15 @@ specifiers:
   '@tailwindcss/line-clamp': ^0.4.2
   '@vitejs/plugin-vue': ^3.0.3
   '@vue/eslint-config-prettier': ^7.0.0
+  '@vueuse/core': ^9.3.0
+  '@vueuse/router': ^9.3.0
   autoprefixer: ^10.4.12
   axios: ^1.1.2
   dayjs: ^1.11.5
   element-plus: ^2.2.17
   eslint: ^8.22.0
   eslint-plugin-vue: ^9.3.0
+  mockjs: ^1.1.0
   pinia: ^2.0.21
   postcss: ^8.4.17
   prettier: ^2.7.1
@@ -26,6 +29,8 @@ specifiers:
 
 dependencies:
   '@element-plus/icons-vue': 2.0.10_vue@3.2.40
+  '@vueuse/core': 9.3.0_vue@3.2.40
+  '@vueuse/router': 9.3.0_c7eza3xvlyb4mo6qeit5ggeo6u
   axios: 1.1.2
   dayjs: 1.11.5
   element-plus: 2.2.17_vue@3.2.40
@@ -41,11 +46,12 @@ devDependencies:
   autoprefixer: 10.4.12_postcss@8.4.17
   eslint: 8.25.0
   eslint-plugin-vue: 9.6.0_eslint@8.25.0
+  mockjs: 1.1.0
   postcss: 8.4.17
   prettier: 2.7.1
   sass: 1.55.0
   tailwindcss: 3.1.8_postcss@8.4.17
-  unplugin-auto-import: 0.11.2
+  unplugin-auto-import: 0.11.2_@vueuse+core@9.3.0
   unplugin-element-plus: 0.4.1_vite@3.1.6
   unplugin-vue-components: 0.22.8_vue@3.2.40
   vite: 3.1.6_sass@1.55.0
@@ -214,7 +220,6 @@ packages:
 
   /@types/web-bluetooth/0.0.15:
     resolution: {integrity: sha512-w7hEHXnPMEZ+4nGKl/KDRVpxkwYxYExuHOYXyzIzCDzEZ9ZCGMAewulr9IqJu2LR4N37fcnb1XVeuZ09qgOxhA==}
-    dev: false
 
   /@vitejs/plugin-vue/3.1.2_vite@3.1.6+vue@3.2.40:
     resolution: {integrity: sha512-3zxKNlvA3oNaKDYX0NBclgxTQ1xaFdL7PzwF6zj9tGFziKwmBa3Q/6XcJQxudlT81WxDjEhHmevvIC4Orc1LhQ==}
@@ -326,10 +331,21 @@ packages:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
-    dev: false
 
   /@vueuse/metadata/9.3.0:
     resolution: {integrity: sha512-GnnfjbzIPJIh9ngL9s9oGU1+Hx/h5/KFqTfJykzh/1xjaHkedV9g0MASpdmPZIP+ynNhKAcEfA6g5i8KXwtoMA==}
+
+  /@vueuse/router/9.3.0_c7eza3xvlyb4mo6qeit5ggeo6u:
+    resolution: {integrity: sha512-UFN2MFciprH21oYsAgNHeDJ4Bd86HpRm9gximSN8j6h4fc2aa62fvfhprfHqdTxYAcgcGkMwcc9TO75jOvr8gg==}
+    peerDependencies:
+      vue-router: '>=4.0.0-rc.1'
+    dependencies:
+      '@vueuse/shared': 9.3.0_vue@3.2.40
+      vue-demi: 0.13.11_vue@3.2.40
+      vue-router: 4.1.5_vue@3.2.40
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
     dev: false
 
   /@vueuse/shared/9.3.0_vue@3.2.40:
@@ -339,7 +355,6 @@ packages:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
-    dev: false
 
   /acorn-jsx/5.3.2_acorn@8.8.0:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -548,6 +563,11 @@ packages:
     dependencies:
       delayed-stream: 1.0.0
     dev: false
+
+  /commander/9.4.1:
+    resolution: {integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==}
+    engines: {node: ^12.20.0 || >=14}
+    dev: true
 
   /concat-map/0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
@@ -1427,6 +1447,13 @@ packages:
       ufo: 0.8.5
     dev: true
 
+  /mockjs/1.1.0:
+    resolution: {integrity: sha512-eQsKcWzIaZzEZ07NuEyO4Nw65g0hdWAyurVol1IPl1gahRwY+svqzfgfey8U8dahLwG44d6/RwEzuK52rSa/JQ==}
+    hasBin: true
+    dependencies:
+      commander: 9.4.1
+    dev: true
+
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
@@ -1896,7 +1923,7 @@ packages:
       unplugin: 0.9.6
     dev: true
 
-  /unplugin-auto-import/0.11.2:
+  /unplugin-auto-import/0.11.2_@vueuse+core@9.3.0:
     resolution: {integrity: sha512-1+VwBfn9dtiYv9SQLKP1AvZolUbK9xTVeAT+iOcEk4EHSFUlmIqBVLEKI76cifSQTLOJ3rZyPrEgptf3SZNLlQ==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -1907,6 +1934,7 @@ packages:
     dependencies:
       '@antfu/utils': 0.5.2
       '@rollup/pluginutils': 4.2.1
+      '@vueuse/core': 9.3.0_vue@3.2.40
       local-pkg: 0.4.2
       magic-string: 0.26.7
       unimport: 0.6.8
@@ -2048,7 +2076,6 @@ packages:
         optional: true
     dependencies:
       vue: 3.2.40
-    dev: false
 
   /vue-eslint-parser/9.1.0_eslint@8.25.0:
     resolution: {integrity: sha512-NGn/iQy8/Wb7RrRa4aRkokyCZfOUWk19OP5HP6JEozQFX5AoS/t+Z0ZN7FY4LlmWc4FNI922V7cvX28zctN8dQ==}
