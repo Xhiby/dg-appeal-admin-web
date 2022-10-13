@@ -99,3 +99,47 @@ export const evaluateType = {
    */
   complaint: '2'
 }
+
+//诉求分类
+export const appealTypeList = [
+  {
+    label: '诉求分类',
+    value: 0
+  },
+  {
+    label: '全部',
+    value: 1
+  },
+  {
+    label: '复工复产',
+    value: 2
+  },
+  {
+    label: '其他问题类',
+    value: 3
+  },
+  {
+    label: '物流运输保障',
+    value: 4
+  },
+  {
+    label: '土地要素',
+    value: 5
+  },
+  {
+    label: '惠企政策',
+    value: 6
+  },
+  {
+    label: '社保、水及法务问题',
+    value: 7
+  },
+  {
+    label: '经营性问题',
+    value: 8
+  },
+  {
+    label: '其他问题',
+    value: 9
+  }
+]

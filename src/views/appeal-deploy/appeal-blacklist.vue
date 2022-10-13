@@ -100,12 +100,20 @@
       </el-pagination>
     </div>
   </div>
+
+  <appealBlackListDialog v-model:show="isShowDialog"></appealBlackListDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
+
+  // 引入弹窗组件
+  import appealBlackListDialog from './components/appeal-blacklist/appeal-blacklist-dialog.vue'
+
+  // 显示dialog
+  const isShowDialog = ref(false)
 
   const loading = ref(false)
   // 分页对象
@@ -144,7 +152,9 @@
   }
 
   // 点击新增
-  const onAdd = () => {}
+  const onAdd = () => {
+    isShowDialog.value = true
+  }
 
   // 点击删除
   const onDelete = () => {}

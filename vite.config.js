@@ -6,13 +6,17 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import ElementPlus from 'unplugin-element-plus/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      resolvers: [ElementPlusResolver()]
+      resolvers: [
+        // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
+        ElementPlusResolver()
+      ]
     }),
     Components({
       resolvers: [
@@ -20,6 +24,10 @@ export default defineConfig({
           importStyle: 'sass'
         })
       ]
+    }),
+    // 按需导入时自定义主题(会引入对应组件的/style/index 而不是 style/css style/css会干扰自定义主题)
+    ElementPlus({
+      useSource: true
     })
   ],
   resolve: {
