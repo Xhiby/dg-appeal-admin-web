@@ -52,3 +52,9 @@ export const getGovernmentList = (data) => post('/api/v1/government/label/all', 
  * @param {*} data
  */
 export const getCategoryList = (data) => get('/api/v1/government/category/getCategory', data)
+
+/**
+ * 获取工作日志编号:筛选未完成
+ */
+
+export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList', data)

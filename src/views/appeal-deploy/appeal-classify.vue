@@ -63,7 +63,7 @@
           label="ID">
         </el-table-column>
         <el-table-column
-          prop="appealType"
+          prop="categoryName"
           label="诉求分类">
         </el-table-column>
         <el-table-column
