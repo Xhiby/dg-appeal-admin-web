@@ -23,6 +23,12 @@
             <el-dropdown-item>
               <RouterLink to="/appeal/dashboard">诉求统计</RouterLink>
             </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/log-manage">日志管理</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <RouterLink to="/appeal-deploy">诉求配置</RouterLink>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
