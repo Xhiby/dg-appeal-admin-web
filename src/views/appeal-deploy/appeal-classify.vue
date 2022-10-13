@@ -99,12 +99,30 @@
       </el-pagination>
     </div>
   </div>
+
+  <!-- 新增分类 -->
+  <appealClassifyAdd
+    v-model:dialog-info="dialogStatus"
+    @show="switchDialog(isShow)">
+  </appealClassifyAdd>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
+
+  // 引入弹窗组件
+  import appealClassifyAdd from './components/appeal-classify/appeal-classify-add.vue'
+
+
+  // 
+
+  // 弹窗相关
+  const dialogStatus = reactive({
+    // 是否显示
+    show: false
+  })
 
   const loading = ref(false)
   // 分页对象
@@ -143,7 +161,14 @@
   }
 
   // 点击新增
-  const onAdd = () => {}
+  const onAdd = () => {
+    switchDialog(true)
+  }
+
+  //切换dialog
+  const switchDialog = (isShow) => {
+    dialogStatus.show = isShow
+  }
 
   // 点击删除
   const onDetail = () => {}

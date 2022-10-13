@@ -64,7 +64,7 @@
             <el-button
               type="primary"
               text
-              @click="onEdit">
+              @click="onEdit(scope.row)">
               编辑
             </el-button>
             <el-button
@@ -90,12 +90,29 @@
       </el-pagination>
     </div>
   </div>
+
+  <appealTagDialog
+    v-model:dialog-info="dialogStatus"
+    @show="switchDialog(isShow)">
+  </appealTagDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
+
+  // 引入弹窗组件
+  import appealTagDialog from './components/appeal-tag/appeal-tag-dialog.vue'
+
+  // 弹窗相关
+  const dialogStatus = reactive({
+    // 是否显示
+    show: false,
+
+    // 选择的标签
+    tag: []
+  })
 
   const loading = ref(false)
   // 分页对象
@@ -129,11 +146,37 @@
     onSearch()
   }
 
+  // 诉求标签列表
+  let tagList = reactive([
+    {
+      label: '市领导关注（张局长）',
+      value: '市领导关注（张局长）'
+    },
+    {
+      label: '街镇领导关注（李主任）',
+      value: '街镇领导关注（李主任）'
+    }
+  ])
+
   // 点击新增
   const onAdd = () => {}
 
   // 点击编辑
-  const onEdit = () => {}
+  const onEdit = (row) => {
+    // 点击编辑的标签
+    dialogStatus.tag = tagList
+    dialogStatus.tag.unshift({
+      label: row.tag,
+      value: row.tag
+    })
+
+    switchDialog(true)
+  }
+
+  //切换dialog
+  const switchDialog = (isShow) => {
+    dialogStatus.show = isShow
+  }
 
   // 点击删除
   const onDelete = () => {}

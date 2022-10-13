@@ -96,10 +96,7 @@
     </div>
   </div>
 
-  <appealDepartmentDialog
-    v-model:dialog-info="dialogStatus"
-    @show="switchDialog(isShow)">
-  </appealDepartmentDialog>
+  <appealDepartmentDialog v-model:show="isShowDialog"> </appealDepartmentDialog>
 </template>
 
 <script setup>
@@ -110,17 +107,8 @@
   // 引入弹窗组件
   import appealDepartmentDialog from './components/appeal-department/appeal-department-dialog.vue'
 
-  // 弹窗相关
-  const dialogStatus = reactive({
-    // 是否显示
-    show: false,
-
-    // 选择编辑的街镇部门
-    depName: '',
-
-    // 可被分配的服务专员
-    service: []
-  })
+  // 显示dialog
+  const isShowDialog = ref(false)
 
   const loading = ref(false)
   // 分页对象
@@ -176,22 +164,7 @@
 
   // 点击编辑
   const onEdit = (row) => {
-    // 点击编辑的部门名称
-    dialogStatus.depName = row.departmentName
-
-    // 点击编辑的服务专员
-    dialogStatus.service = serviceList
-    dialogStatus.service.unshift({
-      label: row.serviceCommissioner,
-      value: row.serviceCommissioner
-    })
-
-    switchDialog(true)
-  }
-
-  //切换dialog
-  const switchDialog = (isShow) => {
-    dialogStatus.show = isShow
+    isShowDialog.value = true
   }
 
   // 点击删除
