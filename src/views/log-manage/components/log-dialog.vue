@@ -15,9 +15,7 @@
         size="large"
         label-width="150px"
         label-position="left">
-        <el-row
-          :gutter="48"
-          style="padding-bottom: 20px">
+        <el-row style="padding-bottom: 20px">
           <el-col :span="4">办理人:</el-col>
           <el-col :span="4">赵思</el-col>
         </el-row>
@@ -28,8 +26,9 @@
           label-width="78px">
           <el-input
             type="textarea"
-            value="2016年12月30日，网易传媒针对29日内部动员大会上宣布的各频道被取消，成立直播事业群一事进行了详细公示，公示显示各内容频道整体合并为新闻中心，负责网易有态度的原创内容、新闻建设等工作；同时，合并直播、娱乐、时尚、科技、公开课为直播事业中心"
-            disabled="">
+            :rows="4"
+            :autosize="{ minRows: 2, maxRows: 6 }"
+            value="2016年12月30日，网易传媒针对29日内部动员大会上宣布的各频道被取消，成立直播事业群一事进行了详细公示，公示显示各内容频道整体合并为新闻中心，负责网易有态度的原创内容、新闻建设等工作；同时，合并直播、娱乐、时尚、科技、公开课为直播事业中心">
           </el-input>
           <p>处理时效{{ index + 1 }}: <span class="tw-ml-[25px]">24小时</span></p>
         </el-form-item>
@@ -37,10 +36,15 @@
     </template>
     <template #footer>
       <el-button
-        size="large"
+        size="default"
+        @click="onClose">
+        返回
+      </el-button>
+      <el-button
+        size="default"
         type="primary"
         @click="onClose">
-        确认
+        保存修改
       </el-button>
     </template>
   </el-dialog>
@@ -76,7 +80,6 @@
   const onOpen = () => {
     console.log(logCode)
   }
-
 
   // 关闭dialog时回调函数
   const onClose = () => {
