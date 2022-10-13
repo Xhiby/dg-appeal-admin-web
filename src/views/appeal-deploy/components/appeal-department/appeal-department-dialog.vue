@@ -77,9 +77,9 @@
   })
 
   // 关闭dialog回调
-  // const onClose = () => {
-  //   show.value = false
-  // }
+  const onClose = () => {
+    $show.value = false
+  }
 
   // 取消
   const onCancel = () => {
