@@ -76,7 +76,7 @@
             <el-button
               type="danger"
               text
-              @click="onDelete">
+              @click="onDelete(scope.row)">
               删除
             </el-button>
           </template>
@@ -98,8 +98,10 @@
   </div>
 
   <appealDepartmentDialog
-    v-model:dialog-info="dialogStatus"
-    @show="switchDialog(isShow)">
+    v-model:show="isShowDialog"
+    :dialog-dep-name="dialogDepName"
+    :dialog-service="dialogService"
+    :dialog-service-list="dialogServiceList">
   </appealDepartmentDialog>
 </template>
 
@@ -108,20 +110,19 @@
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
 
+  import { ElMessage, ElMessageBox } from 'element-plus'
+
   // 引入弹窗组件
   import appealDepartmentDialog from './components/appeal-department/appeal-department-dialog.vue'
 
-  // 弹窗相关
-  const dialogStatus = reactive({
-    // 是否显示
-    show: false,
-
-    // 选择编辑的街镇部门
-    depName: '',
-
-    // 可被分配的服务专员
-    service: []
-  })
+  // 显示dialog
+  const isShowDialog = ref(false)
+  // 街镇部门
+  const dialogDepName = ref()
+  // 服务专员
+  const dialogService = ref()
+  // 服务专员列表
+  const dialogServiceList = ref()
 
   const loading = ref(false)
   // 分页对象
@@ -157,7 +158,7 @@
   }
 
   // 可被分配的服务专员列表
-  let serviceList = reactive([
+  const serviceList = reactive([
     {
       label: '专员1',
       value: '专员1'
@@ -173,30 +174,57 @@
   ])
 
   // 点击新增
-  const onAdd = () => {}
+  const onAdd = () => {
+    resetDialogData()
+
+    dialogServiceList.value = serviceList
+
+    isShowDialog.value = true
+  }
 
   // 点击编辑
   const onEdit = (row) => {
-    // 点击编辑的部门名称
-    dialogStatus.depName = row.departmentName
+    resetDialogData()
 
-    // 点击编辑的服务专员
-    dialogStatus.service = serviceList
-    dialogStatus.service.unshift({
-      label: row.serviceCommissioner,
-      value: row.serviceCommissioner
-    })
+    isShowDialog.value = true
 
-    switchDialog(true)
-  }
+    dialogDepName.value = row.departmentName
+    dialogService.value = row.serviceCommissioner
 
-  //切换dialog
-  const switchDialog = (isShow) => {
-    dialogStatus.show = isShow
+    dialogServiceList.value = serviceList
   }
 
   // 点击删除
-  const onDelete = () => {}
+  const onDelete = (row) => {
+    ElMessageBox({
+      title: '确定',
+      type: 'warning',
+      message: '确定删除?',
+      confirmButtonClass: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          instance.confirmButtonLoading = true
+          setTimeout(() => {
+            ElMessage.success('删除成功')
+            instance.confirmButtonLoading = false
+            done()
+          }, 500)
+        } else {
+          done()
+        }
+      }
+    })
+  }
+
+  // 重置dialog的数据
+  const resetDialogData = () => {
+    dialogDepName.value = null
+    dialogService.value = null
+
+    dialogServiceList.value = null
+  }
 </script>
 
 <style lang="scss" scoped>

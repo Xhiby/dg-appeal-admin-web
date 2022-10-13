@@ -41,8 +41,8 @@
     <div class="tab_pane_content">
       <el-table
         v-loading="loading"
+        :border="true"
         :data="tableData"
-        border
         stripe
         row-class-name="my-el-table-stripe-row-name"
         header-cell-class-name="my-el-table-header-cell-name"
@@ -101,12 +101,23 @@
       </el-pagination>
     </div>
   </div>
+
+  <appealBlackListDialog
+    v-model:show="isShowDialog"
+    :company-list="optionalCompanyName">
+  </appealBlackListDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
+
+  // 引入弹窗组件
+  import appealBlackListDialog from './components/appeal-blacklist/appeal-blacklist-dialog.vue'
+
+  // 显示dialog
+  const isShowDialog = ref(false)
 
   const loading = ref(false)
   // 分页对象
@@ -144,11 +155,37 @@
     onSearch()
   }
 
+  /* 可被选择的黑名单企业列表 */
+  const optionalCompanyName = reactive([
+    {
+      checked: false,
+      companyName: '东莞市银河光电有限公司1',
+      name: '张三',
+      phone: '18200000001'
+    },
+    {
+      checked: false,
+      companyName: '东莞市银河光电有限公司2',
+      name: '李四',
+      phone: '18200000001'
+    },
+    {
+      checked: false,
+      companyName: '东莞市银河光电有限公司3',
+      name: '王五',
+      phone: '18200000001'
+    }
+  ])
+
   // 点击新增
-  const onAdd = () => {}
+  const onAdd = () => {
+    isShowDialog.value = true
+  }
 
   // 点击删除
-  const onDelete = () => {}
+  const onDelete = () => {
+    
+  }
 </script>
 
 <style lang="scss" scoped>

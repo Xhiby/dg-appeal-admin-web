@@ -1,4 +1,4 @@
-<!-- 诉求部门弹窗 -->
+<!-- 诉求标签弹窗 -->
 <template>
   <el-dialog
     v-model="$show"
@@ -18,23 +18,14 @@
         label-position="left"
         require-asterisk-position="right">
         <el-form-item
-          prop="depName"
-          label="街镇部门">
-          <el-input
-            v-model="formData.depName"
-            placeholder="请输入">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item
-          prop="service"
-          label="服务专员">
+          prop="dialogTag"
+          label="标签">
           <el-select
-            v-model="formData.service"
+            v-model="formData.dialogTag"
             placeholder="请选择"
             class="tw-w-full">
             <el-option
-              v-for="item in serviceList"
+              v-for="item in dialogTagList"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -67,26 +58,19 @@
       type: Boolean,
       default: false
     },
-    dialogDepName: {
+    dialogTag: {
       type: String,
       default: null
     },
-    dialogService: {
-      type: String,
-      default: null
-    },
-    dialogServiceList: {
+    dialogTagList: {
       type: Array,
       default: null
     }
   })
 
-  const { show, dialogDepName, dialogService, dialogServiceList } = toRefs(props)
+  const { show, dialogTag, dialogTagList } = toRefs(props)
 
   const emit = defineEmits(['update:show'])
-
-  // 接收传入的服务专员列表
-  const serviceList = ref([])
 
   // 控制弹窗显示
   const $show = computed({
@@ -104,32 +88,29 @@
   const formRef = ref(null)
 
   const formData = ref({
-    depName: '',
-    service: ''
+    dialogTag: ''
   })
 
   const rules = reactive({
-    depName: [{ required: true, message: '请输入街镇部门', trigger: 'blur' }],
-    service: [{ required: true, message: '请选择服务专员', trigger: 'blur' }]
+    dialogTag: [{ required: true, message: '请选择标签', trigger: 'blur' }]
   })
 
   // 是否为编辑模式
   const $isEdit = computed(() => {
-    return dialogDepName.value
+    return dialogTag.value
   })
 
   // 打开的回调
   const onOpen = () => {
     if ($isEdit.value) {
-      formData.value.depName = JSON.parse(JSON.stringify(dialogDepName.value))
-      formData.value.service = JSON.parse(JSON.stringify(dialogService.value))
+      formData.value.dialogTag = JSON.parse(JSON.stringify(dialogTag.value))
     }
-    serviceList.value = JSON.parse(JSON.stringify(dialogServiceList.value))
   }
 
-  // 关闭dialog回调
+  // 关闭的回调
   const onClose = () => {
-    $show.value = false
+    // 重置表单
+    formRef.value.resetFields()
   }
 
   // 取消

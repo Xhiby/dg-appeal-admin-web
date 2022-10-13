@@ -65,13 +65,13 @@
             <el-button
               type="primary"
               text
-              @click="onEdit">
+              @click="onEdit(scope.row)">
               编辑
             </el-button>
             <el-button
               type="danger"
               text
-              @click="onDelete">
+              @click="onDelete(scope.row)">
               删除
             </el-button>
           </template>
@@ -91,12 +91,30 @@
       </el-pagination>
     </div>
   </div>
+
+  <appealTagDialog
+    v-model:show="isShowDialog"
+    :dialog-tag="dialogTag"
+    :dialog-tag-list="dialogTagList">
+  </appealTagDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
+
+  import { ElMessage, ElMessageBox } from 'element-plus'
+
+  // 引入弹窗组件
+  import appealTagDialog from './components/appeal-tag/appeal-tag-dialog.vue'
+
+  // 显示dialog
+  const isShowDialog = ref(false)
+  // 标签
+  const dialogTag = ref()
+  // 可选的标签列表
+  const dialogTagList = ref()
 
   const loading = ref(false)
   // 分页对象
@@ -130,14 +148,66 @@
     onSearch()
   }
 
+  // 诉求标签列表
+  let tagList = reactive([
+    {
+      label: '市领导关注（张局长）',
+      value: '市领导关注（张局长）'
+    },
+    {
+      label: '街镇领导关注（李主任）',
+      value: '街镇领导关注（李主任）'
+    }
+  ])
+
   // 点击新增
-  const onAdd = () => {}
+  const onAdd = () => {
+    resetDialogData()
+
+    isShowDialog.value = true
+
+    dialogTagList.value = tagList
+  }
 
   // 点击编辑
-  const onEdit = () => {}
+  const onEdit = (row) => {
+    resetDialogData()
+
+    isShowDialog.value = true
+
+    dialogTag.value = row.tag
+    dialogTagList.value = tagList
+  }
 
   // 点击删除
-  const onDelete = () => {}
+  const onDelete = (row) => {
+    ElMessageBox({
+      title: '确定',
+      type: 'warning',
+      message: '确定删除?',
+      confirmButtonClass: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          instance.confirmButtonLoading = true
+          setTimeout(() => {
+            ElMessage.success('删除成功')
+            instance.confirmButtonLoading = false
+            done()
+          }, 500)
+        } else {
+          done()
+        }
+      }
+    })
+  }
+
+  // 重置dialog的数据
+  const resetDialogData = () => {
+    dialogTag.value = null
+    dialogTagList.value = null
+  }
 </script>
 
 <style lang="scss" scoped>
