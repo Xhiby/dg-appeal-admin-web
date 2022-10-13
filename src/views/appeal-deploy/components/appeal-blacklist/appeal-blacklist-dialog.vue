@@ -1,9 +1,11 @@
 <!-- 诉求黑名单弹窗 -->
 <template>
+  <div class="black_dialog"></div>
   <el-dialog
     v-model="$show"
     width="720px"
-    :align-center="true">
+    :align-center="true"
+    @open="onOpen">
     <template #header>
       <h1>新增</h1>
     </template>
@@ -11,20 +13,22 @@
     <template #default>
       <el-form
         ref="formRef"
-        :model="formData">
-        <el-row :gutter="12">
-          <el-col :span="10">
+        :model="formData"
+        :rules="rules">
+        <el-row :gutter="18">
+          <el-col :span="9">
             <el-form-item prop="companyName">
               <el-input
                 v-model="formData.companyName"
+                class="search-input"
                 placeholder="请输入单位名称搜索">
               </el-input>
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item>
-              <el-button @click="btnReset()">重置</el-button>
+              <el-button @click="btnReset">重置</el-button>
               <el-button
                 type="primary"
                 @click="onQuery()">
@@ -35,7 +39,26 @@
         </el-row>
       </el-form>
 
-      <el-table :data="tableData">
+      <el-table
+        :data="blackCompanyList"
+        @selection-change="handleSelectionChange">
+        <!-- 复选框和企业名称在同一列 -->
+        <!-- <el-table-column label="企业名称">
+          <template #default="scope">
+            <el-row
+              :gutter="10"
+              class="checkbox_column"
+              style="">
+              <el-col :span="3">
+                <el-checkbox v-model="scope.row.checked"> </el-checkbox>
+              </el-col>
+              <el-col :span="20">
+                <span>{{ scope.row.companyName }}</span>
+              </el-col>
+            </el-row>
+          </template>
+        </el-table-column> -->
+
         <el-table-column type="selection"> </el-table-column>
         <el-table-column
           prop="companyName"
@@ -67,17 +90,21 @@
 </template>
 
 <script setup>
-  import { reactive, ref, computed, toRefs } from 'vue'
+  import { ref, computed, toRefs, reactive } from 'vue'
   import { ElMessage } from 'element-plus'
 
   const props = defineProps({
     show: {
       type: Boolean,
       default: false
+    },
+    companyList: {
+      type: Array,
+      default: null
     }
   })
 
-  const { show } = toRefs(props)
+  const { show, companyList } = toRefs(props)
   const emit = defineEmits(['update:show'])
   const $show = computed({
     get() {
@@ -97,23 +124,29 @@
     companyName: ''
   })
 
-  const tableData = [
-    {
-      companyName: '东莞市银河光电有限公司',
-      name: '张三',
-      phone: '18200000001'
-    },
-    {
-      companyName: '东莞市银河光电有限公司',
-      name: '李四',
-      phone: '18200000001'
-    },
-    {
-      companyName: '东莞市银河光电有限公司',
-      name: '王五',
-      phone: '18200000001'
-    }
-  ]
+  const rules = reactive({
+    companyName: [{ require: false, message: '请先输入公司名称', trigger: 'blur' }]
+  })
+
+  // 接收传入的可选黑名单企业列表
+  const blackCompanyList = ref([])
+
+  // 当前已选择的企业
+  const selectedList = ref([])
+
+  const onOpen = () => {
+    blackCompanyList.value = JSON.parse(JSON.stringify(companyList.value))
+  }
+
+  const handleSelectionChange = (rows) => {
+    selectedList.value = rows
+  }
+
+  // 选择复选框事件
+  // const onChange = (row) => {
+  //   selectedList.value.push(JSON.parse(JSON.stringify(row)))
+  //   console.log(selectedList)
+  // }
 
   // 取消
   const onCancel = () => {
@@ -122,21 +155,27 @@
 
   // 确定
   const onConfirm = (formRef) => {
-    formRef.validate((valid) => {
-      if (valid) {
-        sureLoading.value = true
-        setTimeout(() => {
-          ElMessage.success('新增成功')
-          sureLoading.value = false
-          onCancel()
-        }, 500)
-      }
-    })
+    // console.log(JSON.parse(JSON.stringify(selectedList.value)))
+
+    if (selectedList.value.length == 0) {
+      ElMessage.warning('请至少选择一个企业')
+    } else {
+      formRef.validate((valid) => {
+        if (valid) {
+          sureLoading.value = true
+          setTimeout(() => {
+            ElMessage.success('新增成功')
+            sureLoading.value = false
+            onCancel()
+          }, 500)
+        }
+      })
+    }
   }
 
   // 重置
   const btnReset = () => {
-    $show.value = false
+    formRef.value.resetFields()
   }
 
   // 查询
@@ -145,4 +184,19 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+  /* 修改搜索框宽度 */
+  .black_dialog >>> .search-input {
+    width: 240px;
+  }
+
+  /* 隐藏顶部复选框 */
+  ::v-deep .el-table__header-wrapper .el-checkbox {
+    display: none;
+  }
+
+  .checkbox_column {
+    display: flex;
+    align-items: center;
+  }
+</style>
