@@ -26,7 +26,7 @@
     则会差次不齐
   这里用定位来让星星不占位置
 */
-.el-form {
+/* .el-form {
   // 此项目中大号form其label字体大小为18px
   .el-form-item.el-form-item--large {
     .el-form-item__label {
@@ -51,7 +51,7 @@
       }
     }
   }
-}
+} */
 
 .my-el-form-item-flex {
   &.el-form--inline.el-form {
@@ -81,126 +81,6 @@
   }
 }
 
-// 覆盖element符合视觉需求
-html {
-  .dashboard-chart-container .el-input__inner {
-    height: 30px;
-  }
-  .el-input__inner {
-    height: 40px;
-    border-color: #e6e6e6;
-    border-radius: 2px;
-  }
-  .el-textarea__inner {
-    height: 86px;
-    border-color: #e6e6e6;
-    border-radius: 2px;
-  }
-  .el-form-item {
-    margin-bottom: 18px;
-  }
-  .el-form--label-top .el-form-item__label {
-    padding: 0;
-  }
-  .el-form-item__label {
-    font-size: 16px;
-    letter-spacing: 0;
-    color: #0b0b0b;
-    align-self: center;
-  }
-  .el-button {
-    font-size: 16px;
-    border-radius: 2px;
-  }
-  .el-button:hover {
-    color: #4584f8;
-  }
-  .el-button--primary {
-    background: #4584f8;
-    border-color: #4584f8;
-  }
-  .el-button--primary:hover {
-    color: #fff;
-    background-color: rgb(191, 192, 195);
-    border-color: rgb(191, 192, 195);
-  }
-  .el-button.is-disabled,
-  .el-button.is-disabled:active,
-  .el-button.is-disabled:focus,
-  .el-button.is-disabled:hover {
-    color: #fff;
-    background-color: #ccc;
-    border-color: #ccc;
-  }
-  .el-input.is-disabled .el-input__inner,
-  .el-textarea.is-disabled .el-textarea__inner {
-    color: #606266;
-  }
-  .el-checkout__input.is-checked + span.el-checkbox__label {
-    font-weight: bold;
-    color: #575757;
-  }
-  .el-checkout__input.is-disabled.is-checked + span.el-checkbox__label {
-    font-weight: bold;
-    color: #575757;
-  }
-  .el-radio__input.is-checked + span.el-radio__label {
-    font-weight: bold;
-    color: #575757;
-  }
-  .el-radio__input.is-disabled.is-checked + span.el-radio__label {
-    font-weight: bold;
-    color: #575757;
-  }
-  .el-checkout__input.is-checked.is-disabled + span.el-checkbox__label,
-  .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-    background-color: #409eff;
-    border-color: #409eff;
-    &::after {
-      border-color: #fff
-    }
-  }
-  .el-radio__input.is-checked.is-disabled .el-radio__inner {
-    background-color: #409eff;
-    border-color: #409eff;
-    &::after {
-      border-color: #fff
-    }
-  }
-  .el-range-editor--large.el-input__wrapper {
-    height: 42px;
-  }
-  .el-tabs__item {
-    font-size: 18px;
-  }
-  .el-tabs__nav-wrap::after {
-    background-color: transparent;
-  }
-}
-
-.dg-el-input .el-input__wrapper {
-  width: 100%;
-}
-
-// 表格样式
-.dgs-table thead .el-table__cell {
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0;
-  color: #fff;
-  background: #4584f8 !important;
-  height: 48px;
-  border-right: 1px solid #ebeef5 !important;
-}
-.dgs-table .el-table--enable-row-hover .el-table__body tr:hover > td {
-  background: #f8f8f8;
-}
-.dgs-table .el-table--border,
-.dgs-table .el-table--group,
-.dgs-table .el-table th.is-leaf,
-.dgs-table .el-table td {
-  border-color: #e6e6e6;
-}
 ::-webkit-scrollbar {
   width: 7px;
   height: 7px;
