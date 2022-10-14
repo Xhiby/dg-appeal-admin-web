@@ -102,6 +102,7 @@
 <script setup>
   import { ref, computed, toRefs, reactive } from 'vue'
   import { ElMessage } from 'element-plus'
+  import * as apis from '@/apis/index'
 
   const props = defineProps({
     show: {
@@ -115,7 +116,7 @@
   })
 
   const { show, companyList } = toRefs(props)
-  const emit = defineEmits(['update:show'])
+  const emit = defineEmits(['update:show', 'onReload'])
   const $show = computed({
     get() {
       return show.value
@@ -155,12 +156,6 @@
     selectedList.value = rows
   }
 
-  // 选择复选框事件
-  // const onChange = (row) => {
-  //   selectedList.value.push(JSON.parse(JSON.stringify(row)))
-  //   console.log(selectedList)
-  // }
-
   // 取消
   const onCancel = () => {
     $show.value = false
@@ -168,22 +163,35 @@
 
   // 确定
   const onConfirm = (formRef) => {
-    // console.log(JSON.parse(JSON.stringify(selectedList.value)))
-
     if (selectedList.value.length == 0) {
       ElMessage.warning('请至少选择一个企业')
     } else {
       formRef.validate((valid) => {
         if (valid) {
           sureLoading.value = true
-          setTimeout(() => {
-            ElMessage.success('新增成功')
-            sureLoading.value = false
-            onCancel()
-          }, 500)
+          createGovernmentBlackList()
         }
       })
     }
+  }
+
+  // 将企业添加进诉求黑名单
+  const createGovernmentBlackList = () => {
+    apis
+      .createGovernmentBlackList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('新增成功')
+          $show.value = false
+
+          // 重新加载表格数据
+          emit('onReload')
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        sureLoading.value = false
+      })
   }
 
   // 重置
