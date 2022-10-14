@@ -92,10 +92,17 @@
     </div>
   </div>
 
-  <appealTagDialog
+  <appealAddTagDialog v-model:show="isShowAddDialog"></appealAddTagDialog>
+
+  <appealEditTagDialog
+    v-model:show="isShowEditDialog"
+    :dialog-tag="dialogTag">
+  </appealEditTagDialog>
+
+  <!-- <appealTagDialog
     v-model:show="isShowDialog"
     :dialog-tag="dialogTag">
-  </appealTagDialog>
+  </appealTagDialog> -->
 </template>
 
 <script setup>
@@ -105,11 +112,16 @@
 
   import { ElMessage, ElMessageBox } from 'element-plus'
 
-  // 引入弹窗组件
-  import appealTagDialog from './components/appeal-tag/appeal-tag-dialog.vue'
+  // 引入新增弹窗
+  import appealAddTagDialog from './components/appeal-tag/add-tag-dialog.vue'
 
-  // 显示dialog
-  const isShowDialog = ref(false)
+  // 引入编辑弹窗
+  import appealEditTagDialog from './components/appeal-tag/edit-tag-dialog.vue'
+
+  // 显示新增dialog
+  const isShowAddDialog = ref(false)
+  // 显示编辑dialog
+  const isShowEditDialog = ref(false)
   // 标签
   const dialogTag = ref()
 
@@ -149,14 +161,14 @@
   const onAdd = () => {
     resetDialogData()
 
-    isShowDialog.value = true
+    isShowAddDialog.value = true
   }
 
   // 点击编辑
   const onEdit = (row) => {
     resetDialogData()
 
-    isShowDialog.value = true
+    isShowEditDialog.value = true
 
     dialogTag.value = row.tag
   }

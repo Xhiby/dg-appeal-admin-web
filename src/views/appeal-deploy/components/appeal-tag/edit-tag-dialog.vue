@@ -1,4 +1,4 @@
-<!-- 诉求标签弹窗 -->
+<!-- 编辑诉求标签弹窗 -->
 <template>
   <el-dialog
     v-model="$show"
@@ -7,31 +7,11 @@
     @open="onOpen"
     @close="onClose">
     <template #header>
-      <h1>{{ $isEdit ? '编辑' : '新增' }}</h1>
+      <h1>编辑</h1>
     </template>
 
     <template #default>
-      <!-- 点新增显示的表单 -->
       <el-form
-        v-if="!$isEdit"
-        ref="formRefAdd"
-        :rules="rulesAdd"
-        :model="formDataAdd"
-        label-position="left"
-        require-asterisk-position="right">
-        <el-form-item
-          prop="dialogTag"
-          label="标签">
-          <el-input
-            v-model="formDataAdd.dialogTag"
-            placeholder="请输入">
-          </el-input>
-        </el-form-item>
-      </el-form>
-
-      <!-- 点编辑显示的表单 -->
-      <el-form
-        v-else
         ref="formRefEdit"
         :rules="rules"
         :model="formDataEdit"
@@ -61,7 +41,7 @@
         <el-button
           type="primary"
           :loading="sureLoading"
-          @click="onConfirm(formRefEdit, formRefAdd)">
+          @click="onConfirm(formRefEdit)">
           确定
         </el-button>
       </span>
@@ -102,20 +82,6 @@
   // 按钮加载图标
   const sureLoading = ref(false)
 
-  // 是否为编辑模式
-  const $isEdit = computed(() => {
-    return dialogTag.value
-  })
-
-  // 新增表单相关
-  const formRefAdd = ref(null)
-  const formDataAdd = ref({
-    dialogTag: ''
-  })
-  const rulesAdd = reactive({
-    dialogTag: [{ required: true, message: '请输入标签', trigger: 'blur' }]
-  })
-
   // 编辑表单相关
   const formRefEdit = ref(null)
   const formDataEdit = ref({
@@ -130,20 +96,13 @@
 
   // 打开的回调
   const onOpen = () => {
-    if ($isEdit.value) {
-      formDataEdit.value.dialogTag = JSON.parse(JSON.stringify(dialogTag.value))
-      getGovernmentLabelList()
-    }
+    formDataEdit.value.dialogTag = JSON.parse(JSON.stringify(dialogTag.value))
+    getGovernmentLabelList()
   }
 
   // 关闭的回调
   const onClose = () => {
-    // 重置表单
-    if ($isEdit.value) {
-      formRefEdit.value.resetFields()
-    } else {
-      formRefAdd.value.resetFields()
-    }
+    formRefEdit.value.resetFields()
   }
 
   // 取消
@@ -152,31 +111,20 @@
   }
 
   // 确定
-  const onConfirm = (formRefEdit, formRefAdd) => {
-    if ($isEdit.value) {
-      // 编辑表单点确定
-      formRefEdit.validate((valid) => {
-        if (valid) {
-          sureLoading.value = true
+  const onConfirm = (formRefEdit) => {
+    formRefEdit.validate((valid) => {
+      if (valid) {
+        sureLoading.value = true
 
-          // 编辑事件
+        // 编辑事件
 
-          setTimeout(() => {
-            $isEdit.value ? ElMessage.success('修改成功') : ElMessage.success('新增成功')
-            sureLoading.value = false
-            onCancel()
-          }, 500)
-        }
-      })
-    } else {
-      formRefAdd.validate((valid) => {
-        if (valid) {
-          // 新增表单点确定
-          sureLoading.value = true
-          createGovernmentLabel()
-        }
-      })
-    }
+        setTimeout(() => {
+          ElMessage.success('修改成功')
+          sureLoading.value = false
+          onCancel()
+        }, 500)
+      }
+    })
   }
 
   // 获取诉求标签列表
@@ -198,31 +146,7 @@
       .catch((err) => console.log(err))
   }
 
-  // 新增诉求标签
-  const createGovernmentLabel = () => {
-    // 要发送的数据
-    const temp = {
-      labelName: formDataAdd.value.dialogTag
-    }
-
-    apis
-      .createGovernmentLabel(temp)
-      .then((res) => {
-        console.log(res.data)
-        if (res.data.code === 0) {
-          ElMessage.success('新增成功')
-          $show.value = false
-        }
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        sureLoading.value = false
-      })
-  }
-
   // 编辑诉求标签
-
-  // 删除诉求标签
 </script>
 
 <style scoped></style>
