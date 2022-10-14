@@ -54,7 +54,7 @@
           label="ID">
         </el-table-column>
         <el-table-column
-          prop="tag"
+          prop="labelName"
           label="标签">
         </el-table-column>
         <el-table-column
@@ -87,58 +87,124 @@
         small
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="onSearch"
-        @current-change="getEvaluateList">
+        @current-change="getGovernmentLabelList">
       </el-pagination>
     </div>
   </div>
 
   <appealTagDialog
     v-model:show="isShowDialog"
-    :dialog-tag="dialogTag">
+    :dialog-tag="dialogTag"
+    @on-reload="getGovernmentLabelList">
   </appealTagDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
-  import { useMockTableData } from '@/utils/hooks'
-
+  import * as apis from '@/apis/index'
   import { ElMessage, ElMessageBox } from 'element-plus'
 
-  // 引入弹窗组件
+  // 引入弹窗
   import appealTagDialog from './components/appeal-tag/appeal-tag-dialog.vue'
 
-  // 显示dialog
+  // 显示新增dialog
   const isShowDialog = ref(false)
-  // 标签
+
+  // 传递给编辑弹窗的标签
   const dialogTag = ref()
 
   const loading = ref(false)
   // 分页对象
   const { pagination, indexMethod } = usePagination()
-
   // 搜索条件
   const conditionForm = reactive({
     keyword: ''
   })
   const FormRef = ref(null)
+
   // 表格数据
   const tableData = ref([])
+
   onMounted(() => {
-    tableData.value = useMockTableData(
-      {
-        tag: '市领导关注（张局长）'
-      },
-      25
-    )
+    getGovernmentLabelList()
   })
+
+  // 获取诉求标签列表
+  const getGovernmentLabelList = () => {
+    loading.value = true
+
+    apis
+      .getGovernmentLabelList({ ...pagination })
+      .then((res) => {
+        if (res.data.code === 0) {
+          const { list, total, currentPage } = res.data.data
+
+          pagination.pageNum = currentPage
+          pagination.total = total
+          tableData.value = list
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
+
+  // 点击删除
+  const onDelete = (row) => {
+    ElMessageBox({
+      title: '确定',
+      type: 'warning',
+      message: '确定删除?',
+      confirmButtonClass: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          removeGovernmentLabel(instance, done, row)
+        } else {
+          done()
+        }
+      }
+    })
+  }
+
+  // 删除诉求标签
+  const removeGovernmentLabel = (instance, done, row) => {
+    instance.confirmButtonLoading = true
+
+    apis
+      .removeGovernmentLabel(row.id)
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('删除成功')
+
+          getGovernmentLabelList()
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+        done()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        instance.confirmButtonLoading = false
+      })
+  }
+
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
     //请求接口
+    getGovernmentLabelList()
   }
-  //请求列表数据
-  const getEvaluateList = () => {}
+
   // 重置
   const onReset = () => {
     FormRef.value.resetFields()
@@ -158,31 +224,7 @@
 
     isShowDialog.value = true
 
-    dialogTag.value = row.tag
-  }
-
-  // 点击删除
-  const onDelete = () => {
-    ElMessageBox({
-      title: '确定',
-      type: 'warning',
-      message: '确定删除?',
-      confirmButtonClass: '确定',
-      cancelButtonText: '取消',
-      showCancelButton: true,
-      beforeClose: (action, instance, done) => {
-        if (action === 'confirm') {
-          instance.confirmButtonLoading = true
-          setTimeout(() => {
-            ElMessage.success('删除成功')
-            instance.confirmButtonLoading = false
-            done()
-          }, 500)
-        } else {
-          done()
-        }
-      }
-    })
+    dialogTag.value = row.labelName
   }
 
   // 重置dialog的数据

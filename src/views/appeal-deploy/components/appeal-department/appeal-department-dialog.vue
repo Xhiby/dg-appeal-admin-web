@@ -22,6 +22,7 @@
           label="街镇部门">
           <el-input
             v-model="formData.depName"
+            :disabled="$isEdit"
             placeholder="请输入">
           </el-input>
         </el-form-item>
@@ -61,6 +62,7 @@
 <script setup>
   import { reactive, ref, computed, toRefs } from 'vue'
   import { ElMessage } from 'element-plus'
+  import * as apis from '@/apis/index'
 
   const props = defineProps({
     show: {
@@ -83,7 +85,7 @@
 
   const { show, dialogDepName, dialogService, dialogServiceList } = toRefs(props)
 
-  const emit = defineEmits(['update:show'])
+  const emit = defineEmits(['update:show', 'onReload'])
 
   // 接收传入的服务专员列表
   const serviceList = ref([])
@@ -115,7 +117,7 @@
 
   // 是否为编辑模式
   const $isEdit = computed(() => {
-    return dialogDepName.value
+    return dialogDepName.value ? true : false
   })
 
   // 打开的回调
@@ -129,7 +131,7 @@
 
   // 关闭dialog回调
   const onClose = () => {
-    $show.value = false
+    formRef.value.resetFields()
   }
 
   // 取消
@@ -141,14 +143,71 @@
   const onConfirm = (formRef) => {
     formRef.validate((valid) => {
       if (valid) {
-        sureLoading.value = true
-        setTimeout(() => {
-          $isEdit.value ? ElMessage.success('修改成功') : ElMessage.success('新增成功')
-          sureLoading.value = false
-          onCancel()
-        }, 500)
+        if ($isEdit.value) {
+          // 编辑
+          sureLoading.value = true
+
+          // 修改的备选暂无数据
+          // updateGovernmentDepAdd()
+
+          setTimeout(() => {
+            ElMessage.success('修改成功')
+            sureLoading.value = false
+            onCancel()
+          }, 500)
+        } else {
+          // 新增
+          sureLoading.value = true
+
+          // 后端说先别调
+          // createGovernmentDep()
+
+          setTimeout(() => {
+            ElMessage.success('新增成功')
+            sureLoading.value = false
+            onCancel()
+          }, 500)
+        }
       }
     })
+  }
+
+  // 创建诉求部门
+  const createGovernmentDep = () => {
+    apis
+      .createGovernmentDepAdd()
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('新增成功')
+          $show.value = false
+
+          // 重新加载表格数据
+          emit('onReload')
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        sureLoading.value = false
+      })
+  }
+
+  // 修改诉求部门
+  const updateGovernmentDep = () => {
+    apis
+      .updateGovernmentDep()
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('修改成功')
+          $show.value = false
+
+          // 重新加载表格数据
+          emit('onReload')
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        sureLoading.value = false
+      })
   }
 </script>
 

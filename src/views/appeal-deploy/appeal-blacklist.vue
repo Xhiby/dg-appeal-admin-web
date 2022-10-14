@@ -77,11 +77,11 @@
           prop="operate"
           width="180px"
           label="操作">
-          <template #default>
+          <template #default="scope">
             <el-button
               type="danger"
               text
-              @click="onDelete">
+              @click="onDelete(scope.row)">
               删除
             </el-button>
           </template>
@@ -97,7 +97,7 @@
         small
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="onSearch"
-        @current-change="getEvaluateList">
+        @current-change="getGovernmentBlackList">
       </el-pagination>
     </div>
   </div>
@@ -112,6 +112,8 @@
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import { useMockTableData } from '@/utils/hooks'
+  import { ElMessage, ElMessageBox } from 'element-plus'
+  import * as apis from '@/apis/index'
 
   // 引入弹窗组件
   import appealBlackListDialog from './components/appeal-blacklist/appeal-blacklist-dialog.vue'
@@ -131,6 +133,8 @@
   // 表格数据
   const tableData = ref([])
   onMounted(() => {
+    // getGovernmentBlackList()
+
     tableData.value = useMockTableData(
       {
         companyName: '米哈游',
@@ -142,13 +146,35 @@
       25
     )
   })
+
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
     //请求接口
   }
+
   //请求列表数据
-  const getEvaluateList = () => {}
+  const getGovernmentBlackList = () => {
+    loading.value = true
+    apis
+      .getGovernmentBlackList({ ...pagination })
+      .then((res) => {
+        if (res.data.code === 0) {
+          const { list, total, currentPage } = res.data.data
+
+          pagination.pageNum = currentPage
+          pagination.total = total
+          tableData.value = list
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        loading.value = false
+      })
+  }
+
   // 重置
   const onReset = () => {
     FormRef.value.resetFields()
@@ -177,13 +203,56 @@
     }
   ])
 
+  // 点击删除
+  const onDelete = (row) => {
+    ElMessageBox({
+      title: '确认',
+      type: 'warning',
+      message: '确认删除？',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          removeGovernmentBlackList(instance, done, row)
+        } else {
+          done()
+        }
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  // 将企业从诉求黑名单中删除
+  const removeGovernmentBlackList = (instance, done, row) => {
+    instance.confirmButtonLoading = true
+
+    apis
+      .removeGovernmentBlackList(row.id)
+      .then((res) => {
+        if (res.data.code === 0) {
+          console.log(res.data)
+          ElMessage.success('删除成功')
+
+          getGovernmentBlackList()
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+        done()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        instance.confirmButtonLoading = false
+      })
+  }
+
   // 点击新增
   const onAdd = () => {
     isShowDialog.value = true
   }
-
-  // 点击删除
-  const onDelete = () => {}
 </script>
 
 <style lang="scss" scoped>
