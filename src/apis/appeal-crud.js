@@ -1,4 +1,4 @@
-import { get } from './config'
+import { get, post } from './config'
 
 /**
  * 诉求列表
@@ -17,3 +17,9 @@ export const getAppealCategories = (params) => get(`/api/v1/government/category/
  * @param params
  */
 export const getAppealsLabels = (params) => get(`/api/v1/government/label/getAllLabel`, params)
+
+/**
+ * 诉求标签
+ * @param params
+ */
+export const applyAppeal = (params) => post(`/api/v1/government/appeal/add`, params)

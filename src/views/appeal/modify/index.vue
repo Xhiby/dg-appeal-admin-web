@@ -75,7 +75,7 @@
             {{ dept.name }}
           </el-check-tag>
           <el-input
-            v-model="serviceForm.appealTheme"
+            v-model="serviceForm.otherInvolveDepartment"
             placeholder="其他部门"
             size="default"
             style="width: 188px">
@@ -133,12 +133,12 @@
 
 <script setup>
   import Breadcrumb from '@/components/breadcrumb/index.vue'
-  import { computed, onMounted, reactive, ref } from 'vue'
+  import { computed, onMounted, reactive, ref, toRaw } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { onBack } from '@/utils/hooks'
   import { uploadUrl } from '@/apis/index.js'
   import { ElMessage } from 'element-plus'
-  import { getAppealsLabels, getAppealCategories } from '@/apis/appeal-crud'
+  import { getAppealsLabels, getAppealCategories, applyAppeal } from '@/apis/appeal-crud'
 
   const involveDepartment = reactive(['工业', '国土', '商务', '科技', '自然资源', '金融', '环保', '人社', '市场监督', '自然资源'].map((dept) => ({ name: dept, checked: false })))
   const route = useRoute()
@@ -146,6 +146,7 @@
   const loading = ref(false)
   const btnLoading = ref(false)
   const serviceForm = reactive({
+    otherInvolveDepartment: '',
     appealChildCategoryCode: '',
     appealContent: '',
     appealLabelCode: '',
@@ -237,23 +238,58 @@
   const handleSubmit = () => {
     serviceFormRef.value.validate((valid) => {
       if (valid) {
+        const appealPayload = toRaw(serviceForm)
+        appealPayload.involveDepartment = appealPayload.involveDepartment.map((dept) => dept.name).join(',')
+        appealPayload.involveDepartment = `${appealPayload.involveDepartment},${appealPayload.otherInvolveDepartment}`
+        const postPayload = {
+          dto: {
+            ...appealPayload
+          },
+          organization: {
+            contact: '',
+            organizationCategory: '',
+            organizationCode: '',
+            organizationName: '',
+            street: ''
+          }
+        }
+        delete postPayload.dto.organization
+        delete postPayload.dto.organizationName
         if (isEdit.value) {
-          updateService()
+          sendUpdateAppealRequest(postPayload)
         } else {
-          createService()
+          sendAppealApplyRequest(postPayload)
         }
       } else {
         return false
       }
     })
   }
-  // 发布服务
-  const createService = () => {
+  // 发布诉求申请
+  const sendAppealApplyRequest = async (postPayload) => {
     btnLoading.value = true
+    applyAppeal(postPayload)
+      .then((res) => {
+        loading.value = false
+        if (res.data.code === 0) {
+          ElMessage.success({ message: '代理诉求提交成功！' })
+          setTimeout(() => {
+            router.push({
+              name: 'AppealList',
+              query: {}
+            })
+          }, 1500)
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     btnLoading.value = false
   }
-  // 编辑服务
-  const updateService = () => {
+  // 编辑诉求请求
+  const sendUpdateAppealRequest = () => {
     btnLoading.value = true
     btnLoading.value = false
   }
