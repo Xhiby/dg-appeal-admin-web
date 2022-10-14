@@ -54,7 +54,18 @@ export const getGovernmentList = (data) => post('/api/v1/government/label/all', 
 export const getCategoryList = (data) => get('/api/v1/government/category/getCategory', data)
 
 /**
- * 获取工作日志编号:筛选未完成
+ * 获取诉求标签列表
+ * @param {*} data
  */
+export const getGovernmentLabelList = (data) => get('/api/v1/government/label/getAllLabel', data)
 
+/**
+ * 创建诉求标签
+ * @param {*} data
+ */
+export const createGovernmentLabel = (data) => post('/api/v1/government/label/add', data)
+/**
+ * 获取工作日志列表
+ * @param {*} data
+ */
 export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList', data)
