@@ -17,11 +17,13 @@
       <el-form-item
         prop="organizationName"
         label="企业">
-        <el-input
-          v-model="serviceForm.organizationName"
+        <el-autocomplete
+          v-model="serviceForm.organization"
+          :fetch-suggestions="fuzzySearchOrganByKeyword"
           placeholder="请输入企业名称"
-          style="width: 326px">
-        </el-input>
+          style="width: 326px"
+          @select="handleOrganSelected">
+        </el-autocomplete>
       </el-form-item>
       <el-form-item
         prop="appealTheme"
@@ -75,7 +77,7 @@
             {{ dept.name }}
           </el-check-tag>
           <el-input
-            v-model="serviceForm.appealTheme"
+            v-model="serviceForm.otherInvolveDepartment"
             placeholder="其他部门"
             size="default"
             style="width: 188px">
@@ -133,12 +135,12 @@
 
 <script setup>
   import Breadcrumb from '@/components/breadcrumb/index.vue'
-  import { computed, onMounted, reactive, ref } from 'vue'
+  import { computed, onMounted, reactive, ref, toRaw } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { onBack } from '@/utils/hooks'
   import { uploadUrl } from '@/apis/index.js'
   import { ElMessage } from 'element-plus'
-  import { getAppealsLabels, getAppealCategories } from '@/apis/appeal-crud'
+  import { getAppealsLabels, getAppealCategories, applyAppeal, getAppealsOrgan } from '@/apis/appeal-crud'
 
   const involveDepartment = reactive(['工业', '国土', '商务', '科技', '自然资源', '金融', '环保', '人社', '市场监督', '自然资源'].map((dept) => ({ name: dept, checked: false })))
   const route = useRoute()
@@ -146,17 +148,17 @@
   const loading = ref(false)
   const btnLoading = ref(false)
   const serviceForm = reactive({
+    otherInvolveDepartment: '',
     appealChildCategoryCode: '',
     appealContent: '',
     appealLabelCode: '',
     appealTheme: '',
     involveDepartment: [],
-    organizationName: '',
-    organization: {},
+    organization: '',
     appealAccessory: []
   })
   const formRules = reactive({
-    organizationName: [{ required: true, message: '请选择企业', trigger: 'blur' }],
+    organization: [{ required: true, message: '请选择企业', trigger: 'blur' }],
     appealTheme: [{ required: true, message: '请输入诉求主题', trigger: 'blur' }],
     appealChildCategoryCode: [{ required: true, message: '请选择诉求分类', trigger: 'blur' }],
     appealContent: [{ required: true, message: '请输入诉求描述', trigger: 'blur' }],
@@ -165,6 +167,7 @@
   })
   const appealsLabels = ref([])
   const appealCategories = ref([])
+  const filteredOrgans = ref([])
   const serviceFormRef = ref(null)
   const serviceId = computed(() => {
     return route.params.id
@@ -177,6 +180,26 @@
     fetchAppealsLabels()
     fetchAppealsCategories()
   })
+
+  const fuzzySearchOrganByKeyword = async (queryString, cb) => {
+    if (queryString) {
+      const resp = await getAppealsOrgan({ keyword: queryString })
+      filteredOrgans.value = resp
+      const data = resp.data.data.map((organ) => {
+        return {
+          value: organ.organizationName,
+          ...organ
+        }
+      })
+      cb(data)
+    } else {
+      cb([])
+    }
+  }
+
+  const handleOrganSelected = (organ) => {
+    console.log(toRaw(organ.value))
+  }
 
   const fetchAppealsLabels = () => {
     loading.value = true
@@ -237,23 +260,55 @@
   const handleSubmit = () => {
     serviceFormRef.value.validate((valid) => {
       if (valid) {
-        if (isEdit.value) {
-          updateService()
-        } else {
-          createService()
+        const appealPayload = toRaw(serviceForm)
+        appealPayload.involveDepartment = appealPayload.involveDepartment.map((dept) => dept.name).join(',')
+        appealPayload.involveDepartment = `${appealPayload.involveDepartment},${appealPayload.otherInvolveDepartment}`
+        const postPayload = {
+          dto: {
+            ...appealPayload
+          }
         }
+        appealPayload.organization =
+          // 删除无需传递给后端的字段
+          delete postPayload.dto.organization
+        delete postPayload.dto.organizationName
+        delete postPayload.dto.otherInvolveDepartment
+        console.log(postPayload)
+        // if (isEdit.value) {
+        //   sendUpdateAppealRequest(postPayload)
+        // } else {
+        //   sendAppealApplyRequest(postPayload)
+        // }
       } else {
         return false
       }
     })
   }
-  // 发布服务
-  const createService = () => {
+  // 发布诉求申请
+  const sendAppealApplyRequest = async (postPayload) => {
     btnLoading.value = true
+    applyAppeal(postPayload)
+      .then((res) => {
+        loading.value = false
+        if (res.data.code === 0) {
+          ElMessage.success({ message: '代理诉求提交成功！' })
+          setTimeout(() => {
+            router.push({
+              name: 'AppealList',
+              query: {}
+            })
+          }, 1500)
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     btnLoading.value = false
   }
-  // 编辑服务
-  const updateService = () => {
+  // 编辑诉求请求
+  const sendUpdateAppealRequest = () => {
     btnLoading.value = true
     btnLoading.value = false
   }

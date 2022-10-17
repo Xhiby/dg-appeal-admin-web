@@ -54,7 +54,7 @@
           label="ID">
         </el-table-column>
         <el-table-column
-          prop="labelName"
+          prop="tag"
           label="标签">
         </el-table-column>
         <el-table-column
@@ -87,124 +87,58 @@
         small
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="onSearch"
-        @current-change="getGovernmentLabelList">
+        @current-change="getEvaluateList">
       </el-pagination>
     </div>
   </div>
 
   <appealTagDialog
     v-model:show="isShowDialog"
-    :dialog-tag="dialogTag"
-    @on-reload="getGovernmentLabelList">
+    :dialog-tag="dialogTag">
   </appealTagDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
-  import * as apis from '@/apis/index'
+  import { useMockTableData } from '@/utils/hooks'
+
   import { ElMessage, ElMessageBox } from 'element-plus'
 
-  // 引入弹窗
+  // 引入弹窗组件
   import appealTagDialog from './components/appeal-tag/appeal-tag-dialog.vue'
 
-  // 显示新增dialog
+  // 显示dialog
   const isShowDialog = ref(false)
-
-  // 传递给编辑弹窗的标签
+  // 标签
   const dialogTag = ref()
 
   const loading = ref(false)
   // 分页对象
   const { pagination, indexMethod } = usePagination()
+
   // 搜索条件
   const conditionForm = reactive({
     keyword: ''
   })
   const FormRef = ref(null)
-
   // 表格数据
   const tableData = ref([])
-
   onMounted(() => {
-    getGovernmentLabelList()
+    tableData.value = useMockTableData(
+      {
+        tag: '市领导关注（张局长）'
+      },
+      25
+    )
   })
-
-  // 获取诉求标签列表
-  const getGovernmentLabelList = () => {
-    loading.value = true
-
-    apis
-      .getGovernmentLabelList({ ...pagination })
-      .then((res) => {
-        if (res.data.code === 0) {
-          const { list, total, currentPage } = res.data.data
-
-          pagination.pageNum = currentPage
-          pagination.total = total
-          tableData.value = list
-        } else {
-          ElMessage.error({ message: res.data.msg })
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-      .finally(() => {
-        loading.value = false
-      })
-  }
-
-  // 点击删除
-  const onDelete = (row) => {
-    ElMessageBox({
-      title: '确定',
-      type: 'warning',
-      message: '确定删除?',
-      confirmButtonClass: '确定',
-      cancelButtonText: '取消',
-      showCancelButton: true,
-      beforeClose: (action, instance, done) => {
-        if (action === 'confirm') {
-          removeGovernmentLabel(instance, done, row)
-        } else {
-          done()
-        }
-      }
-    })
-  }
-
-  // 删除诉求标签
-  const removeGovernmentLabel = (instance, done, row) => {
-    instance.confirmButtonLoading = true
-
-    apis
-      .removeGovernmentLabel(row.id)
-      .then((res) => {
-        if (res.data.code === 0) {
-          ElMessage.success('删除成功')
-
-          getGovernmentLabelList()
-        } else {
-          ElMessage.error({ message: res.data.msg })
-        }
-        done()
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-      .finally(() => {
-        instance.confirmButtonLoading = false
-      })
-  }
-
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
     //请求接口
-    getGovernmentLabelList()
   }
-
+  //请求列表数据
+  const getEvaluateList = () => {}
   // 重置
   const onReset = () => {
     FormRef.value.resetFields()
@@ -224,7 +158,31 @@
 
     isShowDialog.value = true
 
-    dialogTag.value = row.labelName
+    dialogTag.value = row.tag
+  }
+
+  // 点击删除
+  const onDelete = () => {
+    ElMessageBox({
+      title: '确定',
+      type: 'warning',
+      message: '确定删除?',
+      confirmButtonClass: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          instance.confirmButtonLoading = true
+          setTimeout(() => {
+            ElMessage.success('删除成功')
+            instance.confirmButtonLoading = false
+            done()
+          }, 500)
+        } else {
+          done()
+        }
+      }
+    })
   }
 
   // 重置dialog的数据
