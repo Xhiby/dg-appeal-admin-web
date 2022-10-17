@@ -23,3 +23,9 @@ export const getAppealsLabels = (params) => get(`/api/v1/government/label/getAll
  * @param params
  */
 export const applyAppeal = (params) => post(`/api/v1/government/appeal/add`, params)
+
+/**
+ * 代理诉求企业列表
+ * @param params
+ */
+export const getAppealsOrgan = (params) => get(`/api/v1/organization/appeal/list`, params)

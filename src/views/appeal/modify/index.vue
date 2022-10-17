@@ -17,11 +17,13 @@
       <el-form-item
         prop="organizationName"
         label="企业">
-        <el-input
-          v-model="serviceForm.organizationName"
+        <el-autocomplete
+          v-model="serviceForm.organization"
+          :fetch-suggestions="fuzzySearchOrganByKeyword"
           placeholder="请输入企业名称"
-          style="width: 326px">
-        </el-input>
+          style="width: 326px"
+          @select="handleOrganSelected">
+        </el-autocomplete>
       </el-form-item>
       <el-form-item
         prop="appealTheme"
@@ -138,7 +140,7 @@
   import { onBack } from '@/utils/hooks'
   import { uploadUrl } from '@/apis/index.js'
   import { ElMessage } from 'element-plus'
-  import { getAppealsLabels, getAppealCategories, applyAppeal } from '@/apis/appeal-crud'
+  import { getAppealsLabels, getAppealCategories, applyAppeal, getAppealsOrgan } from '@/apis/appeal-crud'
 
   const involveDepartment = reactive(['工业', '国土', '商务', '科技', '自然资源', '金融', '环保', '人社', '市场监督', '自然资源'].map((dept) => ({ name: dept, checked: false })))
   const route = useRoute()
@@ -152,12 +154,11 @@
     appealLabelCode: '',
     appealTheme: '',
     involveDepartment: [],
-    organizationName: '',
-    organization: {},
+    organization: '',
     appealAccessory: []
   })
   const formRules = reactive({
-    organizationName: [{ required: true, message: '请选择企业', trigger: 'blur' }],
+    organization: [{ required: true, message: '请选择企业', trigger: 'blur' }],
     appealTheme: [{ required: true, message: '请输入诉求主题', trigger: 'blur' }],
     appealChildCategoryCode: [{ required: true, message: '请选择诉求分类', trigger: 'blur' }],
     appealContent: [{ required: true, message: '请输入诉求描述', trigger: 'blur' }],
@@ -166,6 +167,7 @@
   })
   const appealsLabels = ref([])
   const appealCategories = ref([])
+  const filteredOrgans = ref([])
   const serviceFormRef = ref(null)
   const serviceId = computed(() => {
     return route.params.id
@@ -178,6 +180,26 @@
     fetchAppealsLabels()
     fetchAppealsCategories()
   })
+
+  const fuzzySearchOrganByKeyword = async (queryString, cb) => {
+    if (queryString) {
+      const resp = await getAppealsOrgan({ keyword: queryString })
+      filteredOrgans.value = resp
+      const data = resp.data.data.map((organ) => {
+        return {
+          value: organ.organizationName,
+          ...organ
+        }
+      })
+      cb(data)
+    } else {
+      cb([])
+    }
+  }
+
+  const handleOrganSelected = (organ) => {
+    console.log(toRaw(organ.value))
+  }
 
   const fetchAppealsLabels = () => {
     loading.value = true
@@ -244,22 +266,19 @@
         const postPayload = {
           dto: {
             ...appealPayload
-          },
-          organization: {
-            contact: '',
-            organizationCategory: '',
-            organizationCode: '',
-            organizationName: '',
-            street: ''
           }
         }
-        delete postPayload.dto.organization
+        appealPayload.organization =
+          // 删除无需传递给后端的字段
+          delete postPayload.dto.organization
         delete postPayload.dto.organizationName
-        if (isEdit.value) {
-          sendUpdateAppealRequest(postPayload)
-        } else {
-          sendAppealApplyRequest(postPayload)
-        }
+        delete postPayload.dto.otherInvolveDepartment
+        console.log(postPayload)
+        // if (isEdit.value) {
+        //   sendUpdateAppealRequest(postPayload)
+        // } else {
+        //   sendAppealApplyRequest(postPayload)
+        // }
       } else {
         return false
       }
