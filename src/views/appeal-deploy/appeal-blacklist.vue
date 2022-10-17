@@ -8,26 +8,30 @@
         size="default"
         :inline="true"
         :model="conditionForm">
-        <el-row :gutter="8">
-          <el-col :span="8">
-            <el-form-item prop="keyword">
-              <el-input
-                v-model="conditionForm.keyword"
-                placeholder="请输入类型名称搜索">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item>
-              <el-button @click="onReset"> 重置 </el-button>
-              <el-button
-                type="primary"
-                @click="onSearch">
-                查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form-item
+          prop="keyword"
+          class="tw-mr-[18px]">
+          <el-input
+            v-model="conditionForm.keyword"
+            class="tw-w-[240px]"
+            placeholder="请输入类型名称搜索">
+          </el-input>
+        </el-form-item>
+        <el-form-item class="tw-mr-[16px]">
+          <el-button
+            type="primary"
+            plain
+            @click="onReset">
+            重置
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="onSearch">
+            查询
+          </el-button>
+        </el-form-item>
       </el-form>
       <hr />
       <el-button
@@ -48,34 +52,39 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="74px"
+          width="114"
           :index="indexMethod"
           type="index"
           label="序号">
         </el-table-column>
         <el-table-column
+          width="460"
           prop="companyName"
           label="单位名称">
         </el-table-column>
         <el-table-column
+          width="180"
           prop="name"
           label="姓名">
         </el-table-column>
         <el-table-column
+          width="92"
           prop="sex"
           label="性别">
         </el-table-column>
         <el-table-column
+          width="348"
           prop="position"
           label="职务">
         </el-table-column>
         <el-table-column
+          width="250"
           prop="phone"
           label="手机号">
         </el-table-column>
         <el-table-column
           prop="operate"
-          width="180px"
+          width="167"
           label="操作">
           <template #default="scope">
             <el-button
@@ -102,16 +111,12 @@
     </div>
   </div>
 
-  <appealBlackListDialog
-    v-model:show="isShowDialog"
-    :company-list="optionalCompanyName">
-  </appealBlackListDialog>
+  <appealBlackListDialog v-model:show="isShowDialog"> </appealBlackListDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
-  import { useMockTableData } from '@/utils/hooks'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import * as apis from '@/apis/index'
 
@@ -121,7 +126,9 @@
   // 显示dialog
   const isShowDialog = ref(false)
 
+  // 表格加载图标
   const loading = ref(false)
+
   // 分页对象
   const { pagination, indexMethod } = usePagination()
 
@@ -133,31 +140,22 @@
   // 表格数据
   const tableData = ref([])
   onMounted(() => {
-    // getGovernmentBlackList()
-
-    tableData.value = useMockTableData(
-      {
-        companyName: '米哈游',
-        name: '丁三石',
-        sex: '男',
-        position: '董事长',
-        phone: '110'
-      },
-      25
-    )
+    getGovernmentBlackList()
   })
 
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
     //请求接口
+
+    getGovernmentBlackList()
   }
 
   //请求列表数据
   const getGovernmentBlackList = () => {
     loading.value = true
     apis
-      .getGovernmentBlackList({ ...pagination })
+      .getGovernmentBlackList({ ...conditionForm, ...pagination })
       .then((res) => {
         if (res.data.code === 0) {
           const { list, total, currentPage } = res.data.data
@@ -180,28 +178,6 @@
     FormRef.value.resetFields()
     onSearch()
   }
-
-  /* 可被选择的黑名单企业列表 */
-  const optionalCompanyName = reactive([
-    {
-      checked: false,
-      companyName: '东莞市银河光电有限公司1',
-      name: '张三',
-      phone: '18200000001'
-    },
-    {
-      checked: false,
-      companyName: '东莞市银河光电有限公司2',
-      name: '李四',
-      phone: '18200000001'
-    },
-    {
-      checked: false,
-      companyName: '东莞市银河光电有限公司3',
-      name: '王五',
-      phone: '18200000001'
-    }
-  ])
 
   // 点击删除
   const onDelete = (row) => {
@@ -228,8 +204,10 @@
   const removeGovernmentBlackList = (instance, done, row) => {
     instance.confirmButtonLoading = true
 
+    const deleteId = { ids: row.id }
+
     apis
-      .removeGovernmentBlackList(row.id)
+      .removeGovernmentBlackList(deleteId)
       .then((res) => {
         if (res.data.code === 0) {
           console.log(res.data)
@@ -260,6 +238,9 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
+      .my-el-form-item-flex {
+        display: flex;
+      }
     }
     .tab_pane_footer {
       width: 100%;

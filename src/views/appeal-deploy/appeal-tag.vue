@@ -8,26 +8,30 @@
         size="default"
         :inline="true"
         :model="conditionForm">
-        <el-row :gutter="8">
-          <el-col :span="8">
-            <el-form-item prop="keyword">
-              <el-input
-                v-model="conditionForm.keyword"
-                placeholder="请输入类型名称搜索">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item>
-              <el-button @click="onReset"> 重置 </el-button>
-              <el-button
-                type="primary"
-                @click="onSearch">
-                查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form-item
+          prop="labelName"
+          class="tw-mr-[18px]">
+          <el-input
+            v-model="conditionForm.labelName"
+            class="tw-w-[240px]"
+            placeholder="请输入标签名称搜索">
+          </el-input>
+        </el-form-item>
+        <el-form-item class="tw-mr-[16px]">
+          <el-button
+            type="primary"
+            plain
+            @click="onReset">
+            重置
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="onSearch">
+            查询
+          </el-button>
+        </el-form-item>
       </el-form>
       <hr />
       <el-button
@@ -48,18 +52,19 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="74px"
+          width="74"
           :index="indexMethod"
           type="index"
           label="ID">
         </el-table-column>
         <el-table-column
+          width="1357"
           prop="labelName"
           label="标签">
         </el-table-column>
         <el-table-column
           prop="operate"
-          width="180px"
+          width="180"
           label="操作">
           <template #default="scope">
             <el-button
@@ -119,7 +124,7 @@
   const { pagination, indexMethod } = usePagination()
   // 搜索条件
   const conditionForm = reactive({
-    keyword: ''
+    labelName: ''
   })
   const FormRef = ref(null)
 
@@ -135,7 +140,7 @@
     loading.value = true
 
     apis
-      .getGovernmentLabelList({ ...pagination })
+      .getGovernmentLabelList({ ...conditionForm, ...pagination })
       .then((res) => {
         if (res.data.code === 0) {
           const { list, total, currentPage } = res.data.data
@@ -238,6 +243,9 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
+      .my-el-form-item-flex {
+        display: flex;
+      }
     }
     .tab_pane_footer {
       width: 100%;

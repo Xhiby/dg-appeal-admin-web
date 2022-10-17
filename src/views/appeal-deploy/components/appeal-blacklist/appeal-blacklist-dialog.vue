@@ -13,13 +13,12 @@
     <template #default>
       <el-form
         ref="formRef"
-        :model="formData"
-        :rules="rules">
+        :model="conditionForm">
         <el-row :gutter="18">
           <el-col :span="9">
-            <el-form-item prop="companyName">
+            <el-form-item prop="keyword">
               <el-input
-                v-model="formData.companyName"
+                v-model="conditionForm.keyword"
                 class="search-input"
                 placeholder="请输入单位名称搜索">
               </el-input>
@@ -46,39 +45,24 @@
       </el-form>
 
       <el-table
+        v-loading="loading"
         :data="blackCompanyList"
+        height="200"
         :header-cell-style="{ background: '#EBEEF5' }"
         @selection-change="handleSelectionChange">
-        <!-- 复选框和企业名称在同一列 -->
-        <!-- <el-table-column label="企业名称">
-          <template #default="scope">
-            <el-row
-              :gutter="10"
-              class="checkbox_column"
-              style="">
-              <el-col :span="3">
-                <el-checkbox v-model="scope.row.checked"> </el-checkbox>
-              </el-col>
-              <el-col :span="20">
-                <span>{{ scope.row.companyName }}</span>
-              </el-col>
-            </el-row>
-          </template>
-        </el-table-column> -->
-
         <el-table-column type="selection"> </el-table-column>
         <el-table-column
-          prop="companyName"
+          prop="organizationName"
           label="企业名称"
           width="230">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="contact"
           label="姓名"
           width="150">
         </el-table-column>
         <el-table-column
-          prop="phone"
+          prop="organizationCode"
           label="账号"
           width="250">
         </el-table-column>
@@ -91,7 +75,7 @@
         <el-button
           type="primary"
           :loading="sureLoading"
-          @click="onConfirm(formRef)">
+          @click="onConfirm()">
           确定
         </el-button>
       </span>
@@ -108,14 +92,10 @@
     show: {
       type: Boolean,
       default: false
-    },
-    companyList: {
-      type: Array,
-      default: null
     }
   })
 
-  const { show, companyList } = toRefs(props)
+  const { show } = toRefs(props)
   const emit = defineEmits(['update:show', 'onReload'])
   const $show = computed({
     get() {
@@ -132,53 +112,68 @@
   // 查询按钮加载图标
   const queryLoading = ref(false)
 
+  // 表格加载图标
+  const loading = ref(false)
+
+  // 表单实例
   const formRef = ref(null)
 
-  const formData = ref({
-    companyName: ''
-  })
-
-  const rules = reactive({
-    companyName: [{ require: false, message: '请先输入公司名称', trigger: 'blur' }]
+  // 搜索条件
+  const conditionForm = reactive({
+    keyword: ''
   })
 
   // 接收传入的可选黑名单企业列表
   const blackCompanyList = ref([])
 
   // 当前已选择的企业
-  const selectedList = ref([])
+  const selectedList = reactive([])
 
   const onOpen = () => {
-    blackCompanyList.value = JSON.parse(JSON.stringify(companyList.value))
+    getGovernmentAppealList()
   }
 
+  // 选择事件
   const handleSelectionChange = (rows) => {
     selectedList.value = rows
   }
 
-  // 取消
-  const onCancel = () => {
-    $show.value = false
-  }
-
   // 确定
-  const onConfirm = (formRef) => {
+  const onConfirm = () => {
     if (selectedList.value.length == 0) {
       ElMessage.warning('请至少选择一个企业')
     } else {
-      formRef.validate((valid) => {
-        if (valid) {
-          sureLoading.value = true
-          createGovernmentBlackList()
+      sureLoading.value = true
+      createGovernmentBlackList()
+    }
+  }
+
+  // 获取可被添加进黑名单的企业列表
+  const getGovernmentAppealList = () => {
+    loading.value = true
+
+    apis
+      .getGovernmentAppealList({ ...conditionForm })
+      .then((res) => {
+        if (res.data.code === 0) {
+          blackCompanyList.value = res.data.data
         }
       })
-    }
+      .catch((err) => console.log(err))
+      .finally(() => {
+        queryLoading.value = false
+        loading.value = false
+      })
   }
 
   // 将企业添加进诉求黑名单
   const createGovernmentBlackList = () => {
+    const blackIds = selectedList.value.map((item) => {
+      return item.id
+    })
+
     apis
-      .createGovernmentBlackList()
+      .createGovernmentBlackList({ blackIds })
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('新增成功')
@@ -197,19 +192,18 @@
   // 重置
   const btnReset = () => {
     formRef.value.resetFields()
+    onQuery()
   }
 
   // 查询
-  const onQuery = (formRef) => {
-    formRef.validate((valid) => {
-      if (valid) {
-        queryLoading.value = true
-        setTimeout(() => {
-          ElMessage.success('查询成功')
-          queryLoading.value = false
-        }, 500)
-      }
-    })
+  const onQuery = () => {
+    queryLoading.value = true
+    getGovernmentAppealList()
+  }
+
+  // 取消
+  const onCancel = () => {
+    $show.value = false
   }
 </script>
 

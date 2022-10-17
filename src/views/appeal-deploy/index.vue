@@ -1,7 +1,7 @@
 <template>
   <div class="page_main">
     <PageTitle
-      class="tw-mb-[40px]"
+      class="tw-mb-[19px]"
       title="诉求配置">
     </PageTitle>
     <el-tabs
@@ -47,7 +47,8 @@
 
 <style lang="scss" scoped>
   .page_main {
-    width: 100%;
+    width: 1651px;
+    float: right;
     height: 100%;
     background-color: #fff;
     padding: 15px 20px;

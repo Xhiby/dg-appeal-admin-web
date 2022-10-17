@@ -8,26 +8,30 @@
         size="default"
         :inline="true"
         :model="conditionForm">
-        <el-row :gutter="8">
-          <el-col :span="8">
-            <el-form-item prop="keyword">
-              <el-input
-                v-model="conditionForm.keyword"
-                placeholder="请输入类型名称搜索">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item>
-              <el-button @click="onReset"> 重置 </el-button>
-              <el-button
-                type="primary"
-                @click="onSearch">
-                查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form-item
+          prop="departmentName"
+          class="tw-mr-[18px]">
+          <el-input
+            v-model="conditionForm.departmentName"
+            class="tw-w-[240px]"
+            placeholder="请输入部门名称搜索">
+          </el-input>
+        </el-form-item>
+        <el-form-item class="tw-mr-[16px]">
+          <el-button
+            type="primary"
+            plain
+            @click="onReset">
+            重置
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="onSearch">
+            查询
+          </el-button>
+        </el-form-item>
       </el-form>
       <hr />
       <el-button
@@ -48,17 +52,18 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="74px"
+          width="74"
           :index="indexMethod"
           type="index"
           label="ID">
         </el-table-column>
         <el-table-column
+          width="960"
           prop="departmentName"
           label="街镇/部门名称">
         </el-table-column>
         <el-table-column
-          width="400px"
+          width="397"
           prop="serviceCommissioner"
           label="服务专员">
         </el-table-column>
@@ -130,7 +135,7 @@
 
   // 搜索条件
   const conditionForm = reactive({
-    keyword: ''
+    departmentName: ''
   })
   const FormRef = ref(null)
   // 表格数据
@@ -138,6 +143,7 @@
   onMounted(() => {
     getGovernmentDepList()
   })
+
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
@@ -193,7 +199,7 @@
     loading.value = true
 
     apis
-      .getGovernmentDepList({ ...pagination })
+      .getGovernmentDepList({ ...conditionForm, ...pagination })
       .then((res) => {
         if (res.data.code === 0) {
           const { list, total, currentPage } = res.data.data
@@ -270,6 +276,9 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
+      .my-el-form-item-flex {
+        display: flex;
+      }
     }
     .tab_pane_footer {
       width: 100%;

@@ -175,7 +175,7 @@
   // 创建诉求部门
   const createGovernmentDep = () => {
     apis
-      .createGovernmentDepAdd()
+      .createGovernmentDep()
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('新增成功')

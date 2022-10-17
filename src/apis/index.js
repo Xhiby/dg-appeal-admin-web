@@ -42,18 +42,6 @@ export const getCategoryChildList = (data) => get('/api/v1/government/category/l
 export const removeCategoryChild = (id) => remove(`/api/v1/government/category/delete/${id}`)
 
 /**
- * 创建诉求标签
- * @param {*} data
- */
-export const createGovernment = (data) => post('/api/v1/government/label/add', data)
-
-/**
- * 获取标签列表
- * @param {*} data
- */
-export const getGovernmentList = (data) => post('/api/v1/government/label/all', data)
-
-/**
  * 获取诉求分类列表
  * @param {*} data
  */
@@ -114,19 +102,25 @@ export const getGovernmentLabelList = (data) => get('/api/v1/government/label/li
  * 新增企业进入诉求黑名单
  * @param {*} data
  */
-export const createGovernmentBlackList = (data) => post('', data)
+export const createGovernmentBlackList = (data) => put('/api/v1/government/black/add', data)
 
 /**
  * 将企业从诉求黑名单删除
  * @param {*} data
  */
-export const removeGovernmentBlackList = (id) => remove(`${id}`)
+export const removeGovernmentBlackList = (data) => remove(`/api/v1/government/black/remove`, data)
 
 /**
  * 查询诉求黑名单列表
  * @param {*} data
  */
-export const getGovernmentBlackList = (data) => get('', data)
+export const getGovernmentBlackList = (data) => get('/api/v1/government/black/list', data)
+
+/**
+ * 获取可被添加进黑名单的企业列表
+ * @param {*} data
+ */
+export const getGovernmentAppealList = (data) => get('/api/v1/government/org/list', data)
 
 /**
  * 获取工作日志列表

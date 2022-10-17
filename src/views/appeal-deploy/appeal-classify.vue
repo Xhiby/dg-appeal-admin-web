@@ -8,26 +8,30 @@
         size="default"
         :inline="true"
         :model="form">
-        <el-row :gutter="8">
-          <el-col :span="8">
-            <el-form-item prop="childCategoryName">
-              <el-input
-                v-model="form.childCategoryName"
-                placeholder="请输入类型名称搜索">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item>
-              <el-button @click="onReset"> 重置 </el-button>
-              <el-button
-                type="primary"
-                @click="onSearch">
-                查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form-item
+          prop="childCategoryName"
+          class="tw-mr-[18px]">
+          <el-input
+            v-model="form.childCategoryName"
+            class="tw-w-[240px]"
+            placeholder="请输入类型名称搜索">
+          </el-input>
+        </el-form-item>
+        <el-form-item class="tw-mr-[16px]">
+          <el-button
+            type="primary"
+            plain
+            @click="onReset">
+            重置
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="onSearch">
+            查询
+          </el-button>
+        </el-form-item>
       </el-form>
       <hr />
       <el-dropdown
@@ -57,32 +61,38 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="74px"
+          width="74"
           :index="indexMethod"
           type="index"
           label="ID">
         </el-table-column>
         <el-table-column
+          width="340"
           prop="categoryName"
           label="诉求分类">
         </el-table-column>
         <el-table-column
+          width="280"
           prop="childCategoryName"
           label="诉求子类">
         </el-table-column>
         <el-table-column
+          width="250"
           prop="appealSignLimitTime"
           label="诉求签收时限">
         </el-table-column>
         <el-table-column
+          width="250"
           prop="appealEvaluateLimitTime"
           label="评价时限">
         </el-table-column>
         <el-table-column
+          width="250"
           prop="appealHandleLimitTime"
           label="诉求处理时限">
         </el-table-column>
         <el-table-column
+          width="167"
           prop="operate"
           label="操作">
           <template #default="scope">
@@ -236,6 +246,9 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
+      .my-el-form-item-flex {
+        display: flex;
+      }
     }
     .tab_pane_footer {
       width: 100%;
