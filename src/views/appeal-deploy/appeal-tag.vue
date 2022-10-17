@@ -106,7 +106,7 @@
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
-  import { useMockTableData } from '@/utils/hooks'
+  import * as apis from '@/apis/index'
 
   import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -205,6 +205,7 @@
   const onSearch = () => {
     pagination.pageNum = 1
     //请求接口
+    getGovernmentLabelList()
   }
   //请求列表数据
   const getEvaluateList = () => {}
@@ -228,30 +229,6 @@
     isShowDialog.value = true
 
     dialogTag.value = row.tag
-  }
-
-  // 点击删除
-  const onDelete = () => {
-    ElMessageBox({
-      title: '确定',
-      type: 'warning',
-      message: '确定删除?',
-      confirmButtonClass: '确定',
-      cancelButtonText: '取消',
-      showCancelButton: true,
-      beforeClose: (action, instance, done) => {
-        if (action === 'confirm') {
-          instance.confirmButtonLoading = true
-          setTimeout(() => {
-            ElMessage.success('删除成功')
-            instance.confirmButtonLoading = false
-            done()
-          }, 500)
-        } else {
-          done()
-        }
-      }
-    })
   }
 
   // 重置dialog的数据
