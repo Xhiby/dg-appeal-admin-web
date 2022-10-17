@@ -11,46 +11,19 @@
     </template>
 
     <template #default>
-      <!-- 点新增显示的表单 -->
       <el-form
-        v-if="!$isEdit"
-        ref="formRefAdd"
-        :rules="rulesAdd"
-        :model="formDataAdd"
+        ref="formRef"
+        :rules="rules"
+        :model="formData"
         label-position="left"
         require-asterisk-position="right">
         <el-form-item
           prop="dialogTag"
           label="标签">
           <el-input
-            v-model="formDataAdd.dialogTag"
+            v-model="formData.dialogTag"
             placeholder="请输入">
           </el-input>
-        </el-form-item>
-      </el-form>
-
-      <!-- 点编辑显示的表单 -->
-      <el-form
-        v-else
-        ref="formRefEdit"
-        :rules="rules"
-        :model="formDataEdit"
-        label-position="left"
-        require-asterisk-position="right">
-        <el-form-item
-          prop="dialogTag"
-          label="标签">
-          <el-select
-            v-model="formDataEdit.dialogTag"
-            placeholder="请选择"
-            class="tw-w-full">
-            <el-option
-              v-for="item in dialogTagList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
         </el-form-item>
       </el-form>
     </template>
@@ -61,7 +34,7 @@
         <el-button
           type="primary"
           :loading="sureLoading"
-          @click="onConfirm(formRefEdit, formRefAdd)">
+          @click="onConfirm(formRef)">
           确定
         </el-button>
       </span>
@@ -87,7 +60,7 @@
 
   const { show, dialogTag } = toRefs(props)
 
-  const emit = defineEmits(['update:show'])
+  const emit = defineEmits(['update:show', 'onReload'])
 
   // 控制弹窗显示
   const $show = computed({
@@ -107,111 +80,56 @@
     return dialogTag.value
   })
 
-  // 新增表单相关
-  const formRefAdd = ref(null)
-  const formDataAdd = ref({
-    dialogTag: ''
-  })
-  const rulesAdd = reactive({
-    dialogTag: [{ required: true, message: '请输入标签', trigger: 'blur' }]
-  })
-
-  // 编辑表单相关
-  const formRefEdit = ref(null)
-  const formDataEdit = ref({
+  // 表单相关
+  const formRef = ref(null)
+  const formData = ref({
     dialogTag: ''
   })
   const rules = reactive({
     dialogTag: [{ required: true, message: '请选择标签', trigger: 'blur' }]
   })
 
-  // 诉求标签列表
-  const dialogTagList = ref([])
-
   // 打开的回调
   const onOpen = () => {
     if ($isEdit.value) {
-      formDataEdit.value.dialogTag = JSON.parse(JSON.stringify(dialogTag.value))
-      getGovernmentLabelList()
+      // 传递标签
+      formData.value.dialogTag = JSON.parse(JSON.stringify(dialogTag.value))
     }
-  }
-
-  // 关闭的回调
-  const onClose = () => {
-    // 重置表单
-    if ($isEdit.value) {
-      formRefEdit.value.resetFields()
-    } else {
-      formRefAdd.value.resetFields()
-    }
-  }
-
-  // 取消
-  const onCancel = () => {
-    $show.value = false
   }
 
   // 确定
-  const onConfirm = (formRefEdit, formRefAdd) => {
-    if ($isEdit.value) {
-      // 编辑表单点确定
-      formRefEdit.validate((valid) => {
-        if (valid) {
+  const onConfirm = (formRef) => {
+    formRef.validate((valid) => {
+      if (valid) {
+        if ($isEdit.value) {
+          // 编辑
           sureLoading.value = true
-
-          // 编辑事件
-
-          setTimeout(() => {
-            $isEdit.value ? ElMessage.success('修改成功') : ElMessage.success('新增成功')
-            sureLoading.value = false
-            onCancel()
-          }, 500)
-        }
-      })
-    } else {
-      formRefAdd.validate((valid) => {
-        if (valid) {
-          // 新增表单点确定
+          updateGovernmentLabel()
+        } else {
+          // 新增
           sureLoading.value = true
           createGovernmentLabel()
         }
-      })
-    }
-  }
-
-  // 获取诉求标签列表
-  const getGovernmentLabelList = () => {
-    apis
-      .getGovernmentLabelList()
-      .then((res) => {
-        if (res.data.code === 0) {
-          let temp = res.data.data
-
-          for (let item of temp) {
-            item.label = item.labelName
-            item.value = item.labelCode
-          }
-
-          dialogTagList.value = temp
-        }
-      })
-      .catch((err) => console.log(err))
+      }
+    })
   }
 
   // 新增诉求标签
   const createGovernmentLabel = () => {
     // 要发送的数据
     const temp = {
-      labelName: formDataAdd.value.dialogTag
+      labelName: formData.value.dialogTag
     }
 
     apis
       .createGovernmentLabel(temp)
       .then((res) => {
-        console.log(res.data)
         if (res.data.code === 0) {
           ElMessage.success('新增成功')
           $show.value = false
+
+          // 重新加载表格数据
+          emit('onReload')
         }
       })
       .catch((err) => console.log(err))
@@ -220,9 +138,35 @@
       })
   }
 
-  // 编辑诉求标签
+  // 修改诉求标签
+  const updateGovernmentLabel = () => {
+    apis
+      .updateGovernmentLabel()
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('修改成功')
+          $show.value = false
 
-  // 删除诉求标签
+          // 重新加载表格数据
+          emit('onReload')
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        sureLoading.value = false
+      })
+  }
+
+  // 关闭的回调
+  const onClose = () => {
+    // 重置表单
+    formRef.value.resetFields()
+  }
+
+  // 取消
+  const onCancel = () => {
+    $show.value = false
+  }
 </script>
 
 <style scoped></style>
