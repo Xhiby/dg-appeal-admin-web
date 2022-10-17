@@ -12,9 +12,10 @@
       <el-form
         ref="formRef"
         class="tw-px-[10px]"
-        size="large"
+        size="default"
         :rules="rules"
         :model="formData"
+        require-asterisk-position="right"
         label-width="150px"
         label-position="left">
         <el-form-item
@@ -45,7 +46,7 @@
           prop="appealEvaluateLimitTime"
           label="评价时限">
           <el-input
-            v-model="formData.appealEvaluateLimitTime"
+            v-model.number="formData.appealEvaluateLimitTime"
             style="width: 100%"
             placeholder="请输入评价时限">
           </el-input>
@@ -54,7 +55,7 @@
           prop="appealSignLimitTime"
           label="诉求签收时限">
           <el-input
-            v-model="formData.appealSignLimitTime"
+            v-model.number="formData.appealSignLimitTime"
             style="width: 100%"
             placeholder="请输入诉求签收时限">
           </el-input>
@@ -63,7 +64,7 @@
           prop="appealHandleLimitTime"
           label="诉求处理时限">
           <el-input
-            v-model="formData.appealHandleLimitTime"
+            v-model.number="formData.appealHandleLimitTime"
             style="width: 100%"
             placeholder="请输入诉求处理时限">
           </el-input>
@@ -111,9 +112,33 @@
   const rules = reactive({
     categoryCode: [{ required: true, message: '请选择诉求分类', trigger: 'change' }],
     childCategoryName: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
-    appealEvaluateLimitTime: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
-    appealSignLimitTime: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
-    appealHandleLimitTime: [{ required: true, message: '请选择类型名称', trigger: 'blur' }]
+    appealEvaluateLimitTime: [
+      { required: true, message: '请选择类型名称', trigger: 'blur' },
+      { type: 'number', message: '评价时限格式为30以内的字数' },
+      {
+        pattern: /^([12][0-9]|30|[1-9])$/,
+        message: '请输入30以内正整数',
+        trigger: 'blur'
+      }
+    ],
+    appealSignLimitTime: [
+      { required: true, message: '请选择类型名称', trigger: 'blur' },
+      { type: 'number', message: '评价时限格式为30以内的字数' },
+      {
+        pattern: /^([12][0-9]|30|[1-9])$/,
+        message: '请输入30以内正整数',
+        trigger: 'blur'
+      }
+    ],
+    appealHandleLimitTime: [
+      { required: true, message: '请选择类型名称', trigger: 'blur' },
+      { type: 'number', message: '评价时限格式为30以内的字数' },
+      {
+        pattern: /^([12][0-9]|30|[1-9])$/,
+        message: '请输入30以内正整数',
+        trigger: 'blur'
+      }
+    ]
   })
   // 按钮加载
   const btnLoading = ref(false)

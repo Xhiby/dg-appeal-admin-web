@@ -81,22 +81,23 @@
           header-cell-class-name="my-el-table-header-cell-name"
           style="width: 100%">
           <el-table-column
-            width="74px"
-            prop="logCode"
+            show-overflow-tooltip
+            width="100px"
+            prop="appealCode"
             label="编号">
           </el-table-column>
           <el-table-column
-            prop="companyName"
+            prop="organizationName"
             show-overflow-tooltip
             label="企业名称">
           </el-table-column>
           <el-table-column
-            prop="companyTheme"
+            prop="appealTheme"
             show-overflow-tooltip
             label="诉求主题">
           </el-table-column>
           <el-table-column
-            prop="appealType"
+            prop="appealChildCategoryName"
             label="诉求分类">
           </el-table-column>
           <el-table-column
@@ -117,8 +118,15 @@
           </el-table-column>
           <el-table-column
             show-overflow-tooltip
-            prop="logManage"
+            prop="workLogs"
             label="日志记录">
+            <template #default="scope">
+              <p
+                v-for="(item, index) in scope.row.workLogs"
+                :key="index">
+                {{ item.logContent }}
+              </p>
+            </template>
           </el-table-column>
           <el-table-column
             prop="appealHandleTime"
@@ -131,7 +139,7 @@
               <el-button
                 type="primary"
                 text
-                @click="onDetail(scope.row)">
+                @click="onDetail(scope.row.workLogs)">
                 查看
               </el-button>
             </template>
@@ -156,7 +164,7 @@
   <!-- dialog -->
   <log-dialog
     v-model:show="isShow"
-    :log-code="logCode">
+    :log-list="logList">
   </log-dialog>
 </template>
 
@@ -185,7 +193,7 @@
   // 控制dialog
   const isShow = ref(false)
   // 传输给dialog数据
-  const logCode = ref(null)
+  const logList = ref(null)
   //诉求分类
   const appealTypeList = ref([])
   onMounted(() => {
@@ -204,7 +212,10 @@
       .getWorkLogList({ ...logForm, ...pagination })
       .then((res) => {
         if (res.data.code === 0) {
-          tableData.value = res.data.data.list
+          const { currentPage, total, list } = res.data.data
+          tableData.value = list
+          pagination.pageNum = currentPage
+          pagination.total = total
         } else {
           ElMessage.error(res.data.msg)
         }
@@ -235,9 +246,9 @@
     getWorkLogList()
   }
   // 查看列表数据
-  const onDetail = (row) => {
+  const onDetail = (workLogs) => {
     isShow.value = true
-    logCode.value = row.id
+    logList.value = workLogs
   }
 </script>
 
