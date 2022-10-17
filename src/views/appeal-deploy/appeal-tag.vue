@@ -91,14 +91,15 @@
         small
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="onSearch"
-        @current-change="getEvaluateList">
+        @current-change="getGovernmentLabelList">
       </el-pagination>
     </div>
   </div>
 
   <appealTagDialog
     v-model:show="isShowDialog"
-    :dialog-tag="dialogTag">
+    :dialog-tag="dialogTag"
+    @on-reload="getGovernmentLabelList">
   </appealTagDialog>
 </template>
 
@@ -114,10 +115,13 @@
 
   // 显示dialog
   const isShowDialog = ref(false)
+
   // 标签
   const dialogTag = ref()
 
+  // 表格加载图标
   const loading = ref(false)
+
   // 分页对象
   const { pagination, indexMethod } = usePagination()
 
@@ -125,12 +129,65 @@
   const conditionForm = reactive({
     labelName: ''
   })
+
+  // 表单实例
   const FormRef = ref(null)
+
   // 表格数据
   const tableData = ref([])
+
+  // 初始化
   onMounted(() => {
     getGovernmentLabelList()
   })
+
+  // 点击搜索
+  const onSearch = () => {
+    pagination.pageNum = 1
+    //请求接口
+    getGovernmentLabelList()
+  }
+
+  // 点击重置
+  const onReset = () => {
+    FormRef.value.resetFields()
+    onSearch()
+  }
+
+  // 点击新增
+  const onAdd = () => {
+    resetDialogData()
+
+    isShowDialog.value = true
+  }
+
+  // 点击编辑
+  const onEdit = (row) => {
+    resetDialogData()
+    console.log(row)
+    isShowDialog.value = true
+
+    dialogTag.value = row.labelName
+  }
+
+  // 点击删除
+  const onDelete = (row) => {
+    ElMessageBox({
+      title: '确定',
+      type: 'warning',
+      message: '确定删除?',
+      confirmButtonClass: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          removeGovernmentLabel(instance, done, row)
+        } else {
+          done()
+        }
+      }
+    })
+  }
 
   // 获取诉求标签列表
   const getGovernmentLabelList = () => {
@@ -157,25 +214,6 @@
       })
   }
 
-  // 点击删除
-  const onDelete = (row) => {
-    ElMessageBox({
-      title: '确定',
-      type: 'warning',
-      message: '确定删除?',
-      confirmButtonClass: '确定',
-      cancelButtonText: '取消',
-      showCancelButton: true,
-      beforeClose: (action, instance, done) => {
-        if (action === 'confirm') {
-          removeGovernmentLabel(instance, done, row)
-        } else {
-          done()
-        }
-      }
-    })
-  }
-
   // 删除诉求标签
   const removeGovernmentLabel = (instance, done, row) => {
     instance.confirmButtonLoading = true
@@ -198,36 +236,6 @@
       .finally(() => {
         instance.confirmButtonLoading = false
       })
-  }
-
-  // 搜索
-  const onSearch = () => {
-    pagination.pageNum = 1
-    //请求接口
-    getGovernmentLabelList()
-  }
-  //请求列表数据
-  const getEvaluateList = () => {}
-  // 重置
-  const onReset = () => {
-    FormRef.value.resetFields()
-    onSearch()
-  }
-
-  // 点击新增
-  const onAdd = () => {
-    resetDialogData()
-
-    isShowDialog.value = true
-  }
-
-  // 点击编辑
-  const onEdit = (row) => {
-    resetDialogData()
-
-    isShowDialog.value = true
-
-    dialogTag.value = row.tag
   }
 
   // 重置dialog的数据

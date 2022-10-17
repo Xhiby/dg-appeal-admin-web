@@ -208,22 +208,8 @@
 </script>
 
 <style scoped>
-  /* 修改搜索框宽度 */
-  .black_dialog >>> .search-input {
-    width: 240px;
-  }
-
   /* 隐藏顶部复选框 */
-  ::v-deep .el-table__header-wrapper .el-checkbox {
+  :deep(.el-table__header-wrapper .el-checkbox) {
     display: none;
-  }
-
-  /* .checkbox_column {
-    display: flex;
-    align-items: center;
-  } */
-
-  /* 修改表头颜色 */
-  .el-table >>> th .el-table-cell {
   }
 </style>

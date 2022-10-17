@@ -58,12 +58,10 @@
           label="ID">
         </el-table-column>
         <el-table-column
-          width="960"
           prop="departmentName"
           label="街镇/部门名称">
         </el-table-column>
         <el-table-column
-          width="397"
           prop="serviceCommissioner"
           label="服务专员">
         </el-table-column>
@@ -122,14 +120,19 @@
 
   // 显示dialog
   const isShowDialog = ref(false)
+
   // 街镇部门
   const dialogDepName = ref()
+
   // 服务专员
   const dialogService = ref()
+
   // 服务专员列表
   const dialogServiceList = ref()
 
+  // 表格加载图标
   const loading = ref(false)
+
   // 分页对象
   const { pagination, indexMethod } = usePagination()
 
@@ -137,25 +140,12 @@
   const conditionForm = reactive({
     departmentName: ''
   })
+
+  // 表单实例
   const FormRef = ref(null)
+
   // 表格数据
   const tableData = ref([])
-  onMounted(() => {
-    getGovernmentDepList()
-  })
-
-  // 搜索
-  const onSearch = () => {
-    pagination.pageNum = 1
-    //请求接口
-    getGovernmentDepList()
-  }
-
-  // 重置
-  const onReset = () => {
-    FormRef.value.resetFields()
-    onSearch()
-  }
 
   // 可被分配的服务专员列表
   const serviceList = reactive([
@@ -172,6 +162,24 @@
       value: '专员3'
     }
   ])
+
+  // 初始化
+  onMounted(() => {
+    getGovernmentDepList()
+  })
+
+  // 点击搜索
+  const onSearch = () => {
+    pagination.pageNum = 1
+    //请求接口
+    getGovernmentDepList()
+  }
+
+  // 点击重置
+  const onReset = () => {
+    FormRef.value.resetFields()
+    onSearch()
+  }
 
   // 点击新增
   const onAdd = () => {
@@ -192,6 +200,25 @@
     dialogService.value = row.serviceCommissioner
 
     dialogServiceList.value = serviceList
+  }
+
+  // 点击删除
+  const onDelete = (row) => {
+    ElMessageBox({
+      title: '确定',
+      type: 'warning',
+      message: '确定删除?',
+      confirmButtonClass: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          removeGovernmentDep(instance, done, row)
+        } else {
+          done()
+        }
+      }
+    })
   }
 
   // 获取诉求部门列表
@@ -217,25 +244,6 @@
       .finally(() => {
         loading.value = false
       })
-  }
-
-  // 点击删除
-  const onDelete = (row) => {
-    ElMessageBox({
-      title: '确定',
-      type: 'warning',
-      message: '确定删除?',
-      confirmButtonClass: '确定',
-      cancelButtonText: '取消',
-      showCancelButton: true,
-      beforeClose: (action, instance, done) => {
-        if (action === 'confirm') {
-          removeGovernmentDep(instance, done, row)
-        } else {
-          done()
-        }
-      }
-    })
   }
 
   // 删除诉求部门

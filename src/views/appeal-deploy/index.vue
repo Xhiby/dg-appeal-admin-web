@@ -47,8 +47,7 @@
 
 <style lang="scss" scoped>
   .page_main {
-    width: 1651px;
-    float: right;
+    width: 100%;
     height: 100%;
     background-color: #fff;
     padding: 15px 20px;

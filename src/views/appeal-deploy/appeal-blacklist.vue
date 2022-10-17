@@ -14,7 +14,7 @@
           <el-input
             v-model="conditionForm.keyword"
             class="tw-w-[240px]"
-            placeholder="请输入类型名称搜索">
+            placeholder="请输入单位名称搜索">
           </el-input>
         </el-form-item>
         <el-form-item class="tw-mr-[16px]">
@@ -58,28 +58,23 @@
           label="序号">
         </el-table-column>
         <el-table-column
-          width="460"
           prop="companyName"
           label="单位名称">
         </el-table-column>
         <el-table-column
-          width="180"
-          prop="name"
+          prop="directorName"
           label="姓名">
         </el-table-column>
         <el-table-column
-          width="92"
           prop="sex"
           label="性别">
         </el-table-column>
         <el-table-column
-          width="348"
           prop="position"
           label="职务">
         </el-table-column>
         <el-table-column
-          width="250"
-          prop="phone"
+          prop="mobile"
           label="手机号">
         </el-table-column>
         <el-table-column
@@ -111,7 +106,10 @@
     </div>
   </div>
 
-  <appealBlackListDialog v-model:show="isShowDialog"> </appealBlackListDialog>
+  <appealBlackListDialog
+    v-model:show="isShowDialog"
+    @on-reload="getGovernmentBlackList">
+  </appealBlackListDialog>
 </template>
 
 <script setup>
@@ -136,9 +134,14 @@
   const conditionForm = reactive({
     keyword: ''
   })
+
+  // 表单实例
   const FormRef = ref(null)
+
   // 表格数据
   const tableData = ref([])
+
+  // 初始化
   onMounted(() => {
     getGovernmentBlackList()
   })
@@ -146,33 +149,10 @@
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
-    //请求接口
     getGovernmentBlackList()
   }
 
-  //请求列表数据
-  const getGovernmentBlackList = () => {
-    loading.value = true
-    apis
-      .getGovernmentBlackList({ ...conditionForm, ...pagination })
-      .then((res) => {
-        if (res.data.code === 0) {
-          const { list, total, currentPage } = res.data.data
-
-          pagination.pageNum = currentPage
-          pagination.total = total
-          tableData.value = list
-        } else {
-          ElMessage.error({ message: res.data.msg })
-        }
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        loading.value = false
-      })
-  }
-
-  // 重置
+  // 点击重置
   const onReset = () => {
     FormRef.value.resetFields()
     onSearch()
@@ -197,6 +177,33 @@
     }).catch((err) => {
       console.log(err)
     })
+  }
+
+  // 点击新增
+  const onAdd = () => {
+    isShowDialog.value = true
+  }
+
+  //请求列表数据
+  const getGovernmentBlackList = () => {
+    loading.value = true
+    apis
+      .getGovernmentBlackList({ ...conditionForm, ...pagination })
+      .then((res) => {
+        if (res.data.code === 0) {
+          const { list, total, currentPage } = res.data.data
+
+          pagination.pageNum = currentPage
+          pagination.total = total
+          tableData.value = list
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        loading.value = false
+      })
   }
 
   // 将企业从诉求黑名单中删除
@@ -224,11 +231,6 @@
       .finally(() => {
         instance.confirmButtonLoading = false
       })
-  }
-
-  // 点击新增
-  const onAdd = () => {
-    isShowDialog.value = true
   }
 </script>
 
