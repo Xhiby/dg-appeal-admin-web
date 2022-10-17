@@ -8,7 +8,38 @@
         size="default"
         :inline="true"
         :model="form">
-        <el-form-item
+        <el-row :gutter="8">
+          <el-col :span="8">
+            <el-form-item prop="childCategoryName">
+              <el-input
+                v-model="form.childCategoryName"
+                style="width: 100%"
+                placeholder="请输入类型名称搜索">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item>
+              <el-button
+                type="primary"
+                plain
+                @click="onReset">
+                重置
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="onSearch">
+                查询
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- <el-form-item
           prop="childCategoryName"
           class="tw-mr-[18px]">
           <el-input
@@ -31,7 +62,7 @@
             @click="onSearch">
             查询
           </el-button>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <hr />
       <el-dropdown
@@ -67,27 +98,22 @@
           label="ID">
         </el-table-column>
         <el-table-column
-          width="340"
           prop="categoryName"
           label="诉求分类">
         </el-table-column>
         <el-table-column
-          width="280"
           prop="childCategoryName"
           label="诉求子类">
         </el-table-column>
         <el-table-column
-          width="250"
           prop="appealSignLimitTime"
           label="诉求签收时限">
         </el-table-column>
         <el-table-column
-          width="250"
           prop="appealEvaluateLimitTime"
           label="评价时限">
         </el-table-column>
         <el-table-column
-          width="250"
           prop="appealHandleLimitTime"
           label="诉求处理时限">
         </el-table-column>
@@ -138,48 +164,37 @@
   import typeTwoDialog from './components/appeal-classify/type-two-dialog.vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import * as apis from '@/apis/index'
+
+  // 表格加载图标
   const loading = ref(false)
+
   // 分页对象
+
   const { pagination, indexMethod } = usePagination()
+
   // 搜索条件
   const form = reactive({
     childCategoryName: ''
   })
+
+  // 表单实例
   const FormRef = ref(null)
-  // getEvaluateList
+
+  // 表格数据
   const tableData = ref([])
+
   //一级分类dialog
   const typeOne = ref(false)
+
   //二级分类dialog
   const typeTwo = ref(false)
+
+  // 初始化
   onMounted(() => {
     getCategoryChildList()
   })
-  // 搜索
-  const onSearch = () => {
-    pagination.pageNum = 1
-    //请求接口
-    getCategoryChildList()
-  }
-  //请求列表数据
-  const getCategoryChildList = () => {
-    loading.value = true
-    apis
-      .getCategoryChildList({ ...form, ...pagination })
-      .then((res) => {
-        if (res.data.code === 0) {
-          tableData.value = res.data.data.list
-        } else {
-          ElMessage.error(res.data.msg)
-        }
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        loading.value = false
-      })
-  }
 
-  //下拉菜单
+  // 下拉菜单
   const handleCommand = (command) => {
     if (command === 'one') {
       typeOne.value = true
@@ -188,7 +203,13 @@
     }
   }
 
-  // 重置
+  // 点击搜索
+  const onSearch = () => {
+    pagination.pageNum = 1
+    getCategoryChildList()
+  }
+
+  // 点击重置
   const onReset = () => {
     FormRef.value.resetFields()
     onSearch()
@@ -213,6 +234,24 @@
     }).catch((err) => {
       console.log(err)
     })
+  }
+
+  //请求列表数据
+  const getCategoryChildList = () => {
+    loading.value = true
+    apis
+      .getCategoryChildList({ ...form, ...pagination })
+      .then((res) => {
+        if (res.data.code === 0) {
+          tableData.value = res.data.data.list
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        loading.value = false
+      })
   }
 
   // 删除诉求子类
@@ -246,9 +285,6 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
-      .my-el-form-item-flex {
-        display: flex;
-      }
     }
     .tab_pane_footer {
       width: 100%;
