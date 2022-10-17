@@ -58,7 +58,6 @@
           label="ID">
         </el-table-column>
         <el-table-column
-          width="1357"
           prop="labelName"
           label="标签">
         </el-table-column>
