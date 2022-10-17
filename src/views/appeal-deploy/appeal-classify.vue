@@ -185,7 +185,7 @@
   }
 
   // 点击删除
-  const onDetail = () => {
+  const onDetail = (row) => {
     ElMessageBox({
       title: '确认',
       type: 'warning',
@@ -195,12 +195,7 @@
       showCancelButton: true,
       beforeClose: (action, instance, done) => {
         if (action === 'confirm') {
-          instance.confirmButtonLoading = true
-          setTimeout(() => {
-            ElMessage.success('删除成功')
-            instance.confirmButtonLoading = false
-            done()
-          }, 2000)
+          removeCategoryChild(instance, done, row)
         } else {
           done()
         }
@@ -208,6 +203,31 @@
     }).catch((err) => {
       console.log(err)
     })
+  }
+
+  // 删除诉求子类
+  const removeCategoryChild = (instance, done, row) => {
+    instance.confirmButtonLoading = true
+
+    apis
+      .removeCategoryChild(row.id)
+      .then((res) => {
+        if (res.data.code === 0) {
+          console.log(res.data)
+          ElMessage.success('删除成功')
+
+          getCategoryChildList()
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+        done()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        instance.confirmButtonLoading = false
+      })
   }
 </script>
 

@@ -28,10 +28,16 @@
 
           <el-col :span="6">
             <el-form-item>
-              <el-button @click="btnReset">重置</el-button>
               <el-button
                 type="primary"
-                @click="onQuery()">
+                plain
+                @click="btnReset">
+                重置
+              </el-button>
+              <el-button
+                type="primary"
+                :loading="queryLoading"
+                @click="onQuery(formRef)">
                 查询
               </el-button>
             </el-form-item>
@@ -41,6 +47,7 @@
 
       <el-table
         :data="blackCompanyList"
+        :header-cell-style="{ background: '#EBEEF5' }"
         @selection-change="handleSelectionChange">
         <!-- 复选框和企业名称在同一列 -->
         <!-- <el-table-column label="企业名称">
@@ -62,15 +69,18 @@
         <el-table-column type="selection"> </el-table-column>
         <el-table-column
           prop="companyName"
-          label="企业名称">
+          label="企业名称"
+          width="230">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="姓名">
+          label="姓名"
+          width="150">
         </el-table-column>
         <el-table-column
           prop="phone"
-          label="账号">
+          label="账号"
+          width="250">
         </el-table-column>
       </el-table>
     </template>
@@ -92,6 +102,7 @@
 <script setup>
   import { ref, computed, toRefs, reactive } from 'vue'
   import { ElMessage } from 'element-plus'
+  import * as apis from '@/apis/index'
 
   const props = defineProps({
     show: {
@@ -105,7 +116,7 @@
   })
 
   const { show, companyList } = toRefs(props)
-  const emit = defineEmits(['update:show'])
+  const emit = defineEmits(['update:show', 'onReload'])
   const $show = computed({
     get() {
       return show.value
@@ -115,8 +126,11 @@
     }
   })
 
-  // 按钮加载图标
+  // 确定按钮加载图标
   const sureLoading = ref(false)
+
+  // 查询按钮加载图标
+  const queryLoading = ref(false)
 
   const formRef = ref(null)
 
@@ -142,12 +156,6 @@
     selectedList.value = rows
   }
 
-  // 选择复选框事件
-  // const onChange = (row) => {
-  //   selectedList.value.push(JSON.parse(JSON.stringify(row)))
-  //   console.log(selectedList)
-  // }
-
   // 取消
   const onCancel = () => {
     $show.value = false
@@ -155,22 +163,35 @@
 
   // 确定
   const onConfirm = (formRef) => {
-    // console.log(JSON.parse(JSON.stringify(selectedList.value)))
-
     if (selectedList.value.length == 0) {
       ElMessage.warning('请至少选择一个企业')
     } else {
       formRef.validate((valid) => {
         if (valid) {
           sureLoading.value = true
-          setTimeout(() => {
-            ElMessage.success('新增成功')
-            sureLoading.value = false
-            onCancel()
-          }, 500)
+          createGovernmentBlackList()
         }
       })
     }
+  }
+
+  // 将企业添加进诉求黑名单
+  const createGovernmentBlackList = () => {
+    apis
+      .createGovernmentBlackList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('新增成功')
+          $show.value = false
+
+          // 重新加载表格数据
+          emit('onReload')
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        sureLoading.value = false
+      })
   }
 
   // 重置
@@ -179,8 +200,16 @@
   }
 
   // 查询
-  const onQuery = () => {
-    $show.value = false
+  const onQuery = (formRef) => {
+    formRef.validate((valid) => {
+      if (valid) {
+        queryLoading.value = true
+        setTimeout(() => {
+          ElMessage.success('查询成功')
+          queryLoading.value = false
+        }, 500)
+      }
+    })
   }
 </script>
 
@@ -195,8 +224,12 @@
     display: none;
   }
 
-  .checkbox_column {
+  /* .checkbox_column {
     display: flex;
     align-items: center;
+  } */
+
+  /* 修改表头颜色 */
+  .el-table >>> th .el-table-cell {
   }
 </style>

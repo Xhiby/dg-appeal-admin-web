@@ -359,8 +359,6 @@
   import { getAppeals } from '@/apis/appeal-crud'
   import { useCommonStore } from '@/stores/common'
 
-  import '@/utils/mock.js'
-
   const loading = ref(false)
   const containerRef = ref(null)
   const headerRef = ref(null)

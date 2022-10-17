@@ -92,7 +92,7 @@
         small
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="onSearch"
-        @current-change="getEvaluateList">
+        @current-change="getGovernmentDepList">
       </el-pagination>
     </div>
   </div>
@@ -101,15 +101,15 @@
     v-model:show="isShowDialog"
     :dialog-dep-name="dialogDepName"
     :dialog-service="dialogService"
-    :dialog-service-list="dialogServiceList">
+    :dialog-service-list="dialogServiceList"
+    @on-reload="getGovernmentDepList">
   </appealDepartmentDialog>
 </template>
 
 <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
-  import { useMockTableData } from '@/utils/hooks'
-
+  import * as apis from '@/apis/index'
   import { ElMessage, ElMessageBox } from 'element-plus'
 
   // 引入弹窗组件
@@ -136,21 +136,15 @@
   // 表格数据
   const tableData = ref([])
   onMounted(() => {
-    tableData.value = useMockTableData(
-      {
-        departmentName: '书香门第',
-        serviceCommissioner: '赵师傅'
-      },
-      25
-    )
+    getGovernmentDepList()
   })
   // 搜索
   const onSearch = () => {
     pagination.pageNum = 1
     //请求接口
+    getGovernmentDepList()
   }
-  //请求列表数据
-  const getEvaluateList = () => {}
+
   // 重置
   const onReset = () => {
     FormRef.value.resetFields()
@@ -194,6 +188,31 @@
     dialogServiceList.value = serviceList
   }
 
+  // 获取诉求部门列表
+  const getGovernmentDepList = () => {
+    loading.value = true
+
+    apis
+      .getGovernmentDepList({ ...pagination })
+      .then((res) => {
+        if (res.data.code === 0) {
+          const { list, total, currentPage } = res.data.data
+
+          pagination.pageNum = currentPage
+          pagination.total = total
+          tableData.value = list
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
+
   // 点击删除
   const onDelete = (row) => {
     ElMessageBox({
@@ -205,17 +224,36 @@
       showCancelButton: true,
       beforeClose: (action, instance, done) => {
         if (action === 'confirm') {
-          instance.confirmButtonLoading = true
-          setTimeout(() => {
-            ElMessage.success('删除成功')
-            instance.confirmButtonLoading = false
-            done()
-          }, 500)
+          removeGovernmentDep(instance, done, row)
         } else {
           done()
         }
       }
     })
+  }
+
+  // 删除诉求部门
+  const removeGovernmentDep = (instance, done, row) => {
+    instance.confirmButtonLoading = true
+
+    apis
+      .removeGovernmentDep(row.id)
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('删除成功')
+
+          getGovernmentDepList()
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+        done()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        instance.confirmButtonLoading = false
+      })
   }
 
   // 重置dialog的数据
