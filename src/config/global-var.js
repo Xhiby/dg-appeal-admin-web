@@ -143,3 +143,27 @@ export const appealTypeList = [
     value: 9
   }
 ]
+
+// 诉求统计Top
+export const topList = [
+  {
+    tittle: '已完结',
+    munber: 1662
+  },
+  {
+    tittle: '推进中',
+    munber: 1662
+  },
+  {
+    tittle: '待受理',
+    munber: 1662
+  },
+  {
+    tittle: '办结率',
+    munber: 33.63
+  },
+  {
+    tittle: '满意度',
+    munber: 33.63
+  }
+]

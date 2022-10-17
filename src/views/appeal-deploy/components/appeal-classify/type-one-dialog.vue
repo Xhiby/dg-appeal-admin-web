@@ -12,9 +12,10 @@
       <el-form
         ref="formRef"
         class="tw-px-[10px]"
-        size="large"
+        size="default"
         :rules="rules"
         :model="formData"
+        require-asterisk-position="right"
         label-width="150px"
         label-position="left">
         <el-form-item
