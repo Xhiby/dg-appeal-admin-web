@@ -12,6 +12,9 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
+              <RouterLink to="/cool">大屏可视化</RouterLink>
+            </el-dropdown-item>
+            <el-dropdown-item>
               <RouterLink to="/appeal-preview">概览</RouterLink>
             </el-dropdown-item>
             <el-dropdown-item>

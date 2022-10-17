@@ -8,6 +8,10 @@ const router = createRouter({
       component: () => import('../views/index.vue')
     },
     {
+      path: '/cool',
+      component: () => import('../views/cool/index.vue')
+    },
+    {
       name: 'AppealLeaderManager',
       path: '/appeal-leader-manager',
       redirect: '/appeal-leader-manager/list',
