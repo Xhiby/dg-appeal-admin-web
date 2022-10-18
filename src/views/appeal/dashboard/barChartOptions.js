@@ -1,8 +1,8 @@
-export default function getOptions() {
+export default function getOptions(dataX = [], dataFormate = []) {
   const barChartOptions = {
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      data: dataX
     },
     yAxis: {
       type: 'value',
@@ -15,7 +15,7 @@ export default function getOptions() {
     },
     series: [
       {
-        data: [42, 32, 55, 80, 70, 38, 76],
+        data: dataFormate,
         type: 'bar',
         showBackground: true,
         backgroundStyle: {

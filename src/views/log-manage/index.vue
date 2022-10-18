@@ -70,7 +70,8 @@
           <el-button
             class="button"
             type="primary"
-            size="large">
+            size="large"
+            @click="exportLog">
             导出
           </el-button>
           <el-table
@@ -111,7 +112,9 @@
               label="诉求状态">
               <template #default="scope">
                 <!-- success info warning danger-->
-                <el-tag :type="tagType(scope.row.appealStatus)">{{ scope.row.appealStatus }}</el-tag>
+                <el-tag :type="tagType(scope.row.appealStatus).type">
+                  {{ tagType(scope.row.appealStatus).status }}
+                </el-tag>
               </template>
             </el-table-column>
             <el-table-column
@@ -168,7 +171,7 @@
   <log-dialog
     v-model:show="isShow"
     :log-list="logList"
-    @re-load="onSearch">
+    @on-reload="onSearch">
   </log-dialog>
 </template>
 
@@ -202,6 +205,7 @@
   const appealTypeList = ref([])
   // 标签类型
   const tagType = computed(() => {
+    let info = {}
     return (status) => {
       /** success info warning danger
        * 0:待处理
@@ -211,16 +215,26 @@
        * <0 已失效
        */
       switch (status) {
-        case status < 0:
-          return 'info'
+        case -1:
+          info.status = '失效'
+          info.type = 'info'
+          return info
         case 0:
-          return ''
+          info.status = '待处理'
+          info.type = 'warning'
+          return info
+        case 1:
+          info.status = '推进中'
+          info.type = ''
+          return info
+        case 2:
+          info.status = '待评价'
+          info.type = ''
+          return info
         case 3:
-          return 'warning'
-        case 4:
-          return ''
-        case 5:
-          return 'success'
+          info.status = '已完结'
+          info.type = 'success'
+          return info
       }
     }
   })
@@ -277,6 +291,17 @@
   const onDetail = (workLogs) => {
     isShow.value = true
     logList.value = workLogs
+  }
+  //到处日志
+  const exportLog = () => {
+    apis
+      .exportWorkLog()
+      .then((res) => {
+        if (res.data.code === 0) {
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {})
   }
 </script>
 

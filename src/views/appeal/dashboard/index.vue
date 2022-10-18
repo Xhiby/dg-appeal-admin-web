@@ -4,7 +4,7 @@
       title="诉求统计"
       class="tw-mb-[20px]">
     </PageTitle>
-    <div class="tw-flex tw-mb-[32px]">
+    <div class="tw-flex tw-mb-[12px]">
       <el-button
         type="primary"
         plain>
@@ -22,9 +22,12 @@
         <el-col
           v-for="(item, index) in topList"
           :key="index"
-          :span="4">
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
           <div
-            class="dashboard_header_item"
+            class="dashboard_header_item tw-my-[20px]"
             :style="{ backgroundImage: `url(${((index + 1) / 2) % 0 ? bg1 : bg2})` }">
             <p>{{ item.tittle }}</p>
             <span>{{ item.munber }}{{ index >= 3 ? '%' : '' }}</span>
@@ -35,7 +38,11 @@
     <hr />
     <div class="dashboard_content tw-mt-[20px]">
       <el-row :gutter="20">
-        <el-col :span="6">
+        <el-col
+          :lg="6"
+          :md="10"
+          :sm="14"
+          :xs="14">
           <div class="appealTypePro">
             <h1>诉求分类占比</h1>
             <div class="bar_chart_box">
@@ -47,24 +54,32 @@
             </div>
           </div>
         </el-col>
-        <el-col :span="9">
+        <el-col
+          :lg="9"
+          :md="14"
+          :sm="16"
+          :xs="16">
           <div class="solvePro">
             <h1>解决率统计（部门）</h1>
             <div class="bar_chart_box">
               <v-chart
                 class="tw-w-full tw-h-full"
-                :option="barOption">
+                :option="barOptionLeft">
               </v-chart>
             </div>
           </div>
         </el-col>
-        <el-col :span="9">
+        <el-col
+          :lg="9"
+          :md="14"
+          :sm="16"
+          :xs="16">
           <div class="otherPro">
             <h1>解决率统计（部门）</h1>
             <div class="bar_chart_box">
               <v-chart
                 class="tw-w-full tw-h-full"
-                :option="barOption">
+                :option="barOptionRight">
               </v-chart>
             </div>
           </div>
@@ -79,7 +94,7 @@
             <div class="bar_chart_box">
               <v-chart
                 class="tw-w-full tw-h-full"
-                :option="barDoubleOptions">
+                :option="timeOutOptions">
               </v-chart>
             </div>
           </div>
@@ -97,15 +112,28 @@
   import getBarOption from './barChartOptions'
   import getTimeOutOptions from './barTimeOutOptions'
   import { topList } from '@/config/global-var'
-  import { onMounted, ref } from 'vue'
+  import { onMounted, reactive, ref } from 'vue'
 
   const pieOption = ref({})
-  const barOption = ref({})
-  const barDoubleOptions = ref({})
+  const barOptionLeft = ref({})
+  const barOptionRight = ref({})
+  const timeOutOptions = ref({})
+
+  const mockbarOptionLeft = reactive({
+    dataX: ['A', 'B', 'C', 'D', 'E'],
+    dataFormate: [12, 35, 61, 21, 34]
+  })
+
+  const mockbarOptionRight = reactive({
+    dataX: ['带', '带', '大', '师', '兄'],
+    dataFormate: [60, 55, 34, 57, 98]
+  })
+
   onMounted(() => {
     pieOption.value = getPieOptions()
-    barOption.value = getBarOption()
-    barDoubleOptions.value = getTimeOutOptions()
+    barOptionLeft.value = getBarOption(mockbarOptionLeft.dataX, mockbarOptionLeft.dataFormate)
+    barOptionRight.value = getBarOption(mockbarOptionRight.dataX, mockbarOptionRight.dataFormate)
+    timeOutOptions.value = getTimeOutOptions()
   })
 </script>
 

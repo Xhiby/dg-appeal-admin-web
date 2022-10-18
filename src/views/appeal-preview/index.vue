@@ -15,7 +15,7 @@
           <div class="item">
             <div
               class="top tw-bg-[#FFEBD0]"
-              @click="skip('/')">
+              @click="skip('/appeal')">
               <img
                 class="headerPhoto"
                 src="@/assets/images/appeal-preview/iconlist0.png"
@@ -43,7 +43,7 @@
           <div class="item">
             <div
               class="top tw-bg-[#D3ECFF]"
-              @click="skip('/')">
+              @click="skip('/appeal/dashboard')">
               <img
                 class="headerPhoto"
                 src="@/assets/images/appeal-preview/iconlist1.png"
@@ -148,6 +148,7 @@
       .item {
         width: 100%;
         height: 540px;
+        min-width: 320px;
 
         .top {
           position: relative;

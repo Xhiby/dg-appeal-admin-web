@@ -65,7 +65,7 @@
     }
   })
   const { show, logList } = toRefs(props)
-  const emit = defineEmits(['update:show'])
+  const emit = defineEmits(['update:show', 'onReload'])
   const $show = computed({
     get() {
       return show.value
