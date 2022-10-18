@@ -1,4 +1,4 @@
-import { baseUrl, post, upload, get, put, remove } from './config'
+import { baseUrl, post, upload, get, put, remove, formDataPut } from './config'
 
 /**
  * 文件上传地址
@@ -102,7 +102,7 @@ export const getGovernmentLabelList = (data) => get('/api/v1/government/label/li
  * 新增企业进入诉求黑名单
  * @param {*} data
  */
-export const createGovernmentBlackList = (data) => put('/api/v1/government/black/add', data)
+export const createGovernmentBlackList = (data) => post('/api/v1/government/black/add', data)
 
 /**
  * 将企业从诉求黑名单删除

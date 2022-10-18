@@ -58,24 +58,10 @@
           label="序号">
         </el-table-column>
         <el-table-column
-          prop="companyName"
-          label="单位名称">
-        </el-table-column>
-        <el-table-column
-          prop="directorName"
-          label="姓名">
-        </el-table-column>
-        <el-table-column
-          prop="sex"
-          label="性别">
-        </el-table-column>
-        <el-table-column
-          prop="position"
-          label="职务">
-        </el-table-column>
-        <el-table-column
-          prop="mobile"
-          label="手机号">
+          v-for="item in fields"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label">
         </el-table-column>
         <el-table-column
           prop="operate"
@@ -140,6 +126,15 @@
 
   // 表格数据
   const tableData = ref([])
+
+  // 表格字段
+  const fields = [
+    { label: '单位名称', prop: 'companyName' },
+    { label: '姓名', prop: 'directorName' },
+    { label: '性别', prop: 'sex' },
+    { label: '职务', prop: 'position' },
+    { label: '手机号', prop: 'mobile' }
+  ]
 
   // 初始化
   onMounted(() => {

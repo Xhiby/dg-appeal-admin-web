@@ -98,24 +98,10 @@
           label="ID">
         </el-table-column>
         <el-table-column
-          prop="categoryName"
-          label="诉求分类">
-        </el-table-column>
-        <el-table-column
-          prop="childCategoryName"
-          label="诉求子类">
-        </el-table-column>
-        <el-table-column
-          prop="appealSignLimitTime"
-          label="诉求签收时限">
-        </el-table-column>
-        <el-table-column
-          prop="appealEvaluateLimitTime"
-          label="评价时限">
-        </el-table-column>
-        <el-table-column
-          prop="appealHandleLimitTime"
-          label="诉求处理时限">
+          v-for="item in fields"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label">
         </el-table-column>
         <el-table-column
           width="167"
@@ -182,6 +168,15 @@
 
   // 表格数据
   const tableData = ref([])
+
+  // 表格字段
+  const fields = [
+    { label: '诉求分类', prop: 'categoryName' },
+    { label: '诉求子类', prop: 'childCategoryName' },
+    { label: '诉求签收时限', prop: 'appealSignLimitTime' },
+    { label: '评价时限', prop: 'appealEvaluateLimitTime' },
+    { label: '诉求处理时限', prop: 'appealHandleLimitTime' }
+  ]
 
   //一级分类dialog
   const typeOne = ref(false)

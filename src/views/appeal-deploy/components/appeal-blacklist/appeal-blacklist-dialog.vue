@@ -58,8 +58,7 @@
         </el-table-column>
         <el-table-column
           prop="contact"
-          label="姓名"
-          width="150">
+          label="姓名">
         </el-table-column>
         <el-table-column
           prop="organizationCode"
@@ -127,7 +126,7 @@
   const blackCompanyList = ref([])
 
   // 当前已选择的企业
-  const selectedList = reactive([])
+  const selectedList = ref([])
 
   const onOpen = () => {
     getGovernmentAppealList()
@@ -135,6 +134,7 @@
 
   // 选择事件
   const handleSelectionChange = (rows) => {
+    // console.log(rows)
     selectedList.value = rows
   }
 
@@ -165,13 +165,13 @@
         loading.value = false
       })
   }
-
   // 将企业添加进诉求黑名单
   const createGovernmentBlackList = () => {
-    const blackIds = selectedList.value.map((item) => {
-      return item.id
-    })
-
+    const blackIds = selectedList.value
+      .map((item) => {
+        return item.id
+      })
+      .join(',')
     apis
       .createGovernmentBlackList({ blackIds })
       .then((res) => {
@@ -205,6 +205,11 @@
   const onCancel = () => {
     $show.value = false
   }
+
+  // 表格滚动加载事件
+  // const load = () => {
+  //   getGovernmentAppealList()
+  // }
 </script>
 
 <style scoped>
