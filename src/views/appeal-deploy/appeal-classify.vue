@@ -8,38 +8,7 @@
         size="default"
         :inline="true"
         :model="form">
-        <el-row :gutter="8">
-          <el-col :span="8">
-            <el-form-item prop="childCategoryName">
-              <el-input
-                v-model="form.childCategoryName"
-                style="width: 100%"
-                placeholder="请输入类型名称搜索">
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item>
-              <el-button
-                type="primary"
-                plain
-                @click="onReset">
-                重置
-              </el-button>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item>
-              <el-button
-                type="primary"
-                @click="onSearch">
-                查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <!-- <el-form-item
+        <el-form-item
           prop="childCategoryName"
           class="tw-mr-[18px]">
           <el-input
@@ -62,7 +31,7 @@
             @click="onSearch">
             查询
           </el-button>
-        </el-form-item> -->
+        </el-form-item>
       </el-form>
       <hr />
       <el-dropdown
@@ -280,6 +249,9 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
+      .my-el-form-item-flex {
+        display: flex;
+      }
     }
     .tab_pane_footer {
       width: 100%;
