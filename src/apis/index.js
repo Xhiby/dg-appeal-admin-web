@@ -127,3 +127,9 @@ export const getGovernmentAppealList = (data) => get('/api/v1/government/org/pag
  * @param {*} data
  */
 export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList', data)
+
+/**
+ * 工作日志到处excel
+ * @param {*} data
+ */
+export const exportWorkLog = (data) => get('/api/v1/government/workLog/export', data)
