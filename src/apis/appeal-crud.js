@@ -1,4 +1,4 @@
-import { get, post } from './config'
+import { get, post, put } from './config'
 
 /**
  * 诉求列表
@@ -29,3 +29,9 @@ export const applyAppeal = (params) => post(`/api/v1/government/appeal/add`, par
  * @param params
  */
 export const getAppealsOrgan = (params) => get(`/api/v1/organization/appeal/list`, params)
+
+/**
+ * 获取列表详情
+ * @id id
+ */
+export const getAppealDetail = (id) => put(`/api/v1/government/appeal/detail/${id}`)

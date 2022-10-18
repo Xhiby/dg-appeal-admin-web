@@ -64,9 +64,6 @@
       default: () => []
     }
   })
-  const rules = reactive({
-    logContent: [{ required: true, message: '请输入服务名称', trigger: 'blur' }]
-  })
   const { show, logList } = toRefs(props)
   const emit = defineEmits(['update:show'])
   const $show = computed({
