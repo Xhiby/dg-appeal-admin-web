@@ -227,9 +227,37 @@
 
 <script setup>
   import Breadcrumb from '@/components/breadcrumb/index.vue'
-  import { ref } from 'vue'
-
+  import { useRoute } from 'vue-router'
+  import { ref, onMounted } from 'vue'
+  import { getAppealDetail } from '@/apis/appeal-crud'
+  import { ElMessage } from 'element-plus'
+  const textarea = ref('')
   const loading = ref(false)
+  const route = useRoute()
+  onMounted(() => {
+    getDetail()
+  })
+  //诉求详细记录
+  const appealDetail = ref({})
+  // 诉求进度
+  const appealProcesses = ref([])
+  //诉求处理记录
+  const appealRecords = ref([])
+  const getDetail = () => {
+    getAppealDetail(route.query.sid)
+      .then((res) => {
+        if (res.data.code === 0) {
+          const { appealDetailVo, appealHandleProcesses, appealHandleRecords } = res.data.data
+          appealDetail.value = appealDetailVo
+          appealProcesses.value = appealHandleProcesses
+          appealRecords.value = appealHandleRecords
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {})
+  }
 </script>
 
 <style lang="scss" scoped></style>

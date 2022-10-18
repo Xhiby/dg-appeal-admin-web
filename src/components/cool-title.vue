@@ -36,6 +36,7 @@
       font-weight: bold;
       color: #fff;
       text-shadow: 0px 0px 15px rgba(27, 126, 242, 0.91);
+      user-select: none;
     }
     &_left {
       width: 40px;

@@ -1,162 +1,165 @@
 <!-- 日志管理 -->
 <template>
-  <div class="page_main">
-    <PageTitle
-      title="日志管理"
-      class="tw-mb-[40px]">
-    </PageTitle>
-    <div class="tab_pane">
-      <div class="tab_pane_header">
-        <el-form
-          ref="FormRef"
-          class="my-el-form-item-flex"
-          size="large"
-          :inline="true"
-          :model="logForm">
-          <el-row :gutter="2">
-            <el-col :span="4">
-              <el-form-item prop="keyword">
-                <el-input
-                  v-model="logForm.keyword"
-                  placeholder="请输入诉求主题/企业名称/诉求编号">
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item prop="transactors">
-                <el-input
-                  v-model="logForm.transactors"
-                  placeholder="办理人">
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item prop="childCategoryCode">
-                <el-select
-                  v-model="logForm.childCategoryCode"
-                  placeholder="诉求分类">
-                  <el-option
-                    v-for="(item, index) in appealTypeList"
-                    :key="index"
-                    :label="item.categoryName"
-                    :value="item.categoryCode">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item prop="updateAt">
-                <el-input
-                  v-model="logForm.updateAt"
-                  placeholder="更新时间">
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item>
-                <el-button @click="onReset"> 重置 </el-button>
+  <div style="padding: 20px">
+    <div class="page_main">
+      <PageTitle
+        title="日志管理"
+        class="tw-mb-[40px]">
+      </PageTitle>
+      <div class="tab_pane">
+        <div class="tab_pane_header">
+          <el-form
+            ref="FormRef"
+            class="my-el-form-item-flex"
+            size="large"
+            :inline="true"
+            :model="logForm">
+            <el-row :gutter="2">
+              <el-col :span="4">
+                <el-form-item prop="keyword">
+                  <el-input
+                    v-model="logForm.keyword"
+                    placeholder="请输入诉求主题/企业名称/诉求编号">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item prop="transactors">
+                  <el-input
+                    v-model="logForm.transactors"
+                    placeholder="办理人">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item prop="childCategoryCode">
+                  <el-select
+                    v-model="logForm.childCategoryCode"
+                    placeholder="诉求分类">
+                    <el-option
+                      v-for="(item, index) in appealTypeList"
+                      :key="index"
+                      :label="item.categoryName"
+                      :value="item.categoryCode">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item prop="updateAt">
+                  <el-input
+                    v-model="logForm.updateAt"
+                    placeholder="更新时间">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item>
+                  <el-button @click="onReset"> 重置 </el-button>
+                  <el-button
+                    type="primary"
+                    @click="onSearch">
+                    查询
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </div>
+        <div class="tab_pane_content">
+          <el-button
+            class="button"
+            type="primary"
+            size="large">
+            导出
+          </el-button>
+          <el-table
+            v-loading="loading"
+            :data="tableData"
+            border
+            stripe
+            row-class-name="my-el-table-stripe-row-name"
+            header-cell-class-name="my-el-table-header-cell-name"
+            style="width: 100%">
+            <el-table-column
+              show-overflow-tooltip
+              width="100px"
+              prop="appealCode"
+              label="编号">
+            </el-table-column>
+            <el-table-column
+              prop="organizationName"
+              show-overflow-tooltip
+              label="企业名称">
+            </el-table-column>
+            <el-table-column
+              prop="appealTheme"
+              show-overflow-tooltip
+              label="诉求主题">
+            </el-table-column>
+            <el-table-column
+              prop="appealChildCategoryName"
+              label="诉求分类">
+            </el-table-column>
+            <el-table-column
+              show-overflow-tooltip
+              prop="appealContent"
+              label="诉求内容">
+            </el-table-column>
+            <el-table-column
+              prop="appealStatus"
+              label="诉求状态">
+              <template #default="scope">
+                <!-- success info warning danger-->
+                <el-tag :type="tagType(scope.row.appealStatus)">{{ scope.row.appealStatus }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="transactor"
+              label="办理人">
+            </el-table-column>
+            <el-table-column
+              show-overflow-tooltip
+              prop="workLogs"
+              label="日志记录">
+              <template #default="scope">
+                <p
+                  v-for="(item, index) in scope.row.workLogs"
+                  :key="index">
+                  {{ item.logContent }}
+                </p>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="appealHandleTime"
+              label="满意度">
+            </el-table-column>
+            <el-table-column
+              prop="operate"
+              label="操作">
+              <template #default="scope">
                 <el-button
                   type="primary"
-                  @click="onSearch">
-                  查询
+                  text
+                  @click="onDetail(scope.row.workLogs)">
+                  查看
                 </el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <div class="tab_pane_content">
-        <el-button
-          class="button"
-          type="primary"
-          size="large">
-          导出
-        </el-button>
-        <el-table
-          v-loading="loading"
-          :data="tableData"
-          border
-          stripe
-          row-class-name="my-el-table-stripe-row-name"
-          header-cell-class-name="my-el-table-header-cell-name"
-          style="width: 100%">
-          <el-table-column
-            show-overflow-tooltip
-            width="100px"
-            prop="appealCode"
-            label="编号">
-          </el-table-column>
-          <el-table-column
-            prop="organizationName"
-            show-overflow-tooltip
-            label="企业名称">
-          </el-table-column>
-          <el-table-column
-            prop="appealTheme"
-            show-overflow-tooltip
-            label="诉求主题">
-          </el-table-column>
-          <el-table-column
-            prop="appealChildCategoryName"
-            label="诉求分类">
-          </el-table-column>
-          <el-table-column
-            show-overflow-tooltip
-            prop="appealContent"
-            label="诉求内容">
-          </el-table-column>
-          <el-table-column
-            prop="appealStatus"
-            label="诉求状态">
-            <template #default="scope">
-              <el-tag>{{ scope.row.appealStatus }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="transactor"
-            label="办理人">
-          </el-table-column>
-          <el-table-column
-            show-overflow-tooltip
-            prop="workLogs"
-            label="日志记录">
-            <template #default="scope">
-              <p
-                v-for="(item, index) in scope.row.workLogs"
-                :key="index">
-                {{ item.logContent }}
-              </p>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="appealHandleTime"
-            label="满意度">
-          </el-table-column>
-          <el-table-column
-            prop="operate"
-            label="操作">
-            <template #default="scope">
-              <el-button
-                type="primary"
-                text
-                @click="onDetail(scope.row.workLogs)">
-                查看
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="tab_pane_footer">
-        <el-pagination
-          v-model:currentPage="pagination.pageNum"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 40, 60]"
-          small
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="onSearch"
-          @current-change="getWorkLogList">
-        </el-pagination>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="tab_pane_footer">
+          <el-pagination
+            v-model:currentPage="pagination.pageNum"
+            v-model:page-size="pagination.pageSize"
+            :total="pagination.total"
+            :page-sizes="[10, 20, 40, 60]"
+            small
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="onSearch"
+            @current-change="getWorkLogList">
+          </el-pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -164,13 +167,14 @@
   <!-- dialog -->
   <log-dialog
     v-model:show="isShow"
-    :log-list="logList">
+    :log-list="logList"
+    @re-load="onSearch">
   </log-dialog>
 </template>
 
 <script setup>
   import PageTitle from '@/components/page-title.vue'
-  import { onMounted, reactive, ref } from 'vue'
+  import { computed, onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import logDialog from './components/log-dialog.vue'
   import * as apis from '@/apis/index'
@@ -196,6 +200,30 @@
   const logList = ref(null)
   //诉求分类
   const appealTypeList = ref([])
+  // 标签类型
+  const tagType = computed(() => {
+    return (status) => {
+      /** success info warning danger
+       * 0:待处理
+       * 3:推进中
+       * 4:待评价
+       * 5:已完结
+       * <0 已失效
+       */
+      switch (status) {
+        case status < 0:
+          return 'info'
+        case 0:
+          return ''
+        case 3:
+          return 'warning'
+        case 4:
+          return ''
+        case 5:
+          return 'success'
+      }
+    }
+  })
   onMounted(() => {
     getCategoryList()
     getWorkLogList()

@@ -1,37 +1,39 @@
 <template>
-  <div class="page_main">
-    <PageTitle
-      class="tw-mb-[19px]"
-      title="诉求配置">
-    </PageTitle>
-    <el-tabs
-      v-model="activeTab"
-      class="my-el-tabs">
-      <el-tab-pane
-        lazy
-        label="诉求分类"
-        name="classify">
-        <AppealClassify></AppealClassify>
-      </el-tab-pane>
-      <el-tab-pane
-        lazy
-        label="诉求部门"
-        name="department">
-        <AppealDepartment></AppealDepartment>
-      </el-tab-pane>
-      <el-tab-pane
-        lazy
-        label="诉求标签"
-        name="tag">
-        <AppealTag></AppealTag>
-      </el-tab-pane>
-      <el-tab-pane
-        lazy
-        label="诉求黑名单"
-        name="blacklist">
-        <AppealBlackList></AppealBlackList>
-      </el-tab-pane>
-    </el-tabs>
+  <div style="padding: 20px">
+    <div class="page_main">
+      <PageTitle
+        class="tw-mb-[19px]"
+        title="诉求配置">
+      </PageTitle>
+      <el-tabs
+        v-model="activeTab"
+        class="my-el-tabs">
+        <el-tab-pane
+          lazy
+          label="诉求分类"
+          name="classify">
+          <AppealClassify></AppealClassify>
+        </el-tab-pane>
+        <el-tab-pane
+          lazy
+          label="诉求部门"
+          name="department">
+          <AppealDepartment></AppealDepartment>
+        </el-tab-pane>
+        <el-tab-pane
+          lazy
+          label="诉求标签"
+          name="tag">
+          <AppealTag></AppealTag>
+        </el-tab-pane>
+        <el-tab-pane
+          lazy
+          label="诉求黑名单"
+          name="blacklist">
+          <AppealBlackList></AppealBlackList>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </div>
 </template>
 
