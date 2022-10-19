@@ -194,7 +194,8 @@
               </el-button>
               <el-button
                 class="tw-w-[60px] tw-mt-[15px]"
-                type="primary">
+                type="primary"
+                @click="showTaskDialog = true">
                 拆分
               </el-button>
               <el-button
@@ -222,6 +223,10 @@
         </div>
       </div>
     </div>
+    <split-task-dialog
+      :show="showTaskDialog"
+      @confirm="handleSplitTask">
+    </split-task-dialog>
   </div>
 </template>
 
@@ -231,18 +236,20 @@
   import { ref, onMounted } from 'vue'
   import { getAppealDetail } from '@/apis/appeal-crud'
   import { ElMessage } from 'element-plus'
+  import SplitTaskDialog from './dialogs/SplitTask.vue'
+
   const textarea = ref('')
   const loading = ref(false)
+  const showTaskDialog = ref(false)
   const route = useRoute()
+  const appealDetail = ref({})
+  const appealProcesses = ref([])
+  const appealRecords = ref([])
+
   onMounted(() => {
     getDetail()
   })
-  //诉求详细记录
-  const appealDetail = ref({})
-  // 诉求进度
-  const appealProcesses = ref([])
-  //诉求处理记录
-  const appealRecords = ref([])
+
   const getDetail = () => {
     getAppealDetail(route.query.sid)
       .then((res) => {
@@ -257,6 +264,10 @@
       })
       .catch((err) => console.log(err))
       .finally(() => {})
+  }
+
+  const handleSplitTask = () => {
+    showTaskDialog.value = false
   }
 </script>
 

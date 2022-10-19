@@ -268,12 +268,10 @@
             ...appealPayload
           }
         }
-        appealPayload.organization =
-          // 删除无需传递给后端的字段
-          delete postPayload.dto.organization
+        // 删除无需传递给后端的字段
+        delete postPayload.dto.organization
         delete postPayload.dto.organizationName
         delete postPayload.dto.otherInvolveDepartment
-        console.log(postPayload)
         // if (isEdit.value) {
         //   sendUpdateAppealRequest(postPayload)
         // } else {
