@@ -225,6 +225,7 @@
     </div>
     <split-task-dialog
       :show="showTaskDialog"
+      @close="showTaskDialog = false"
       @confirm="handleSplitTask">
     </split-task-dialog>
   </div>
@@ -266,7 +267,12 @@
       .finally(() => {})
   }
 
-  const handleSplitTask = () => {
+  const handleSplitTask = (appeals) => {
+    const params = {
+      appealDtoList: appeals,
+      appealId: route.query.sid
+    }
+    console.log(params)
     showTaskDialog.value = false
   }
 </script>

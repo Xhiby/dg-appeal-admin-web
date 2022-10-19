@@ -13,15 +13,17 @@
         v-model="currentAppealTaskTab"
         editable
         class="dg-split-task-tab"
+        @tab-remove="handleTaskRemoved"
         @edit="handleEditTaskTabs">
         <el-tab-pane
-          v-for="taskTab in appealTaskTabs"
+          v-for="(taskTab, idx) in appealTaskTabs"
           :key="taskTab.name"
           :label="taskTab.title"
           :name="taskTab.name">
           <appeal-form
             :key="taskTab.name"
-            :appeal-id="currentAppealTaskTab">
+            ref="appealTaskFormsRef"
+            :appeal-id="`${idx}`">
           </appeal-form>
         </el-tab-pane>
       </el-tabs>
@@ -42,7 +44,7 @@
 </template>
 
 <script setup>
-  import { ref, watch } from 'vue'
+  import { ref, toRaw, watch } from 'vue'
   import AppealForm from '../components/AppealForm.vue'
 
   const props = defineProps({
@@ -53,12 +55,7 @@
   })
 
   let tabIndex = 1
-  const appealTaskFormsRef = ref([
-    {
-      id: '',
-      ref: null
-    }
-  ])
+  const appealTaskFormsRef = ref([])
   const showDialog = ref(props.show)
   const currentAppealTaskTab = ref('1')
   const appealTaskTabs = ref([
@@ -77,10 +74,13 @@
   const sureLoading = ref(false)
 
   const onConfirm = async () => {
-    appealTaskFormsRef.value.forEach((taskForm) => {
-      console.log(taskForm)
-    })
-    // emit('confirm', [])
+    const tasks = []
+    for (const taskForm of appealTaskFormsRef.value) {
+      if (taskForm) {
+        tasks.push(await taskForm.getFormData())
+      }
+    }
+    emit('confirm', tasks)
   }
 
   const onClose = () => {
@@ -89,6 +89,10 @@
 
   const onCancel = () => {
     emit('close', [])
+  }
+
+  const handleTaskRemoved = (tabName) => {
+    console.log(tabName)
   }
 
   const handleEditTaskTabs = (targetName, action) => {

@@ -86,12 +86,12 @@
 </template>
 
 <script setup>
-  import { onMounted, onUnmounted, reactive, ref, toRaw } from 'vue'
+  import { onMounted, reactive, ref, toRaw } from 'vue'
   import { uploadUrl } from '@/apis/index.js'
   import { ElMessage } from 'element-plus'
   import { getAppealsLabels, getAllAppealCategories } from '@/apis/appeal-crud'
 
-  defineProps({
+  const props = defineProps({
     appealId: {
       type: String,
       default: ''
