@@ -70,15 +70,6 @@ export const put = function (url, data) {
   return fetchData('put', url, data)
 }
 
-// 参数是formData类型的put
-export const formDataPut = function (url, data) {
-  const formData = new FormData()
-  Object.keys(data).forEach((child) => {
-    formData.append(child, data[child])
-  })
-  return put(url, formData)
-}
-
 export const remove = function (url, params) {
   return fetchData('delete', url, params)
 }

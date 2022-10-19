@@ -102,7 +102,7 @@ export const getGovernmentLabelList = (data) => get('/api/v1/government/label/li
  * 新增企业进入诉求黑名单
  * @param {*} data
  */
-export const createGovernmentBlackList = (data) => post('/api/v1/government/black/add', data)
+export const createGovernmentBlackList = (data) => get('/api/v1/government/black/add', data)
 
 /**
  * 将企业从诉求黑名单删除
@@ -120,7 +120,7 @@ export const getGovernmentBlackList = (data) => get('/api/v1/government/black/li
  * 获取可被添加进黑名单的企业列表
  * @param {*} data
  */
-export const getGovernmentAppealList = (data) => get('/api/v1/government/org/list', data)
+export const getGovernmentAppealList = (data) => get('/api/v1/government/org/pagelist', data)
 
 /**
  * 获取工作日志列表

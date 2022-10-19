@@ -1,6 +1,5 @@
 <!-- 诉求黑名单弹窗 -->
 <template>
-  <div class="black_dialog"></div>
   <el-dialog
     v-model="$show"
     width="720px"
@@ -52,20 +51,34 @@
         @selection-change="handleSelectionChange">
         <el-table-column type="selection"> </el-table-column>
         <el-table-column
-          prop="organizationName"
+          prop="name"
           label="企业名称"
           width="230">
         </el-table-column>
         <el-table-column
-          prop="contact"
+          prop="deputyPerson"
           label="姓名">
         </el-table-column>
         <el-table-column
-          prop="organizationCode"
+          :show-overflow-tooltip="true"
+          prop="uniqueIdentifier"
           label="账号"
           width="250">
         </el-table-column>
       </el-table>
+
+      <div class="tab_pane_footer">
+        <el-pagination
+          v-model:currentPage="pagination.pageNum"
+          v-model:page-size="pagination.pageSize"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 40, 60]"
+          small
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="onQuery"
+          @current-change="getGovernmentAppealList">
+        </el-pagination>
+      </div>
     </template>
 
     <template #footer>
@@ -84,6 +97,7 @@
 
 <script setup>
   import { ref, computed, toRefs, reactive } from 'vue'
+  import { usePagination } from '@/utils/hooks'
   import { ElMessage } from 'element-plus'
   import * as apis from '@/apis/index'
 
@@ -117,6 +131,9 @@
   // 表单实例
   const formRef = ref(null)
 
+  // 分页对象
+  const { pagination } = usePagination()
+
   // 搜索条件
   const conditionForm = reactive({
     keyword: ''
@@ -134,7 +151,6 @@
 
   // 选择事件
   const handleSelectionChange = (rows) => {
-    // console.log(rows)
     selectedList.value = rows
   }
 
@@ -153,10 +169,14 @@
     loading.value = true
 
     apis
-      .getGovernmentAppealList({ ...conditionForm })
+      .getGovernmentAppealList({ ...conditionForm, ...pagination })
       .then((res) => {
         if (res.data.code === 0) {
-          blackCompanyList.value = res.data.data
+          const { list, total, currentPage } = res.data.data
+
+          pagination.pageNum = currentPage
+          pagination.total = total
+          blackCompanyList.value = list
         }
       })
       .catch((err) => console.log(err))
@@ -165,6 +185,7 @@
         loading.value = false
       })
   }
+
   // 将企业添加进诉求黑名单
   const createGovernmentBlackList = () => {
     const blackIds = selectedList.value
@@ -172,6 +193,9 @@
         return item.id
       })
       .join(',')
+
+    console.log(blackIds)
+
     apis
       .createGovernmentBlackList({ blackIds })
       .then((res) => {
@@ -197,6 +221,7 @@
 
   // 查询
   const onQuery = () => {
+    pagination.pageNum = 1
     queryLoading.value = true
     getGovernmentAppealList()
   }
@@ -205,16 +230,20 @@
   const onCancel = () => {
     $show.value = false
   }
-
-  // 表格滚动加载事件
-  // const load = () => {
-  //   getGovernmentAppealList()
-  // }
 </script>
 
 <style scoped>
   /* 隐藏顶部复选框 */
   :deep(.el-table__header-wrapper .el-checkbox) {
     display: none;
+  }
+
+  .tab_pane_footer {
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 20px;
   }
 </style>
