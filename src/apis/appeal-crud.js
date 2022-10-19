@@ -1,4 +1,4 @@
-import { get, post, put } from './config'
+import { get, post } from './config'
 
 /**
  * 诉求列表
@@ -7,10 +7,16 @@ import { get, post, put } from './config'
 export const getAppeals = (params) => get(`/api/v1/government/appeal/list`, params)
 
 /**
- * 诉求类型列表
+ * 诉求类型一级列表
  * @param params
  */
-export const getAppealCategories = (params) => get(`/api/v1/government/category/getChildCategory`, params)
+export const getAppealCategories = (params) => get(`/api/v1/government/category/getCategory`, params)
+
+/**
+ * 诉求类型级联列表
+ * @param params
+ */
+export const getAllAppealCategories = (params) => get(`/api/v1/government/category/getAll`, params)
 
 /**
  * 诉求标签
@@ -31,7 +37,13 @@ export const applyAppeal = (params) => post(`/api/v1/government/appeal/add`, par
 export const getAppealsOrgan = (params) => get(`/api/v1/organization/appeal/list`, params)
 
 /**
+ * 代理诉求详情
+ * @param sid
+ */
+export const getAppealsDetails = (sid) => get(`/api/v1/government/appeal/detail/${sid}`)
+
+/**
  * 获取列表详情
  * @id id
  */
-export const getAppealDetail = (id) => put(`/api/v1/government/appeal/detail/${id}`)
+export const getAppealDetail = (id) => get(`/api/v1/government/appeal/detail/${id}`)
