@@ -70,8 +70,7 @@
           <el-button
             class="button"
             type="primary"
-            size="large"
-            @click="exportLog">
+            size="large">
             导出
           </el-button>
           <el-table
@@ -110,15 +109,13 @@
             <el-table-column
               prop="appealStatus"
               label="诉求状态">
-              <template #default="scope">
+              <template #default="{ row }">
                 <!-- success info warning danger-->
-                <el-tag :type="tagType(scope.row.appealStatus).type">
-                  {{ tagType(scope.row.appealStatus).status }}
-                </el-tag>
+                <el-tag :type="tagType(row.appealStatus).type"> {{ tagType(row.appealStatus).status }} </el-tag>
               </template>
             </el-table-column>
             <el-table-column
-              prop="transactor"
+              prop="principle"
               label="办理人">
             </el-table-column>
             <el-table-column
@@ -133,9 +130,14 @@
                 </p>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="appealHandleTime"
-              label="满意度">
+            <el-table-column label="满意度">
+              <template #default="{ row }">
+                <el-rate
+                  v-model="row.commentScore"
+                  :max="3"
+                  disabled>
+                </el-rate>
+              </template>
             </el-table-column>
             <el-table-column
               prop="operate"
@@ -207,13 +209,6 @@
   const tagType = computed(() => {
     let info = {}
     return (status) => {
-      /** success info warning danger
-       * 0:待处理
-       * 3:推进中
-       * 4:待评价
-       * 5:已完结
-       * <0 已失效
-       */
       switch (status) {
         case -1:
           info.status = '失效'
@@ -294,17 +289,6 @@
       workLogs: row.workLogs
     }
     isShow.value = true
-  }
-  //导出日志
-  const exportLog = () => {
-    apis
-      .exportWorkLog()
-      .then((res) => {
-        if (res.data.code === 0) {
-        }
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {})
   }
 </script>
 
