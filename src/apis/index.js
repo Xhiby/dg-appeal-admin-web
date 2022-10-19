@@ -45,7 +45,7 @@ export const removeCategoryChild = (id) => remove(`/api/v1/government/category/d
  * 获取诉求分类列表
  * @param {*} data
  */
-export const getCategoryList = (data) => get('/api/v1/government/category/getCategory', data)
+export const getCategoryList = (data) => get('/api/v1/government/category/getAll', data)
 
 // appeal-department
 /**
