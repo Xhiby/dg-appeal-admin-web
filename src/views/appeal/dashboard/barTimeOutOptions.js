@@ -1,7 +1,8 @@
 export default function getTimeOutOptions(
   dataFormate = [
     // 二维数组中第一层数组代表了legend功能按钮
-    ['product', '2015', '2016', '2017'],
+    // ['product', '2015', '2016', '2017'],
+    ['我不知道', '1888', '1998', '2018'],
     ['Matcha Latte', 43.3, 85.8, 93.7],
     ['Milk Tea', 83.1, 73.4, 55.1],
     ['Cheese Cocoa', 86.4, 65.2, 82.5],

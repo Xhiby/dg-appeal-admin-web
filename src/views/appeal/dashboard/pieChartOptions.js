@@ -43,7 +43,6 @@ export default function getOptions(
             fontSize: '20',
             color: '#7985FD',
             formatter: function (params) {
-              console.log(params)
               return `{a|${params.data.name}} \n {b|${params.percent}%} \n {c|${params.data.value}.00}`
             },
             rich: {

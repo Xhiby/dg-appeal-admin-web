@@ -144,7 +144,7 @@
                 <el-button
                   type="primary"
                   text
-                  @click="onDetail(scope.row.workLogs)">
+                  @click="onDetail(scope.row)">
                   查看
                 </el-button>
               </template>
@@ -170,7 +170,7 @@
   <!-- dialog -->
   <log-dialog
     v-model:show="isShow"
-    :log-list="logList"
+    :to-dialog="toDialog"
     @on-reload="onSearch">
   </log-dialog>
 </template>
@@ -200,7 +200,7 @@
   // 控制dialog
   const isShow = ref(false)
   // 传输给dialog数据
-  const logList = ref(null)
+  const toDialog = ref(null)
   //诉求分类
   const appealTypeList = ref([])
   // 标签类型
@@ -288,11 +288,14 @@
     getWorkLogList()
   }
   // 查看列表数据
-  const onDetail = (workLogs) => {
+  const onDetail = (row) => {
+    toDialog.value = {
+      name: '李某人',
+      workLogs: row.workLogs
+    }
     isShow.value = true
-    logList.value = workLogs
   }
-  //到处日志
+  //导出日志
   const exportLog = () => {
     apis
       .exportWorkLog()

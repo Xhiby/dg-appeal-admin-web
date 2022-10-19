@@ -75,7 +75,7 @@
           :sm="16"
           :xs="16">
           <div class="otherPro">
-            <h1>解决率统计（部门）</h1>
+            <h1>解决率统计（街镇）</h1>
             <div class="bar_chart_box">
               <v-chart
                 class="tw-w-full tw-h-full"

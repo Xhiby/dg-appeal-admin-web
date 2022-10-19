@@ -1,4 +1,4 @@
-import { baseUrl, post, upload, get, put, remove, formDataPut } from './config'
+import { baseUrl, post, upload, get, put, remove } from './config'
 
 /**
  * 文件上传地址
@@ -129,7 +129,13 @@ export const getGovernmentAppealList = (data) => get('/api/v1/government/org/lis
 export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList', data)
 
 /**
- * 工作日志到处excel
+ * 工作日志导出excel
  * @param {*} data
  */
 export const exportWorkLog = (data) => get('/api/v1/government/workLog/export', data)
+
+/**
+ * 批量修改日志
+ * @param data
+ */
+export const batchDetailLog = (data) => put('/api/v1/government/workLog/butchUpdate', data)
