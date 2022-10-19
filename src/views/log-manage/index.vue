@@ -70,7 +70,8 @@
           <el-button
             class="button"
             type="primary"
-            size="large">
+            size="large"
+            @click="exportLog">
             导出
           </el-button>
           <el-table
@@ -289,6 +290,16 @@
       workLogs: row.workLogs
     }
     isShow.value = true
+  }
+  const exportLog = () => {
+    apis
+      .exportWorkLog()
+      .then((res) => {
+        console.log(res)
+        apis.downloadFile(res, '日志管理')
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {})
   }
 </script>
 
