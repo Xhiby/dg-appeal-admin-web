@@ -18,10 +18,10 @@
         label-position="left"
         require-asterisk-position="right">
         <el-form-item
-          prop="dialogTag"
+          prop="labelName"
           label="标签">
           <el-input
-            v-model="formData.dialogTag"
+            v-model="formData.labelName"
             placeholder="请输入">
           </el-input>
         </el-form-item>
@@ -52,13 +52,13 @@
       type: Boolean,
       default: false
     },
-    dialogTag: {
-      type: String,
-      default: null
+    dialogData: {
+      type: Object,
+      default: () => ({})
     }
   })
 
-  const { show, dialogTag } = toRefs(props)
+  const { show, dialogData } = toRefs(props)
 
   const emit = defineEmits(['update:show', 'onReload'])
 
@@ -77,23 +77,23 @@
 
   // 是否为编辑模式
   const $isEdit = computed(() => {
-    return dialogTag.value
+    return dialogData.value ? true : false
   })
 
   // 表单相关
   const formRef = ref(null)
   const formData = ref({
-    dialogTag: ''
+    labelName: ''
   })
   const rules = reactive({
-    dialogTag: [{ required: true, message: '请选择标签', trigger: 'blur' }]
+    labelName: [{ required: true, message: '请选择标签', trigger: 'blur' }]
   })
 
   // 打开的回调
   const onOpen = () => {
     if ($isEdit.value) {
       // 传递标签
-      formData.value.dialogTag = JSON.parse(JSON.stringify(dialogTag.value))
+      formData.value = JSON.parse(JSON.stringify(dialogData.value))
     }
   }
 
@@ -103,11 +103,9 @@
       if (valid) {
         if ($isEdit.value) {
           // 编辑
-          sureLoading.value = true
           updateGovernmentLabel()
         } else {
           // 新增
-          sureLoading.value = true
           createGovernmentLabel()
         }
       }
@@ -116,17 +114,16 @@
 
   // 新增诉求标签
   const createGovernmentLabel = () => {
-    // 要发送的数据
-    const temp = {
-      labelName: formData.value.dialogTag
-    }
+    sureLoading.value = true
 
     apis
-      .createGovernmentLabel(temp)
+      .createGovernmentLabel({
+        labelName: formData.value.dialogData
+      })
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('新增成功')
-          $show.value = false
+          onCancel()
 
           // 重新加载表格数据
           emit('onReload')
@@ -140,12 +137,16 @@
 
   // 修改诉求标签
   const updateGovernmentLabel = () => {
+    sureLoading.value = true
     apis
-      .updateGovernmentLabel()
+      .updateGovernmentLabel({
+        id: '',
+        labelName: ''
+      })
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('修改成功')
-          $show.value = false
+          onCancel()
 
           // 重新加载表格数据
           emit('onReload')

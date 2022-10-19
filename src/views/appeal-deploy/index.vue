@@ -44,6 +44,7 @@
   import AppealClassify from './appeal-classify.vue'
   import AppealDepartment from './appeal-department.vue'
   import AppealTag from './appeal-tag.vue'
+
   const activeTab = ref('classify')
 </script>
 
