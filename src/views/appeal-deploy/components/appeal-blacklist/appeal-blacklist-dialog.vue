@@ -4,7 +4,8 @@
     v-model="$show"
     width="720px"
     :align-center="true"
-    @open="onOpen">
+    @open="onOpen"
+    @close="onClose">
     <template #header>
       <h1>新增</h1>
     </template>
@@ -35,7 +36,7 @@
               <el-button
                 type="primary"
                 :loading="queryLoading"
-                @click="onQuery(formRef)">
+                @click="onSearch(formRef)">
                 查询
               </el-button>
             </el-form-item>
@@ -47,7 +48,7 @@
         v-loading="loading"
         :data="blackCompanyList"
         height="200"
-        :header-cell-style="{ background: '#EBEEF5' }"
+        header-cell-class-name="my-el-table-header-gray-cell-name"
         @selection-change="handleSelectionChange">
         <el-table-column type="selection"> </el-table-column>
         <el-table-column
@@ -75,7 +76,7 @@
           :page-sizes="[10, 20, 40, 60]"
           small
           layout="total, sizes, prev, pager, next, jumper"
-          @size-change="onQuery"
+          @size-change="onSearch"
           @current-change="getGovernmentAppealList">
         </el-pagination>
       </div>
@@ -149,21 +150,6 @@
     getGovernmentAppealList()
   }
 
-  // 选择事件
-  const handleSelectionChange = (rows) => {
-    selectedList.value = rows
-  }
-
-  // 确定
-  const onConfirm = () => {
-    if (selectedList.value.length == 0) {
-      ElMessage.warning('请至少选择一个企业')
-    } else {
-      sureLoading.value = true
-      createGovernmentBlackList()
-    }
-  }
-
   // 获取可被添加进黑名单的企业列表
   const getGovernmentAppealList = () => {
     loading.value = true
@@ -186,8 +172,24 @@
       })
   }
 
+  // 选择事件
+  const handleSelectionChange = (rows) => {
+    selectedList.value = rows
+  }
+
+  // 确定
+  const onConfirm = () => {
+    if (selectedList.value.length == 0) {
+      ElMessage.warning('请至少选择一个企业')
+    } else {
+      createGovernmentBlackList()
+    }
+  }
+
   // 将企业添加进诉求黑名单
   const createGovernmentBlackList = () => {
+    sureLoading.value = true
+
     const blackIds = selectedList.value
       .map((item) => {
         return item.id
@@ -201,7 +203,8 @@
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('新增成功')
-          $show.value = false
+
+          onCancel()
 
           // 重新加载表格数据
           emit('onReload')
@@ -216,11 +219,11 @@
   // 重置
   const btnReset = () => {
     formRef.value.resetFields()
-    onQuery()
+    onSearch()
   }
 
   // 查询
-  const onQuery = () => {
+  const onSearch = () => {
     pagination.pageNum = 1
     queryLoading.value = true
     getGovernmentAppealList()
@@ -230,10 +233,15 @@
   const onCancel = () => {
     $show.value = false
   }
+
+  // 关闭
+  const onClose = () => {
+    formRef.value.resetFields()
+  }
 </script>
 
 <style scoped>
-  /* 隐藏顶部复选框 */
+  /* 隐藏表头复选框 */
   :deep(.el-table__header-wrapper .el-checkbox) {
     display: none;
   }

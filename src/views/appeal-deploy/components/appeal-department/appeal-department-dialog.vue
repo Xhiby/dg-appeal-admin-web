@@ -18,27 +18,28 @@
         label-position="left"
         require-asterisk-position="right">
         <el-form-item
-          prop="depName"
+          prop="street"
           label="街镇部门">
           <el-input
-            v-model="formData.depName"
+            v-model="formData.street"
             :disabled="$isEdit"
             placeholder="请输入">
           </el-input>
         </el-form-item>
 
         <el-form-item
-          prop="service"
+          prop="principal"
           label="服务专员">
           <el-select
-            v-model="formData.service"
+            v-model="formData.principal"
             placeholder="请选择"
-            class="tw-w-full">
+            class="tw-w-full"
+            @change="onChange">
             <el-option
               v-for="item in serviceList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              :key="item.principalId"
+              :label="item.principal"
+              :value="item.principal">
             </el-option>
           </el-select>
         </el-form-item>
@@ -47,11 +48,11 @@
 
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="onCancel">取消</el-button>
+        <el-button @click="closeDialog">取消</el-button>
         <el-button
           type="primary"
           :loading="sureLoading"
-          @click="onConfirm(formRef)">
+          @click="onConfirm">
           确定
         </el-button>
       </span>
@@ -69,26 +70,16 @@
       type: Boolean,
       default: false
     },
-    dialogDepName: {
-      type: String,
-      default: null
-    },
-    dialogService: {
-      type: String,
-      default: null
-    },
-    dialogServiceList: {
-      type: Array,
-      default: null
+    // 当前需要编辑的
+    dialogData: {
+      type: Object,
+      default: () => ({})
     }
   })
 
-  const { show, dialogDepName, dialogService, dialogServiceList } = toRefs(props)
+  const { show, dialogData } = toRefs(props)
 
   const emit = defineEmits(['update:show', 'onReload'])
-
-  // 接收传入的服务专员列表
-  const serviceList = ref([])
 
   // 控制弹窗显示
   const $show = computed({
@@ -106,67 +97,46 @@
   const formRef = ref(null)
 
   const formData = ref({
-    depName: '',
-    service: ''
+    street: '',
+    principal: '',
+    principalId: ''
   })
 
   const rules = reactive({
-    depName: [{ required: true, message: '请输入街镇部门', trigger: 'blur' }],
-    service: [{ required: true, message: '请选择服务专员', trigger: 'blur' }]
+    street: [{ required: true, message: '请输入街镇部门', trigger: 'blur' }],
+    principal: [{ required: true, message: '请选择服务专员', trigger: 'blur' }]
   })
+
+  // 可被选择的服务专员列表
+  const serviceList = ref([
+    { principal: '专员1', principalId: '101' },
+    { principal: '专员2', principalId: '102' },
+    { principal: '专员3', principalId: '103' }
+  ])
 
   // 是否为编辑模式
   const $isEdit = computed(() => {
-    return dialogDepName.value ? true : false
+    return dialogData.value ? true : false
   })
 
   // 打开的回调
   const onOpen = () => {
     if ($isEdit.value) {
-      formData.value.depName = JSON.parse(JSON.stringify(dialogDepName.value))
-      formData.value.service = JSON.parse(JSON.stringify(dialogService.value))
+      formData.value = JSON.parse(JSON.stringify(dialogData.value))
     }
-    serviceList.value = JSON.parse(JSON.stringify(dialogServiceList.value))
-  }
 
-  // 关闭dialog回调
-  const onClose = () => {
-    formRef.value.resetFields()
-  }
-
-  // 取消
-  const onCancel = () => {
-    $show.value = false
+    console.log(formData.value)
+    // 调用接口获取 serviceList
   }
 
   // 确定
-  const onConfirm = (formRef) => {
-    formRef.validate((valid) => {
+  const onConfirm = () => {
+    formRef.value.validate((valid) => {
       if (valid) {
         if ($isEdit.value) {
-          // 编辑
-          sureLoading.value = true
-
-          // 修改的备选暂无数据
-          // updateGovernmentDepAdd()
-
-          setTimeout(() => {
-            ElMessage.success('修改成功')
-            sureLoading.value = false
-            onCancel()
-          }, 500)
+          updateGovernmentDep()
         } else {
-          // 新增
-          sureLoading.value = true
-
-          // 后端说先别调
-          // createGovernmentDep()
-
-          setTimeout(() => {
-            ElMessage.success('新增成功')
-            sureLoading.value = false
-            onCancel()
-          }, 500)
+          createGovernmentDep()
         }
       }
     })
@@ -174,13 +144,14 @@
 
   // 创建诉求部门
   const createGovernmentDep = () => {
+    sureLoading.value = true
+
     apis
-      .createGovernmentDep()
+      .createGovernmentDep({ ...formData.value })
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('新增成功')
-          $show.value = false
-
+          closeDialog()
           // 重新加载表格数据
           emit('onReload')
         }
@@ -193,13 +164,13 @@
 
   // 修改诉求部门
   const updateGovernmentDep = () => {
+    sureLoading.value = true
     apis
-      .updateGovernmentDep()
+      .updateGovernmentDep({ ...formData.value })
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('修改成功')
-          $show.value = false
-
+          closeDialog()
           // 重新加载表格数据
           emit('onReload')
         }
@@ -208,6 +179,22 @@
       .finally(() => {
         sureLoading.value = false
       })
+  }
+
+  // 选择服务专员事件
+  const onChange = () => {
+    // 遍历全部服务专员列表，找到和当前选择服务专员一致的Id
+    formData.value.principalId = serviceList.value.find((item) => {
+      return item.principal == formData.value.principal
+    }).principalId
+  }
+
+  // 关闭dialog回调
+  const onClose = () => {
+    formRef.value.resetFields()
+  }
+  const closeDialog = () => {
+    $show.value = false
   }
 </script>
 

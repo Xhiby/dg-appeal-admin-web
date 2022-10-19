@@ -3,41 +3,40 @@
   <div class="tab_pane">
     <div class="tab_pane_header">
       <el-form
-        ref="FormRef"
+        ref="formRef"
         class="my-el-form-item-flex"
-        size="default"
         :inline="true"
         :model="conditionForm">
-        <el-form-item
-          prop="labelName"
-          class="tw-mr-[18px]">
-          <el-input
-            v-model="conditionForm.labelName"
-            class="tw-w-[240px]"
-            placeholder="请输入标签名称搜索">
-          </el-input>
-        </el-form-item>
-        <el-form-item class="tw-mr-[16px]">
-          <el-button
-            type="primary"
-            plain
-            @click="onReset">
-            重置
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="onSearch">
-            查询
-          </el-button>
-        </el-form-item>
+        <el-row>
+          <el-col :span="5">
+            <el-form-item prop="labelName">
+              <el-input
+                v-model="conditionForm.labelName"
+                placeholder="请输入标签名称搜索">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item>
+              <el-button
+                type="primary"
+                plain
+                @click="onReset">
+                重置
+              </el-button>
+              <el-button
+                type="primary"
+                @click="onSearch">
+                查询
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <hr />
       <el-button
         class="tw-mt-[20px]"
         type="primary"
-        size="default"
         @click="onAdd">
         新增
       </el-button>
@@ -52,7 +51,6 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="74"
           :index="indexMethod"
           type="index"
           label="ID">
@@ -63,7 +61,6 @@
         </el-table-column>
         <el-table-column
           prop="operate"
-          width="180"
           label="操作">
           <template #default="scope">
             <el-button
@@ -96,9 +93,10 @@
     </div>
   </div>
 
+  <!-- 新增标签、编辑标签弹窗 -->
   <appealTagDialog
     v-model:show="isShowDialog"
-    :dialog-tag="dialogTag"
+    :dialog-data="dialogData"
     @on-reload="getGovernmentLabelList">
   </appealTagDialog>
 </template>
@@ -107,17 +105,17 @@
   import { onMounted, reactive, ref } from 'vue'
   import { usePagination } from '@/utils/hooks'
   import * as apis from '@/apis/index'
-
   import { ElMessage, ElMessageBox } from 'element-plus'
-
-  // 引入弹窗组件
   import appealTagDialog from './components/appeal-tag/appeal-tag-dialog.vue'
 
   // 显示dialog
   const isShowDialog = ref(false)
 
-  // 标签
-  const dialogTag = ref()
+  // 传入弹窗的数据
+  const dialogData = ref({
+    // 标签名称
+    labelName: ''
+  })
 
   // 表格加载图标
   const loading = ref(false)
@@ -131,7 +129,7 @@
   })
 
   // 表单实例
-  const FormRef = ref(null)
+  const formRef = ref(null)
 
   // 表格数据
   const tableData = ref([])
@@ -144,30 +142,25 @@
   // 点击搜索
   const onSearch = () => {
     pagination.pageNum = 1
-    //请求接口
     getGovernmentLabelList()
   }
 
   // 点击重置
   const onReset = () => {
-    FormRef.value.resetFields()
+    formRef.value.resetFields()
     onSearch()
   }
 
   // 点击新增
   const onAdd = () => {
     resetDialogData()
-
     isShowDialog.value = true
   }
 
   // 点击编辑
   const onEdit = (row) => {
-    resetDialogData()
-    console.log(row)
     isShowDialog.value = true
-
-    dialogTag.value = row.labelName
+    dialogData.value = row
   }
 
   // 点击删除
@@ -223,7 +216,6 @@
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('删除成功')
-
           getGovernmentLabelList()
         } else {
           ElMessage.error({ message: res.data.msg })
@@ -240,7 +232,7 @@
 
   // 重置dialog的数据
   const resetDialogData = () => {
-    dialogTag.value = null
+    dialogData.value = null
   }
 </script>
 
@@ -249,9 +241,6 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
-      .my-el-form-item-flex {
-        display: flex;
-      }
     }
     .tab_pane_footer {
       width: 100%;

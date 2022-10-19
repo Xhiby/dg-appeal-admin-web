@@ -52,25 +52,25 @@ export const getCategoryList = (data) => get('/api/v1/government/category/getCat
  * 创建诉求部门
  * @param {*} data
  */
-export const createGovernmentDep = (data) => post('/api/v1/government/v1/add', data)
+export const createGovernmentDep = (data) => post('/api/v1/government/department/add1', data)
 
 /**
  * 删除诉求部门
  * @param {*} data
  */
-export const removeGovernmentDep = (id) => remove(`/api/v1/government/v1/delete/${id}`)
+export const removeGovernmentDep = (id) => remove(`/api/v1/government/department/delete/${id}`)
 
 /**
  * 修改诉求部门
  * @param {*} data
  */
-export const updateGovernmentDep = (data) => put('/api/v1/government/v1/update', data)
+export const updateGovernmentDep = (data) => put('/api/v1/government/department/update1', data)
 
 /**
  * 获取诉求部门列表
  * @param {*} data
  */
-export const getGovernmentDepList = (data) => get('/api/v1/government/v1/list', data)
+export const getGovernmentDepList = (data) => get('/api/v1/government/department/list', data)
 
 // appeal-tag
 /**
