@@ -1,52 +1,54 @@
 <template>
   <div class="cool_Photo">
-    <div
-      class="item item_1"
-      style="background-color: saddlebrown">
+    <div class="item item_1">
+      <img src="@/assets/images/cool/sqtj.png" />
+      <span class="time"> <span class="date">2022.09.27</span> <span class="week">星期二</span> 18:32:16 </span>
     </div>
-    <div
-      class="item item_2"
-      style="background-color: salmon">
+
+    <div class="item item_2">
+      <DepData></DepData>
     </div>
-    <div
-      class="item item_3"
-      style="background-color: seagreen">
+    <div class="item item_3">
+      <appeals-classification></appeals-classification>
     </div>
-    <div
-      class="item item_4"
-      style="background-color: skyblue">
+
+    <div class="item item_4">
+      <cumulative-appeals></cumulative-appeals>
     </div>
-    <div
-      class="item item_5"
-      style="background-color: springgreen">
+    <div class="item item_5">
+      <big-sreen-map></big-sreen-map>
     </div>
-    <div
-      class="item item_6"
-      style="background-color: sienna">
+    <div class="item item_6">
+      <key-appeals></key-appeals>
     </div>
-    <div
-      class="item item_7"
-      style="background-color: blueviolet">
+    <div class="item item_7">
+      <!-- https://zhuanlan.zhihu.com/p/342424311 -->
+      <appeal-statistics></appeal-statistics>
     </div>
-    <div
-      class="item item_8"
-      style="background-color: violet">
+    <div class="item item_8">
+      <quantity-statistics></quantity-statistics>
     </div>
-    <div
-      class="item item_9"
-      style="background-color: aqua">
+    <div class="item item_9">
+      <satisfaction-statistics></satisfaction-statistics>
     </div>
   </div>
 </template>
 
 <script setup>
-  // import CoolTitle from '@/components/cool-title.vue'
+  import DepData from './component/dep-data.vue'
+  import AppealsClassification from './component/appeals-classification.vue'
+  import BigSreenMap from './component/big-sreen-map.vue'
+  import CumulativeAppeals from './component/cumulative-appeals.vue'
+  import KeyAppeals from './component/key-appeals.vue'
+  import AppealStatistics from './component/appeal-statistics.vue'
+  import QuantityStatistics from './component/quantity-statistics.vue'
+  import SatisfactionStatistics from './component/satisfaction-statistics.vue'
 </script>
 
 <style lang="scss" scoped>
   .cool_Photo {
-    width: 100%;
-    height: 100%;
+    // width: 100vw;
+    // height: 100vh;
     background-color: #09192b;
     display: grid;
     grid-template-columns: repeat(384, 5px);
@@ -61,6 +63,29 @@
       grid-row-end: 16;
       //列结束
       grid-column-end: 384;
+
+      background-image: url(@/assets/images/cool/img_bt.png);
+      background-repeat: no-repeat;
+      background-size: auto;
+      position: relative;
+
+      img {
+        margin: 0 auto;
+      }
+      .time {
+        position: absolute;
+        color: #fff;
+        top: 25px;
+        right: 20px;
+        .date {
+          color: #45a2ff;
+        }
+        .week {
+          color: #45a2ff;
+          margin-left: 8px;
+          margin-right: 8px;
+        }
+      }
     }
     .item_2 {
       // 行开始
