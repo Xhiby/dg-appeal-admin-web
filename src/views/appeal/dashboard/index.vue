@@ -201,10 +201,6 @@
   const topInfo = reactive({})
 
   onMounted(() => {
-    // pieOption.value = getPieOptions()
-    // barOptionLeft.value = getBarOption(mockbarOptionLeft.dataX, mockbarOptionLeft.dataFormate)
-    // barOptionRight.value = getBarOption(mockbarOptionRight.dataX, mockbarOptionRight.dataFormate)
-    // timeOutOptions.value = getTimeOutOptions()
     getAppealComputed()
   })
   const formData = reactive({
@@ -229,7 +225,6 @@
         topInfo.finishPercent = finishPercent
         topInfo.pleasedPercent = pleasedPercent
         topInfo.waitNum = waitNum
-        //饼图appealCategoryPercentList
         pieOption.value = getPieOptions(appealCategoryPercentList)
         barOptionLeft.value = getBarOption(finishDeparmentPercent.dataX, finishDeparmentPercent.dataY)
         barOptionRight.value = getBarOption(finishStreetPercent.dataX, finishStreetPercent.dataY)

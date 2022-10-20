@@ -172,27 +172,32 @@ export const appealTag = [
   {
     type: 'success',
     status: -1,
-    info: '失效'
+    info: '失效',
+    color: ''
   },
   {
     type: 'success',
     status: 0,
-    info: '待处理'
+    info: '待处理',
+    color: '#F56C6C'
   },
   {
     type: 'success',
     status: 1,
-    info: '推进中'
+    info: '推进中',
+    color: '#409EFF'
   },
   {
     type: 'success',
     status: 2,
-    info: '待评价'
+    info: '待评价',
+    color: '#E6A23C'
   },
   {
     type: 'success',
     status: 3,
-    info: '已完结'
+    info: '已完结',
+    color: '#67C23A'
   }
 ]
 // 请求来源

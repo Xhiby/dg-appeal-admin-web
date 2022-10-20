@@ -107,7 +107,7 @@
           </div>
         </div>
         <div class="tw-flex tw-flex-col tw-min-w-[785px] tw-flex-[49%_0_1]">
-          <div class="tw-flex tw-items-center tw-w-full tw-h-[45px] tw-bg-[#4584f8] tw-text-[#fff] tw-p-[15px]"> 诉求处理记录 </div>
+          <div class="tw-flex tw-items-center tw-w-full tw-h-[45px] tw-bg-[#4584f8] tw-text-[#fff] tw-p-[15px]"> 诉求信息 </div>
           <div class="tw-flex tw-flex-col">
             <el-descriptions
               border
@@ -116,52 +116,52 @@
               <el-descriptions-item
                 label="工单编号:"
                 width="50px">
-                11111
+                {{ appealDetail.appealCode }}
               </el-descriptions-item>
               <el-descriptions-item
                 label="处理状态:"
                 width="50px">
-                <span class="tw-text-[#F56C6C]">待评价</span>
+                <span :style="`color:${appealStatus(appealDetail.appealStatus).color}`">{{ appealStatus(appealDetail.appealStatus).info }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="办理部门:">
-                <span class="tw-text-[#606266]"> 市倍增办（企业服务中心） </span>
+                <span class="tw-text-[#606266]"> {{ appealDetail.handleDepartment }} </span>
               </el-descriptions-item>
               <el-descriptions-item label="街镇:">
-                <span class="tw-text-[#606266]">凤岗</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.streetName }}</span>
               </el-descriptions-item>
               <el-descriptions-item
                 label="诉求主题:"
                 span="2">
-                <span class="tw-text-[#606266]">物流运输保障的结果</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.appealTheme }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="诉求分类:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.appealCategoryName }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="诉求子类:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.appealChildCategoryName }}</span>
               </el-descriptions-item>
               <el-descriptions-item
                 label="诉求内容:"
                 span="2">
-                <span class="tw-text-[#606266]">为缓解企业物流运输压力，我司申请此次的《关于组织申报东莞市重点企业疫情期间物流运输保障的企业的申请</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.appealContent }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="申请来源:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.appealSource }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="诉求标签:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.appealLabelName }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="提交企业:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.organizationName }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="企业类型:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.organizationCategory }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="提交人:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.submitter }}</span>
               </el-descriptions-item>
               <el-descriptions-item label="联系电话:">
-                <span class="tw-text-[#606266]">物流运输保障</span>
+                <span class="tw-text-[#606266]">{{ appealDetail.phone }}</span>
               </el-descriptions-item>
             </el-descriptions>
             <div class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
@@ -220,13 +220,14 @@
 <script setup>
   import Breadcrumb from '@/components/breadcrumb/index.vue'
   import { useRoute } from 'vue-router'
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, computed } from 'vue'
   import { getAppealDetail } from '@/apis/appeal-crud'
   import { ElMessage } from 'element-plus'
   import acceptDialog from './dialogs/accept-dialog.vue'
   import cityBackDialog from './dialogs/city-back-dialog.vue'
   import streetDialog from './dialogs/street-dialog.vue'
   import replyDialog from './dialogs/reply-dialog.vue'
+  import { appealTag } from '@/config/global-var'
   const loading = ref(false)
   const showTaskDialog = ref(false)
   const showCityDialog = ref(false)
@@ -234,8 +235,11 @@
   const showReplyDialog = ref(false)
 
   const route = useRoute()
+  // 诉求详情
   const appealDetail = ref({})
+  // 	诉求处理进度
   const appealProcesses = ref([])
+  // 	诉求处理意见
   const appealRecords = ref([])
 
   onMounted(() => {
@@ -264,6 +268,15 @@
   const back = () => {
     console.log('准备路由返回')
   }
+
+  const appealStatus = computed(() => {
+    return (status) => {
+      const result = appealTag.filter((item) => {
+        return item.status === status
+      })
+      return result.length ? result[0] : { info: '' }
+    }
+  })
 </script>
 
 <style lang="scss" scoped></style>
