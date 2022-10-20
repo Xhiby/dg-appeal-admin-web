@@ -53,3 +53,15 @@ export const getAppealDetail = (id) => get(`/api/v1/government/appeal/detail/${i
  * @id id
  */
 export const splitAppeal = (params) => put(`/api/v1/government/appeal/signSpilt`, params)
+
+/**
+ * 编辑诉求
+ * @id id
+ */
+export const editAppeal = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
+
+/**
+ * 获取所有部门
+ * @id id
+ */
+export const getAllDepartment = (params) => get(`/api/v1/government/department/getAll`, params)

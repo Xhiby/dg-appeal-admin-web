@@ -284,6 +284,7 @@
         appealPayload.appealCategoryCode = currentSelectedParentNode.value
         appealPayload.involveDepartment = appealPayload.involveDepartment.map((dept) => dept.name).join(',')
         appealPayload.involveDepartment = `${appealPayload.involveDepartment},${appealPayload.otherInvolveDepartment}`
+        appealPayload.source = '代理请求'
         const postPayload = {
           dto: {
             ...appealPayload
