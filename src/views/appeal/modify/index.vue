@@ -37,17 +37,14 @@
       <el-form-item
         prop="appealChildCategoryCode"
         label="分类">
-        <el-select
+        <el-tree-select
           v-model="serviceForm.appealChildCategoryCode"
+          :data="appealCategories"
+          :render-after-expand="false"
           style="width: 326px"
-          placeholder="请选择诉求分类">
-          <el-option
-            v-for="item in appealCategories"
-            :key="item.childCategoryCode"
-            :label="item.childCategoryName"
-            :value="item.childCategoryCode">
-          </el-option>
-        </el-select>
+          placeholder="请选择诉求分类"
+          @node-click="(node, nodeProps) => handleNodeClick(nodeProps)">
+        </el-tree-select>
       </el-form-item>
       <el-form-item
         prop="appealLabelCode"
@@ -140,7 +137,7 @@
   import { onBack } from '@/utils/hooks'
   import { uploadUrl } from '@/apis/index.js'
   import { ElMessage } from 'element-plus'
-  import { getAppealsLabels, getAppealCategories, applyAppeal, getAppealsOrgan } from '@/apis/appeal-crud'
+  import { getAppealsLabels, applyAppeal, getAppealsOrgan, getAllAppealCategories } from '@/apis/appeal-crud'
 
   const involveDepartment = reactive(['工业', '国土', '商务', '科技', '自然资源', '金融', '环保', '人社', '市场监督', '自然资源'].map((dept) => ({ name: dept, checked: false })))
   const route = useRoute()
@@ -169,6 +166,8 @@
   const appealCategories = ref([])
   const filteredOrgans = ref([])
   const serviceFormRef = ref(null)
+  const currentSelectedParentNode = ref('')
+  let currentSelectedOrgans = {}
   const serviceId = computed(() => {
     return route.params.id
   })
@@ -181,10 +180,20 @@
     fetchAppealsCategories()
   })
 
+  const recursiveCategories = (categories) => {
+    categories.forEach((cate) => {
+      cate.value = cate.categoryCode
+      cate.label = cate.categoryName
+      if (cate.children && cate.children.length) {
+        recursiveCategories(cate.children)
+      }
+    })
+  }
+
   const fuzzySearchOrganByKeyword = async (queryString, cb) => {
     if (queryString) {
       const resp = await getAppealsOrgan({ keyword: queryString })
-      filteredOrgans.value = resp
+      filteredOrgans.value = resp.data.data
       const data = resp.data.data.map((organ) => {
         return {
           value: organ.organizationName,
@@ -197,8 +206,17 @@
     }
   }
 
-  const handleOrganSelected = (organ) => {
-    console.log(toRaw(organ.value))
+  const handleNodeClick = (nodeProps) => {
+    const currentNodeContext = toRaw(nodeProps)
+    if (currentNodeContext.isLeaf) {
+      const parentNode = toRaw(currentNodeContext.parent)
+      currentSelectedParentNode.value = parentNode.data.categoryCode
+    }
+  }
+
+  const handleOrganSelected = (organName) => {
+    const selected = filteredOrgans.value.filter((organ) => organ.organizationName === toRaw(organName.value))
+    currentSelectedOrgans = toRaw(selected[0])
   }
 
   const fetchAppealsLabels = () => {
@@ -219,11 +237,13 @@
 
   const fetchAppealsCategories = () => {
     loading.value = true
-    getAppealCategories()
+    getAllAppealCategories()
       .then((res) => {
         loading.value = false
         if (res.data.code === 0) {
-          appealCategories.value = res.data.data
+          const data = res.data.data
+          recursiveCategories(data)
+          appealCategories.value = data
         } else {
           ElMessage.error({ message: res.data.msg })
         }
@@ -261,22 +281,26 @@
     serviceFormRef.value.validate((valid) => {
       if (valid) {
         const appealPayload = toRaw(serviceForm)
+        appealPayload.appealCategoryCode = currentSelectedParentNode.value
         appealPayload.involveDepartment = appealPayload.involveDepartment.map((dept) => dept.name).join(',')
         appealPayload.involveDepartment = `${appealPayload.involveDepartment},${appealPayload.otherInvolveDepartment}`
         const postPayload = {
           dto: {
             ...appealPayload
+          },
+          organization: {
+            ...currentSelectedOrgans
           }
         }
         // 删除无需传递给后端的字段
         delete postPayload.dto.organization
         delete postPayload.dto.organizationName
         delete postPayload.dto.otherInvolveDepartment
-        // if (isEdit.value) {
-        //   sendUpdateAppealRequest(postPayload)
-        // } else {
-        //   sendAppealApplyRequest(postPayload)
-        // }
+        if (isEdit.value) {
+          sendUpdateAppealRequest(postPayload)
+        } else {
+          sendAppealApplyRequest(postPayload)
+        }
       } else {
         return false
       }

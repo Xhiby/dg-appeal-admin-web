@@ -25,10 +25,10 @@
         <el-tree-select
           v-model="serviceForm.appealChildCategoryCode"
           :data="appealCategories"
-          check-strictly
           :render-after-expand="false"
           style="width: 326px"
-          placeholder="请选择诉求分类">
+          placeholder="请选择诉求分类"
+          @node-click="(node, nodeProps) => handleNodeClick(nodeProps)">
         </el-tree-select>
       </el-form-item>
       <el-form-item
@@ -91,8 +91,8 @@
   import { ElMessage } from 'element-plus'
   import { getAppealsLabels, getAllAppealCategories } from '@/apis/appeal-crud'
 
-  const props = defineProps({
-    appealId: {
+  defineProps({
+    formId: {
       type: String,
       default: ''
     }
@@ -116,6 +116,7 @@
   const appealsLabels = ref([])
   const appealCategories = ref([])
   const serviceFormRef = ref(null)
+  const currentSelectedParentNode = ref('')
 
   onMounted(() => {
     fetchAppealsLabels()
@@ -190,11 +191,20 @@
     return true
   }
 
+  const handleNodeClick = (nodeProps) => {
+    const currentNodeContext = toRaw(nodeProps)
+    if (currentNodeContext.isLeaf) {
+      const parentNode = toRaw(currentNodeContext.parent)
+      currentSelectedParentNode.value = parentNode.data.categoryCode
+    }
+  }
+
   const getFormData = () => {
     return new Promise((resolve, reject) => {
       serviceFormRef.value.validate((valid) => {
         if (valid) {
           const appealPayload = toRaw(serviceForm.value)
+          appealPayload.appealCategoryCode = currentSelectedParentNode.value
           appealPayload.involveDepartment = appealPayload.involveDepartment.map((dept) => dept.name).join(',')
           appealPayload.involveDepartment = `${appealPayload.involveDepartment},${appealPayload.otherInvolveDepartment}`
           // 删除无需传递给后端的字段

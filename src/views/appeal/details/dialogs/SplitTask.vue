@@ -23,7 +23,7 @@
           <appeal-form
             :key="taskTab.name"
             ref="appealTaskFormsRef"
-            :appeal-id="`${idx}`">
+            :form-id="`${idx}`">
           </appeal-form>
         </el-tab-pane>
       </el-tabs>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-  import { ref, toRaw, watch } from 'vue'
+  import { ref, watch } from 'vue'
   import AppealForm from '../components/AppealForm.vue'
 
   const props = defineProps({

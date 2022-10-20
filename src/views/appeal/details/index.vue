@@ -233,9 +233,9 @@
 
 <script setup>
   import Breadcrumb from '@/components/breadcrumb/index.vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { ref, onMounted } from 'vue'
-  import { getAppealDetail } from '@/apis/appeal-crud'
+  import { getAppealDetail, splitAppeal } from '@/apis/appeal-crud'
   import { ElMessage } from 'element-plus'
   import SplitTaskDialog from './dialogs/SplitTask.vue'
 
@@ -243,6 +243,7 @@
   const loading = ref(false)
   const showTaskDialog = ref(false)
   const route = useRoute()
+  const router = useRouter()
   const appealDetail = ref({})
   const appealProcesses = ref([])
   const appealRecords = ref([])
@@ -267,13 +268,21 @@
       .finally(() => {})
   }
 
-  const handleSplitTask = (appeals) => {
-    const params = {
+  const handleSplitTask = async (appeals) => {
+    const resp = await splitAppeal({
       appealDtoList: appeals,
       appealId: route.query.sid
+    })
+    if (resp.data.code === 0) {
+      ElMessage.success('诉求拆分请求成功！')
+      showTaskDialog.value = false
+      await router.push({
+        name: 'AppealManager',
+        query: {}
+      })
+    } else {
+      ElMessage.error('诉求拆分请求失败！' + resp.data.msg)
     }
-    console.log(params)
-    showTaskDialog.value = false
   }
 </script>
 
