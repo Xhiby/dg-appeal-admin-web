@@ -58,25 +58,15 @@
             <el-col :span="8">
               <el-form-item label="所属街镇:">
                 <el-select
-                  v-model="formSearchData.street"
+                  v-model="formSearchData.streetId"
                   class="tw-w-full"
                   placeholder="请选择所属街镇"
                   @change="handleStreetChange">
                   <el-option
-                    label="近7天"
-                    value="1">
-                  </el-option>
-                  <el-option
-                    label="1个月"
-                    value="2">
-                  </el-option>
-                  <el-option
-                    label="3个月"
-                    value="3">
-                  </el-option>
-                  <el-option
-                    label="1年"
-                    value="4">
+                    v-for="item in streetList"
+                    :key="item.streetId"
+                    :label="item.street"
+                    :value="item.streetId">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -89,20 +79,10 @@
                   placeholder="请选择请求来源"
                   @change="handleStreetChange">
                   <el-option
-                    label="近7天"
-                    value="1">
-                  </el-option>
-                  <el-option
-                    label="1个月"
-                    value="2">
-                  </el-option>
-                  <el-option
-                    label="3个月"
-                    value="3">
-                  </el-option>
-                  <el-option
-                    label="1年"
-                    value="4">
+                    v-for="(item, index) in appealSourceList"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.label">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -111,38 +91,23 @@
           <el-row :gutter="8">
             <el-col :span="8">
               <el-form-item label="诉求分类:">
-                <el-select
+                <el-cascader
                   v-model="formSearchData.categoryChildCode"
-                  class="tw-w-full"
-                  placeholder="请选择所属街镇"
-                  @change="handleStreetChange">
-                  <el-option
-                    label="近7天"
-                    value="1">
-                  </el-option>
-                  <el-option
-                    label="1个月"
-                    value="2">
-                  </el-option>
-                  <el-option
-                    label="3个月"
-                    value="3">
-                  </el-option>
-                  <el-option
-                    label="1年"
-                    value="4">
-                  </el-option>
-                </el-select>
+                  class="tw-flex-1"
+                  :options="appealList"
+                  :show-all-levels="false"
+                  @change="handleChange">
+                </el-cascader>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="更新时间:">
                 <el-date-picker
-                  v-model="formSearchData.updateTime"
+                  v-model="formSearchData.updatedTime"
                   type="date"
                   class="tw-w-full"
                   value-format="YYYY-MM-DD"
-                  placeholder="请选择上架时间">
+                  placeholder="请选择更新时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -153,7 +118,7 @@
                   type="date"
                   class="tw-w-full"
                   value-format="YYYY-MM-DD"
-                  placeholder="请选择上架时间">
+                  placeholder="请选择提交时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -317,14 +282,21 @@
   import PageTitle from '@/components/page-title.vue'
   import { useElementSize } from '@vueuse/core'
   import { useRouter } from 'vue-router'
-  import { onMounted, reactive, ref, toRaw } from 'vue'
+  import { onMounted, reactive, ref, toRaw, watch } from 'vue'
   import { getAppeals } from '@/apis/appeal-crud'
+  import { useCommonStore } from '@/stores/common'
+  import * as apis from '@/apis/index'
+  import { storeToRefs } from 'pinia'
+  import { appealSourceList } from '@/config/global-var'
 
+  
   const loading = ref(false)
   const containerRef = ref(null)
   const headerRef = ref(null)
   const formSearchRef = ref(null)
   const router = useRouter()
+  const commonStore = useCommonStore()
+  const { currentLeader } = storeToRefs(commonStore)
   const { height: containerHeight } = useElementSize(containerRef)
   const { height: headerHeight } = useElementSize(headerRef)
   const appealTableData = ref([])
@@ -333,15 +305,22 @@
     // 评价搜索
     keyword: '',
     // 所属街镇
-    street: '',
+    streetId: '',
     // 请求来源
     appealSource: '',
     // 诉求分类
     categoryChildCode: '',
     //更新时间
-    updateTime: '',
+    updatedTime: '',
     // 提交时间
     submitTime: ''
+  })
+  //诉求标签编号
+  watch(currentLeader, () => {
+    handleReset()
+    formSearchRef.value.resetFields()
+    // 重置form信息 调用接口获取数据
+    _getAppealTableData()
   })
   const paginator = reactive({
     pageNum: 1,
@@ -349,10 +328,15 @@
     pageSize: 10,
     total: 0
   })
+  // 街道列表
+  const streetList = ref([])
+  //
+  const appealList = ref([])
   //请求列表数据
   const _getAppealTableData = async () => {
     loading.value = true
     const { data: resp } = await getAppeals({
+      appealLabelCode: currentLeader.value,
       ...toRaw(formSearchData),
       ...toRaw(paginator)
     })
@@ -367,23 +351,19 @@
   }
 
   onMounted(async () => {
-    await _getAppealTableData()
+    getStreetList()
+    appealTypeList()
   })
 
   const handleAppealCategoryChange = (e) => {
     console.log(e)
   }
   const handleStreetChange = () => {}
-  // 重置formData
   const handleReset = async () => {
-    formSearchData.keyword = ''
-    formSearchData.street = ''
-    formSearchData.updateDate = ''
     paginator.pageNum = 1
     paginator.pages = 0
     paginator.pageSize = 10
     paginator.total = 0
-    await _getAppealTableData()
   }
   const handleSizeChange = async (currentSize) => {
     paginator.pageSize = currentSize
@@ -394,7 +374,9 @@
     paginator.pageNum = current
     await _getAppealTableData()
   }
-  const handleSearch = () => {}
+  const handleSearch = () => {
+    _getAppealTableData()
+  }
   const handleExport = () => {}
   const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
@@ -407,6 +389,49 @@
   }
   const handleDeleteAppeal = (row) => {
     console.log(row)
+  }
+
+  //获取街道列表
+  const getStreetList = () => {
+    apis
+      .getStreetList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          streetList.value = res.data.data
+        }
+      })
+      .catch((err) => console.log(err))
+  }
+  //获取诉求分类列表
+  const appealTypeList = () => {
+    apis
+      .getCategoryList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          appealList.value = convertCategoryList(res.data.data)
+        }
+      })
+      .catch((err) => console.log(err))
+  }
+  // 转换诉求分类列表
+  const convertCategoryList = (data) => {
+    const res = []
+
+    for (const i in data) {
+      res[i] = {}
+      res[i].label = data[i].categoryName
+      res[i].value = data[i].categoryCode
+
+      if (data[i].children !== []) {
+        res[i].children = convertCategoryList(data[i].children)
+      }
+    }
+
+    return res
+  }
+  const handleChange = (value) => {
+    // 选择后默认为一级和二级的ID 改为仅需要二级ID
+    formSearchData.categoryChildCode = value[1]
   }
 </script>
 

@@ -37,17 +37,63 @@
     <div class="dashboard_header tw-mb-[15px]">
       <el-row :gutter="18">
         <el-col
-          v-for="(item, index) in topList"
-          :key="index"
           :lg="4"
           :md="6"
           :sm="8"
           :xs="8">
           <div
             class="dashboard_header_item tw-my-[20px]"
-            :style="{ backgroundImage: `url(${((index + 1) / 2) % 0 ? bg1 : bg2})` }">
-            <p>{{ item.tittle }}</p>
-            <span>{{ item.munber }}{{ index >= 3 ? '%' : '' }}</span>
+            :style="{ backgroundImage: `url(${bg1})` }">
+            <p>已完结</p>
+            <span>{{ topInfo.finishNum }}</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg2})` }">
+            <p>推进中</p>
+            <span>{{ topInfo.continueNum }}</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg1})` }">
+            <p>待受理</p>
+            <span>{{ topInfo.waitNum }}</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg2})` }">
+            <p>办结率</p>
+            <span>{{ topInfo.finishPercent }}%</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg1})` }">
+            <p>满意度</p>
+            <span>{{ topInfo.pleasedPercent }}%</span>
           </div>
         </el-col>
       </el-row>
@@ -128,8 +174,8 @@
   import getPieOptions from './pieChartOptions'
   import getBarOption from './barChartOptions'
   import getTimeOutOptions from './barTimeOutOptions'
-  import { topList } from '@/config/global-var'
   import { onMounted, reactive, ref } from 'vue'
+  import * as apis from '@/apis/index'
 
   const pieOption = ref({})
   const barOptionLeft = ref({})
@@ -149,25 +195,46 @@
   const options = reactive([
     {
       label: '倍增计划',
-      value: 1
+      value: '1'
     }
   ])
+  const topInfo = reactive({})
 
   onMounted(() => {
-    pieOption.value = getPieOptions()
-    barOptionLeft.value = getBarOption(mockbarOptionLeft.dataX, mockbarOptionLeft.dataFormate)
-    barOptionRight.value = getBarOption(mockbarOptionRight.dataX, mockbarOptionRight.dataFormate)
-    timeOutOptions.value = getTimeOutOptions()
+    // pieOption.value = getPieOptions()
+    // barOptionLeft.value = getBarOption(mockbarOptionLeft.dataX, mockbarOptionLeft.dataFormate)
+    // barOptionRight.value = getBarOption(mockbarOptionRight.dataX, mockbarOptionRight.dataFormate)
+    // timeOutOptions.value = getTimeOutOptions()
+    getAppealComputed()
   })
   const formData = reactive({
-    startTime: '',
-    endTime: '',
+    startdate: '',
+    enddate: '',
     time: [],
-    plan: ''
+    plan: '1'
   })
   const onChangeTime = (timeArray) => {
-    formData.startTime = timeArray[0]
-    formData.endTime = timeArray[1]
+    formData.startdate = timeArray[0]
+    formData.enddate = timeArray[1]
+  }
+  const getAppealComputed = () => {
+    apis
+      .getAppealComputed({
+        ...formData
+      })
+      .then((res) => {
+        const { continueNum, finishNum, finishPercent, pleasedPercent, waitNum, appealCategoryPercentList, finishDeparmentPercent, finishStreetPercent, outTimeCount } = res.data.data
+        topInfo.continueNum = continueNum
+        topInfo.finishNum = finishNum
+        topInfo.finishPercent = finishPercent
+        topInfo.pleasedPercent = pleasedPercent
+        topInfo.waitNum = waitNum
+        //饼图appealCategoryPercentList
+        pieOption.value = getPieOptions(appealCategoryPercentList)
+        barOptionLeft.value = getBarOption(finishDeparmentPercent.dataX, finishDeparmentPercent.dataY)
+        barOptionRight.value = getBarOption(finishStreetPercent.dataX, finishStreetPercent.dataY)
+        timeOutOptions.value = getTimeOutOptions(outTimeCount.dataX, outTimeCount.dataY)
+      })
   }
 </script>
 

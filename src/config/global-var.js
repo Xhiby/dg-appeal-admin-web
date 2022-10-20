@@ -195,3 +195,15 @@ export const appealTag = [
     info: '已完结'
   }
 ]
+// 请求来源
+export const appealSourceList = [
+  {
+    label: '代理请求'
+  },
+  {
+    label: '企业请求'
+  },
+  {
+    label: '企业市长直通车'
+  }
+]

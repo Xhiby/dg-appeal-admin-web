@@ -169,3 +169,19 @@ export const downloadFile = (data, fileName) => {
  * 获取概览数据
  */
 export const getAppealSurvey = () => get('/api/v1/government/appeal/appeal/survey')
+
+/**
+ * 获取街道
+ */
+export const getStreetList = () => get('/api/v1/common/street/getAll')
+
+/**
+ * 获取诉求统计数据
+ * @params data
+ */
+export const getAppealComputed = (data) => get('/api/v1/government/overview/count', data)
+
+/**
+ * 获取所有领导标签
+ */
+export const getLeaderList = () => get('/api/v1/government/label/getAllLabel')

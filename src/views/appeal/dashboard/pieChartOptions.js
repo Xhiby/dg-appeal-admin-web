@@ -8,6 +8,12 @@ export default function getOptions(
     { value: 900, name: '其他' }
   ]
 ) {
+  const data = []
+  dataPie.map((item, index) => {
+    data[index] = {}
+    data[index].value = item.percent
+    data[index].name = item.departName
+  })
   const pieChartOptions = {
     tooltip: {
       trigger: 'item',
@@ -43,6 +49,7 @@ export default function getOptions(
             fontSize: '20',
             color: '#7985FD',
             formatter: function (params) {
+              console.log(params)
               return `{a|${params.data.name}} \n {b|${params.percent}%} \n {c|${params.data.value}.00}`
             },
             rich: {
@@ -62,7 +69,7 @@ export default function getOptions(
         labelLine: {
           show: false
         },
-        data: dataPie
+        data: data
       }
     ]
   }

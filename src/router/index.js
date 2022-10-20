@@ -15,7 +15,7 @@ const router = createRouter({
       name: 'AppealLeaderManager',
       path: '/appeal-leader-manager',
       redirect: '/appeal-leader-manager/list',
-      component: () => import('@/layout/DefaultLayout.vue'),
+      component: () => import('@/layout/LeaderLayout.vue'),
       children: [
         // 诉求列表【领导视图】
         {
