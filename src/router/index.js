@@ -15,13 +15,19 @@ const router = createRouter({
       name: 'AppealLeaderManager',
       path: '/appeal-leader-manager',
       redirect: '/appeal-leader-manager/list',
-      component: () => import('@/layout/LeaderLayout.vue'),
+      component: () => import('@/layout/DefaultLayout.vue'),
       children: [
         // 诉求列表【领导视图】
         {
           name: 'AppealListForLeader',
           path: 'list',
           component: () => import('@/views/appeal/list/LeaderView.vue')
+        },
+        //详情
+        {
+          name: 'AppealLeaderDetail',
+          path: 'details',
+          component: () => import('@/views/appeal/details/leader-detail.vue')
         }
       ]
     },
