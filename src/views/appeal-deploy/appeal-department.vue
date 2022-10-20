@@ -3,41 +3,40 @@
   <div class="tab_pane">
     <div class="tab_pane_header">
       <el-form
-        ref="FormRef"
+        ref="formRef"
         class="my-el-form-item-flex"
-        size="default"
         :inline="true"
         :model="conditionForm">
-        <el-form-item
-          prop="departmentName"
-          class="tw-mr-[18px]">
-          <el-input
-            v-model="conditionForm.departmentName"
-            class="tw-w-[240px]"
-            placeholder="请输入部门名称搜索">
-          </el-input>
-        </el-form-item>
-        <el-form-item class="tw-mr-[16px]">
-          <el-button
-            type="primary"
-            plain
-            @click="onReset">
-            重置
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="onSearch">
-            查询
-          </el-button>
-        </el-form-item>
+        <el-row>
+          <el-col :span="5">
+            <el-form-item prop="departmentName">
+              <el-input
+                v-model="conditionForm.departmentName"
+                placeholder="请输入部门名称搜索">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item>
+              <el-button
+                type="primary"
+                plain
+                @click="onReset">
+                重置
+              </el-button>
+              <el-button
+                type="primary"
+                @click="onSearch">
+                查询
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <hr />
       <el-button
         class="tw-mt-[20px]"
         type="primary"
-        size="default"
         @click="onAdd">
         新增
       </el-button>
@@ -52,22 +51,20 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="74"
           :index="indexMethod"
           type="index"
           label="ID">
         </el-table-column>
         <el-table-column
-          prop="departmentName"
+          prop="street"
           label="街镇/部门名称">
         </el-table-column>
         <el-table-column
-          prop="serviceCommissioner"
+          prop="principal"
           label="服务专员">
         </el-table-column>
         <el-table-column
           prop="operate"
-          width="180px"
           label="操作">
           <template #default="scope">
             <el-button
@@ -100,11 +97,10 @@
     </div>
   </div>
 
+  <!-- 新增部门、编辑部门弹窗 -->
   <appealDepartmentDialog
     v-model:show="isShowDialog"
-    :dialog-dep-name="dialogDepName"
-    :dialog-service="dialogService"
-    :dialog-service-list="dialogServiceList"
+    :dialog-data="dialogData"
     @on-reload="getGovernmentDepList">
   </appealDepartmentDialog>
 </template>
@@ -114,21 +110,13 @@
   import { usePagination } from '@/utils/hooks'
   import * as apis from '@/apis/index'
   import { ElMessage, ElMessageBox } from 'element-plus'
-
-  // 引入弹窗组件
   import appealDepartmentDialog from './components/appeal-department/appeal-department-dialog.vue'
 
   // 显示dialog
   const isShowDialog = ref(false)
 
-  // 街镇部门
-  const dialogDepName = ref()
-
-  // 服务专员
-  const dialogService = ref()
-
-  // 服务专员列表
-  const dialogServiceList = ref()
+  // 传入弹窗的数据
+  const dialogData = ref({})
 
   // 表格加载图标
   const loading = ref(false)
@@ -142,26 +130,10 @@
   })
 
   // 表单实例
-  const FormRef = ref(null)
+  const formRef = ref(null)
 
   // 表格数据
   const tableData = ref([])
-
-  // 可被分配的服务专员列表
-  const serviceList = reactive([
-    {
-      label: '专员1',
-      value: '专员1'
-    },
-    {
-      label: '专员2',
-      value: '专员2'
-    },
-    {
-      label: '专员3',
-      value: '专员3'
-    }
-  ])
 
   // 初始化
   onMounted(() => {
@@ -171,54 +143,13 @@
   // 点击搜索
   const onSearch = () => {
     pagination.pageNum = 1
-    //请求接口
     getGovernmentDepList()
   }
 
   // 点击重置
   const onReset = () => {
-    FormRef.value.resetFields()
+    formRef.value.resetFields()
     onSearch()
-  }
-
-  // 点击新增
-  const onAdd = () => {
-    resetDialogData()
-
-    dialogServiceList.value = serviceList
-
-    isShowDialog.value = true
-  }
-
-  // 点击编辑
-  const onEdit = (row) => {
-    resetDialogData()
-
-    isShowDialog.value = true
-
-    dialogDepName.value = row.departmentName
-    dialogService.value = row.serviceCommissioner
-
-    dialogServiceList.value = serviceList
-  }
-
-  // 点击删除
-  const onDelete = (row) => {
-    ElMessageBox({
-      title: '确定',
-      type: 'warning',
-      message: '确定删除?',
-      confirmButtonClass: '确定',
-      cancelButtonText: '取消',
-      showCancelButton: true,
-      beforeClose: (action, instance, done) => {
-        if (action === 'confirm') {
-          removeGovernmentDep(instance, done, row)
-        } else {
-          done()
-        }
-      }
-    })
   }
 
   // 获取诉求部门列表
@@ -246,6 +177,24 @@
       })
   }
 
+  // 点击删除
+  const onDelete = (row) => {
+    ElMessageBox({
+      title: '确定',
+      type: 'warning',
+      message: '确定删除?',
+      confirmButtonClass: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          removeGovernmentDep(instance, done, row)
+        } else {
+          done()
+        }
+      }
+    })
+  }
   // 删除诉求部门
   const removeGovernmentDep = (instance, done, row) => {
     instance.confirmButtonLoading = true
@@ -270,12 +219,16 @@
       })
   }
 
-  // 重置dialog的数据
-  const resetDialogData = () => {
-    dialogDepName.value = null
-    dialogService.value = null
+  // 点击新增
+  const onAdd = () => {
+    isShowDialog.value = true
+    dialogData.value = null
+  }
 
-    dialogServiceList.value = null
+  // 点击编辑
+  const onEdit = (row) => {
+    isShowDialog.value = true
+    dialogData.value = row
   }
 </script>
 
@@ -284,9 +237,6 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
-      .my-el-form-item-flex {
-        display: flex;
-      }
     }
     .tab_pane_footer {
       width: 100%;

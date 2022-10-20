@@ -3,41 +3,40 @@
   <div class="tab_pane">
     <div class="tab_pane_header">
       <el-form
-        ref="FormRef"
+        ref="formRef"
         class="my-el-form-item-flex"
-        size="default"
         :inline="true"
         :model="conditionForm">
-        <el-form-item
-          prop="keyword"
-          class="tw-mr-[18px]">
-          <el-input
-            v-model="conditionForm.keyword"
-            class="tw-w-[240px]"
-            placeholder="请输入单位名称搜索">
-          </el-input>
-        </el-form-item>
-        <el-form-item class="tw-mr-[16px]">
-          <el-button
-            type="primary"
-            plain
-            @click="onReset">
-            重置
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="onSearch">
-            查询
-          </el-button>
-        </el-form-item>
+        <el-row>
+          <el-col :span="5">
+            <el-form-item prop="keyword">
+              <el-input
+                v-model="conditionForm.keyword"
+                placeholder="请输入单位名称搜索">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item>
+              <el-button
+                type="primary"
+                plain
+                @click="onReset">
+                重置
+              </el-button>
+              <el-button
+                type="primary"
+                @click="onSearch">
+                查询
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <hr />
       <el-button
         class="tw-mt-[20px]"
         type="primary"
-        size="default"
         @click="onAdd">
         新增
       </el-button>
@@ -52,20 +51,36 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="114"
+          width="100px"
           :index="indexMethod"
           type="index"
           label="序号">
         </el-table-column>
         <el-table-column
-          v-for="item in fields"
-          :key="item.prop"
-          :prop="item.prop"
-          :label="item.label">
+          width="320px"
+          prop="companyName"
+          label="单位名称">
+        </el-table-column>
+        <el-table-column
+          prop="directorName"
+          label="姓名">
+        </el-table-column>
+        <el-table-column
+          prop="sex"
+          label="性别">
+        </el-table-column>
+        <el-table-column
+          width="200px"
+          prop="position"
+          label="职务">
+        </el-table-column>
+        <el-table-column
+          width="120px"
+          prop="mobile"
+          label="手机号">
         </el-table-column>
         <el-table-column
           prop="operate"
-          width="167"
           label="操作">
           <template #default="scope">
             <el-button
@@ -92,6 +107,7 @@
     </div>
   </div>
 
+  <!-- 新增黑名单弹窗 -->
   <appealBlackListDialog
     v-model:show="isShowDialog"
     @on-reload="getGovernmentBlackList">
@@ -104,7 +120,7 @@
   import { ElMessage, ElMessageBox } from 'element-plus'
   import * as apis from '@/apis/index'
 
-  // 引入弹窗组件
+  // 添加黑名单组件
   import appealBlackListDialog from './components/appeal-blacklist/appeal-blacklist-dialog.vue'
 
   // 显示dialog
@@ -122,19 +138,10 @@
   })
 
   // 表单实例
-  const FormRef = ref(null)
+  const formRef = ref(null)
 
   // 表格数据
   const tableData = ref([])
-
-  // 表格字段
-  const fields = [
-    { label: '单位名称', prop: 'companyName' },
-    { label: '姓名', prop: 'directorName' },
-    { label: '性别', prop: 'sex' },
-    { label: '职务', prop: 'position' },
-    { label: '手机号', prop: 'mobile' }
-  ]
 
   // 初始化
   onMounted(() => {
@@ -149,7 +156,7 @@
 
   // 点击重置
   const onReset = () => {
-    FormRef.value.resetFields()
+    formRef.value.resetFields()
     onSearch()
   }
 
@@ -182,6 +189,7 @@
   //请求列表数据
   const getGovernmentBlackList = () => {
     loading.value = true
+
     apis
       .getGovernmentBlackList({ ...conditionForm, ...pagination })
       .then((res) => {
@@ -205,10 +213,8 @@
   const removeGovernmentBlackList = (instance, done, row) => {
     instance.confirmButtonLoading = true
 
-    const deleteId = { ids: row.id }
-
     apis
-      .removeGovernmentBlackList(deleteId)
+      .removeGovernmentBlackList({ ids: row.id })
       .then((res) => {
         if (res.data.code === 0) {
           console.log(res.data)
@@ -234,9 +240,6 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
-      .my-el-form-item-flex {
-        display: flex;
-      }
     }
     .tab_pane_footer {
       width: 100%;

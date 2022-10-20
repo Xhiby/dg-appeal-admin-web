@@ -3,35 +3,35 @@
   <div class="tab_pane">
     <div class="tab_pane_header">
       <el-form
-        ref="FormRef"
+        ref="formRef"
         class="my-el-form-item-flex"
-        size="default"
         :inline="true"
         :model="form">
-        <el-form-item
-          prop="childCategoryName"
-          class="tw-mr-[18px]">
-          <el-input
-            v-model="form.childCategoryName"
-            class="tw-w-[240px]"
-            placeholder="请输入类型名称搜索">
-          </el-input>
-        </el-form-item>
-        <el-form-item class="tw-mr-[16px]">
-          <el-button
-            type="primary"
-            plain
-            @click="onReset">
-            重置
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="onSearch">
-            查询
-          </el-button>
-        </el-form-item>
+        <el-row>
+          <el-col :span="5">
+            <el-form-item prop="childCategoryName">
+              <el-input
+                v-model="form.childCategoryName"
+                placeholder="请输入类型名称搜索">
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item>
+              <el-button
+                type="primary"
+                plain
+                @click="onReset">
+                重置
+              </el-button>
+              <el-button
+                type="primary"
+                @click="onSearch">
+                查询
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <hr />
       <el-dropdown
@@ -39,8 +39,7 @@
         @command="handleCommand">
         <el-button
           class="button"
-          type="primary"
-          size="default">
+          type="primary">
           新增<el-icon class="el-icon--right"><arrow-down></arrow-down></el-icon>
         </el-button>
         <template #dropdown>
@@ -61,19 +60,31 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="74"
           :index="indexMethod"
           type="index"
           label="ID">
         </el-table-column>
         <el-table-column
-          v-for="item in fields"
-          :key="item.prop"
-          :prop="item.prop"
-          :label="item.label">
+          prop="categoryName"
+          label="诉求分类">
         </el-table-column>
         <el-table-column
-          width="167"
+          prop="childCategoryName"
+          label="诉求子类">
+        </el-table-column>
+        <el-table-column
+          prop="appealSignLimitTime"
+          label="诉求签收时限">
+        </el-table-column>
+        <el-table-column
+          prop="appealEvaluateLimitTime"
+          label="评价时限">
+        </el-table-column>
+        <el-table-column
+          prop="appealHandleLimitTime"
+          label="诉求处理时限">
+        </el-table-column>
+        <el-table-column
           prop="operate"
           label="操作">
           <template #default="scope">
@@ -101,11 +112,13 @@
     </div>
   </div>
 
+  <!-- 新增一级分类弹窗 -->
   <type-one-dialog
     v-model:show="typeOne"
     @on-reload="getCategoryChildList">
   </type-one-dialog>
 
+  <!-- 新增二级分类弹窗 -->
   <type-two-dialog
     v-model:show="typeTwo"
     @on-reload="getCategoryChildList">
@@ -124,7 +137,6 @@
   const loading = ref(false)
 
   // 分页对象
-
   const { pagination, indexMethod } = usePagination()
 
   // 搜索条件
@@ -133,19 +145,10 @@
   })
 
   // 表单实例
-  const FormRef = ref(null)
+  const formRef = ref(null)
 
   // 表格数据
   const tableData = ref([])
-
-  // 表格字段
-  const fields = [
-    { label: '诉求分类', prop: 'categoryName' },
-    { label: '诉求子类', prop: 'childCategoryName' },
-    { label: '诉求签收时限', prop: 'appealSignLimitTime' },
-    { label: '评价时限', prop: 'appealEvaluateLimitTime' },
-    { label: '诉求处理时限', prop: 'appealHandleLimitTime' }
-  ]
 
   //一级分类dialog
   const typeOne = ref(false)
@@ -175,7 +178,7 @@
 
   // 点击重置
   const onReset = () => {
-    FormRef.value.resetFields()
+    formRef.value.resetFields()
     onSearch()
   }
 
@@ -249,9 +252,6 @@
     height: 100%;
     .tab_pane_header {
       margin-bottom: 20px;
-      .my-el-form-item-flex {
-        display: flex;
-      }
     }
     .tab_pane_footer {
       width: 100%;

@@ -33,7 +33,7 @@
               </el-col>
               <el-col :span="3">
                 <el-form-item prop="childCategoryCode">
-                  <el-select
+                  <!-- <el-select
                     v-model="logForm.childCategoryCode"
                     placeholder="诉求分类">
                     <el-option
@@ -42,7 +42,14 @@
                       :label="item.categoryName"
                       :value="item.categoryCode">
                     </el-option>
-                  </el-select>
+                  </el-select> -->
+
+                  <el-cascader
+                    v-model="logForm.childCategoryCode"
+                    :options="appealTypeList"
+                    placeholder="诉求分类"
+                    @change="handleChange">
+                  </el-cascader>
                 </el-form-item>
               </el-col>
               <el-col :span="4">
@@ -269,13 +276,36 @@
       .getCategoryList()
       .then((res) => {
         if (res.data.code === 0) {
-          appealTypeList.value = res.data.data
+          console.log(res.data.data)
+
+          // appealTypeList.value = convertCategoryList(res.data.data)
+
+          console.log(convertCategoryList(res.data.data))
         } else {
           ElMessage.error(res.data.msg)
         }
       })
       .catch((err) => console.log(err))
       .finally(() => {})
+  }
+  // 转换诉求分类列表
+  // 参考深拷贝
+  const convertCategoryList = (data) => {
+    if (data.children) {
+      return convertCategoryList(data.children)
+    }
+    const res = [{}]
+
+    for (let i in data) {
+      res[i] = {}
+      res[i].label = data[i].categoryName
+      res[i].value = data[i].categoryCode
+    }
+
+    return res
+  }
+  const handleChange = (value) => {
+    console.log(value)
   }
   // 重置
   const onReset = () => {
