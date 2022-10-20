@@ -5,22 +5,25 @@
     @select="handleMenuSelect">
     <el-menu-item
       v-for="menu in commonStore.leaders"
-      :key="menu.id"
-      :index="menu.id"
+      :key="menu.labelCode"
+      :index="menu.labelCode"
       class="tw-justify-center">
-      {{ menu.name }}
+      {{ menu.labelName }}
     </el-menu-item>
   </el-menu>
 </template>
 
 <script setup>
+  import { onMounted } from 'vue'
+  import * as apis from '@/apis/index'
   // import { useRouter } from 'vue-router'
   import { useCommonStore } from '@/stores/common'
   import { computed } from 'vue'
-
   // const router = useRouter()
   const commonStore = useCommonStore()
-
+  onMounted(() => {
+    getLeaderList()
+  })
   const activeLeader = computed(() => {
     return commonStore.currentLeader === '' ? commonStore.defaultLeader : commonStore.currentLeader
   })
@@ -29,6 +32,17 @@
     commonStore.$patch({
       currentLeader: leaderId
     })
+  }
+
+  const getLeaderList = () => {
+    apis
+      .getLeaderList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          commonStore.setLeaders(res.data.data)
+        }
+      })
+      .catch((err) => console.log(err))
   }
 </script>
 

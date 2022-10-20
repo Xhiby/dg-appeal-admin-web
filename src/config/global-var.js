@@ -167,6 +167,46 @@ export const topList = [
     munber: 33.63
   }
 ]
+// 诉求状态标签
+export const appealTag = [
+  {
+    type: 'success',
+    status: -1,
+    info: '失效'
+  },
+  {
+    type: 'success',
+    status: 0,
+    info: '待处理'
+  },
+  {
+    type: 'success',
+    status: 1,
+    info: '推进中'
+  },
+  {
+    type: 'success',
+    status: 2,
+    info: '待评价'
+  },
+  {
+    type: 'success',
+    status: 3,
+    info: '已完结'
+  }
+]
+// 请求来源
+export const appealSourceList = [
+  {
+    label: '代理请求'
+  },
+  {
+    label: '企业请求'
+  },
+  {
+    label: '企业市长直通车'
+  }
+]
 
 /**
  * 诉求状态

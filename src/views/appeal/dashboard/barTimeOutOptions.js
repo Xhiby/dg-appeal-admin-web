@@ -1,16 +1,12 @@
-export default function getTimeOutOptions(
-  dataFormate = [
-    // 二维数组中第一层数组代表了legend功能按钮
-    // ['product', '2015', '2016', '2017'],
-    ['我不知道', '1888', '1998', '2018'],
-    ['Matcha Latte', 43.3, 85.8, 93.7],
-    ['Milk Tea', 83.1, 73.4, 55.1],
-    ['Cheese Cocoa', 86.4, 65.2, 82.5],
-    ['Walnut Brownie', 72.4, 53.9, 39.1],
-    ['wuan', 72.4, 53.9, 39.1],
-    ['sss', 72.4, 53.9, 39.1]
-  ]
-) {
+export default function getTimeOutOptions(dataX = [], dataY = []) {
+  // ['标题', '接单超时', '办理超时']
+  const dataFormate = [['标题', '接单超时', '办理超时']]
+  for (let index = 0; index < dataX.length; index++) {
+    const arr = []
+    arr.push(dataX[index], dataY[index].receiveOuttime, dataY[index].receiveOuttime)
+    dataFormate.push(arr)
+  }
+
   return {
     legend: {
       right: 10
@@ -29,17 +25,6 @@ export default function getTimeOutOptions(
         showBackground: true,
         backgroundStyle: {
           borderRadius: 40
-        },
-        barMaxWidth: 15,
-        itemStyle: {
-          borderRadius: 50
-        }
-      },
-      {
-        type: 'bar',
-        showBackground: true,
-        backgroundStyle: {
-          borderRadius: 50
         },
         barMaxWidth: 15,
         itemStyle: {

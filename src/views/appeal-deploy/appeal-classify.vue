@@ -12,7 +12,7 @@
             <el-form-item prop="childCategoryName">
               <el-input
                 v-model="form.childCategoryName"
-                placeholder="请输入类型名称搜索">
+                placeholder="请输入子类名称搜索">
               </el-input>
             </el-form-item>
           </el-col>
@@ -60,8 +60,8 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          :index="indexMethod"
-          type="index"
+          width="280px"
+          prop="id"
           label="ID">
         </el-table-column>
         <el-table-column
@@ -137,7 +137,7 @@
   const loading = ref(false)
 
   // 分页对象
-  const { pagination, indexMethod } = usePagination()
+  const { pagination } = usePagination()
 
   // 搜索条件
   const form = reactive({

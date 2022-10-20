@@ -30,7 +30,7 @@
               <div class="tittle">
                 <p>领导关注</p>
               </div>
-              <div class="number tw-text-[#409EFF]">62</div>
+              <div class="number tw-text-[#409EFF]">{{ formData.leaderAttentionCount }}</div>
             </div>
           </div>
         </el-col>
@@ -58,7 +58,7 @@
               <div class="tittle">
                 <p>推进中诉求</p>
               </div>
-              <div class="number tw-text-[#E6A23C]">62</div>
+              <div class="number tw-text-[#E6A23C]">{{ formData.pushCount }}</div>
             </div>
           </div>
         </el-col>
@@ -86,7 +86,7 @@
               <div class="tittle">
                 <p>超时诉求</p>
               </div>
-              <div class="number tw-text-[#F56C6C]">62</div>
+              <div class="number tw-text-[#F56C6C]">{{ formData.thisMonthCreateCount }}</div>
             </div>
           </div>
         </el-col>
@@ -114,7 +114,7 @@
               <div class="tittle">
                 <p>本月新增诉求</p>
               </div>
-              <div class="number tw-text-[#67C23A]">62</div>
+              <div class="number tw-text-[#67C23A]">{{ formData.timeoutCount }}</div>
             </div>
           </div>
         </el-col>
@@ -124,11 +124,31 @@
 </template>
 
 <script setup>
+  import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import PageTitle from '@/components/page-title.vue'
+  import * as apis from '@/apis/index'
+  import { ElMessage } from 'element-plus'
+  import { onMounted } from 'vue'
   const router = useRouter()
   const skip = (src) => {
     router.push(src)
+  }
+  const formData = ref({})
+  onMounted(() => {
+    getAppealSurvey()
+  })
+  const getAppealSurvey = () => {
+    apis
+      .getAppealSurvey()
+      .then((res) => {
+        if (res.data.code === 0) {
+          formData.value = res.data.data
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
   }
 </script>
 

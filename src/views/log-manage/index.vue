@@ -33,17 +33,6 @@
               </el-col>
               <el-col :span="3">
                 <el-form-item prop="childCategoryCode">
-                  <!-- <el-select
-                    v-model="logForm.childCategoryCode"
-                    placeholder="诉求分类">
-                    <el-option
-                      v-for="(item, index) in appealTypeList"
-                      :key="index"
-                      :label="item.categoryName"
-                      :value="item.categoryCode">
-                    </el-option>
-                  </el-select> -->
-
                   <el-cascader
                     v-model="logForm.childCategoryCode"
                     :options="appealTypeList"
@@ -117,15 +106,13 @@
             <el-table-column
               prop="appealStatus"
               label="诉求状态">
-              <template #default="scope">
+              <template #default="{ row }">
                 <!-- success info warning danger-->
-                <el-tag :type="tagType(scope.row.appealStatus).type">
-                  {{ tagType(scope.row.appealStatus).status }}
-                </el-tag>
+                <el-tag :type="tagType(row.appealStatus).type"> {{ tagType(row.appealStatus).status }} </el-tag>
               </template>
             </el-table-column>
             <el-table-column
-              prop="transactor"
+              prop="principle"
               label="办理人">
             </el-table-column>
             <el-table-column
@@ -140,9 +127,14 @@
                 </p>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="appealHandleTime"
-              label="满意度">
+            <el-table-column label="满意度">
+              <template #default="{ row }">
+                <el-rate
+                  v-model="row.commentScore"
+                  :max="3"
+                  disabled>
+                </el-rate>
+              </template>
             </el-table-column>
             <el-table-column
               prop="operate"
@@ -214,13 +206,6 @@
   const tagType = computed(() => {
     let info = {}
     return (status) => {
-      /** success info warning danger
-       * 0:待处理
-       * 3:推进中
-       * 4:待评价
-       * 5:已完结
-       * <0 已失效
-       */
       switch (status) {
         case -1:
           info.status = '失效'
@@ -280,11 +265,7 @@
       .getCategoryList()
       .then((res) => {
         if (res.data.code === 0) {
-          console.log(res.data.data)
-
-          // appealTypeList.value = convertCategoryList(res.data.data)
-
-          console.log(convertCategoryList(res.data.data))
+          appealTypeList.value = convertCategoryList(res.data.data)
         } else {
           ElMessage.error(res.data.msg)
         }
@@ -293,23 +274,26 @@
       .finally(() => {})
   }
   // 转换诉求分类列表
-  // 参考深拷贝
   const convertCategoryList = (data) => {
-    if (data.children) {
-      return convertCategoryList(data.children)
-    }
-    const res = [{}]
+    console.log('data', data)
+    const res = []
 
-    for (let i in data) {
+    for (const i in data) {
       res[i] = {}
       res[i].label = data[i].categoryName
       res[i].value = data[i].categoryCode
+
+      if (data[i].children.length !== 0) {
+        res[i].children = convertCategoryList(data[i].children)
+      }
     }
 
     return res
   }
+  // 级联选择器change事件
   const handleChange = (value) => {
-    console.log(value)
+    // 选择后默认为一级和二级的ID 改为仅需要二级ID
+    logForm.childCategoryCode = value[1]
   }
   // 重置
   const onReset = () => {
@@ -325,13 +309,12 @@
     }
     isShow.value = true
   }
-  //导出日志
   const exportLog = () => {
     apis
       .exportWorkLog()
       .then((res) => {
-        if (res.data.code === 0) {
-        }
+        console.log(res)
+        apis.downloadFile(res, '日志管理')
       })
       .catch((err) => console.log(err))
       .finally(() => {})

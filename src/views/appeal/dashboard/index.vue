@@ -5,32 +5,95 @@
       class="tw-mb-[20px]">
     </PageTitle>
     <div class="tw-flex tw-mb-[12px]">
-      <el-button
-        type="primary"
-        plain>
-        2022/1
-      </el-button>
-      <el-button
-        type="primary"
-        plain>
-        倍增计划
-      </el-button>
-      <el-button type="primary">导出</el-button>
+      <el-form
+        :model="formData"
+        size="default">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-date-picker
+              v-model="formData.time"
+              type="monthrange"
+              range-separator="至"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+              value-format="YYYY-MM-DD"
+              @change="onChangeTime">
+            </el-date-picker>
+          </el-col>
+          <el-col :span="8">
+            <el-select v-model="formData.plan">
+              <el-option
+                v-for="(item, index) in options"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="2"><el-button type="primary"> 导出 </el-button></el-col>
+        </el-row>
+      </el-form>
     </div>
     <div class="dashboard_header tw-mb-[15px]">
       <el-row :gutter="18">
         <el-col
-          v-for="(item, index) in topList"
-          :key="index"
           :lg="4"
           :md="6"
           :sm="8"
           :xs="8">
           <div
             class="dashboard_header_item tw-my-[20px]"
-            :style="{ backgroundImage: `url(${((index + 1) / 2) % 0 ? bg1 : bg2})` }">
-            <p>{{ item.tittle }}</p>
-            <span>{{ item.munber }}{{ index >= 3 ? '%' : '' }}</span>
+            :style="{ backgroundImage: `url(${bg1})` }">
+            <p>已完结</p>
+            <span>{{ topInfo.finishNum }}</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg2})` }">
+            <p>推进中</p>
+            <span>{{ topInfo.continueNum }}</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg1})` }">
+            <p>待受理</p>
+            <span>{{ topInfo.waitNum }}</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg2})` }">
+            <p>办结率</p>
+            <span>{{ topInfo.finishPercent }}%</span>
+          </div>
+        </el-col>
+        <el-col
+          :lg="4"
+          :md="6"
+          :sm="8"
+          :xs="8">
+          <div
+            class="dashboard_header_item tw-my-[20px]"
+            :style="{ backgroundImage: `url(${bg1})` }">
+            <p>满意度</p>
+            <span>{{ topInfo.pleasedPercent }}%</span>
           </div>
         </el-col>
       </el-row>
@@ -111,8 +174,8 @@
   import getPieOptions from './pieChartOptions'
   import getBarOption from './barChartOptions'
   import getTimeOutOptions from './barTimeOutOptions'
-  import { topList } from '@/config/global-var'
   import { onMounted, reactive, ref } from 'vue'
+  import * as apis from '@/apis/index'
 
   const pieOption = ref({})
   const barOptionLeft = ref({})
@@ -129,12 +192,50 @@
     dataFormate: [60, 55, 34, 57, 98]
   })
 
+  const options = reactive([
+    {
+      label: '倍增计划',
+      value: '1'
+    }
+  ])
+  const topInfo = reactive({})
+
   onMounted(() => {
-    pieOption.value = getPieOptions()
-    barOptionLeft.value = getBarOption(mockbarOptionLeft.dataX, mockbarOptionLeft.dataFormate)
-    barOptionRight.value = getBarOption(mockbarOptionRight.dataX, mockbarOptionRight.dataFormate)
-    timeOutOptions.value = getTimeOutOptions()
+    // pieOption.value = getPieOptions()
+    // barOptionLeft.value = getBarOption(mockbarOptionLeft.dataX, mockbarOptionLeft.dataFormate)
+    // barOptionRight.value = getBarOption(mockbarOptionRight.dataX, mockbarOptionRight.dataFormate)
+    // timeOutOptions.value = getTimeOutOptions()
+    getAppealComputed()
   })
+  const formData = reactive({
+    startdate: '',
+    enddate: '',
+    time: [],
+    plan: '1'
+  })
+  const onChangeTime = (timeArray) => {
+    formData.startdate = timeArray[0]
+    formData.enddate = timeArray[1]
+  }
+  const getAppealComputed = () => {
+    apis
+      .getAppealComputed({
+        ...formData
+      })
+      .then((res) => {
+        const { continueNum, finishNum, finishPercent, pleasedPercent, waitNum, appealCategoryPercentList, finishDeparmentPercent, finishStreetPercent, outTimeCount } = res.data.data
+        topInfo.continueNum = continueNum
+        topInfo.finishNum = finishNum
+        topInfo.finishPercent = finishPercent
+        topInfo.pleasedPercent = pleasedPercent
+        topInfo.waitNum = waitNum
+        //饼图appealCategoryPercentList
+        pieOption.value = getPieOptions(appealCategoryPercentList)
+        barOptionLeft.value = getBarOption(finishDeparmentPercent.dataX, finishDeparmentPercent.dataY)
+        barOptionRight.value = getBarOption(finishStreetPercent.dataX, finishStreetPercent.dataY)
+        timeOutOptions.value = getTimeOutOptions(outTimeCount.dataX, outTimeCount.dataY)
+      })
+  }
 </script>
 
 <style lang="scss" scoped>

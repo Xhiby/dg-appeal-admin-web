@@ -44,15 +44,14 @@
     <div class="tab_pane_content">
       <el-table
         v-loading="loading"
-        :data="tableData"
         border
+        :data="tableData"
         stripe
         row-class-name="my-el-table-stripe-row-name"
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          :index="indexMethod"
-          type="index"
+          prop="id"
           label="ID">
         </el-table-column>
         <el-table-column
@@ -122,7 +121,7 @@
   const loading = ref(false)
 
   // 分页对象
-  const { pagination, indexMethod } = usePagination()
+  const { pagination } = usePagination()
 
   // 搜索条件
   const conditionForm = reactive({

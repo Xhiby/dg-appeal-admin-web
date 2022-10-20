@@ -30,6 +30,9 @@ axios.interceptors.response.use(
         localStorage.removeItem('token')
         router.replace('/login')
       }
+      // if (res.data.type && res.data.type === 'application/vnd.ms-excel') {
+      //   res.headers.setContentType('application/vnd.ms-excel')
+      // }
     }
     return res
   },
@@ -38,13 +41,13 @@ axios.interceptors.response.use(
   }
 )
 
-function fetchData(method, url, data = {}) {
+function fetchData(method, url, data = {}, config) {
   return new Promise((resolve, reject) => {
     let request
     if (method === 'get' || method === 'delete') {
-      request = axios[method](baseUrl + url, { params: data })
+      request = axios[method](baseUrl + url, { params: data, ...config })
     } else {
-      request = axios[method](baseUrl + url, data)
+      request = axios[method](baseUrl + url, data, { ...config })
     }
     request
       .then((res) => {
@@ -58,8 +61,8 @@ function fetchData(method, url, data = {}) {
   })
 }
 
-export const get = function (url, params) {
-  return fetchData('get', url, params)
+export const get = function (url, params, config) {
+  return fetchData('get', url, params, config)
 }
 
 export const post = function (url, data) {

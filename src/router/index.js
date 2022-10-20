@@ -22,6 +22,12 @@ const router = createRouter({
           name: 'AppealListForLeader',
           path: 'list',
           component: () => import('@/views/appeal/list/LeaderView.vue')
+        },
+        //详情
+        {
+          name: 'AppealLeaderDetail',
+          path: 'details',
+          component: () => import('@/views/appeal/details/leader-detail.vue')
         }
       ]
     },
