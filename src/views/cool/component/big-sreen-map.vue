@@ -7,12 +7,10 @@
 
 <script setup>
   import * as echarts from 'echarts'
-  import china from '@/assets/json/dongguan.json'
+  import china from '@/assets/json/dongguannew.json'
   import { ref, onMounted } from 'vue'
-
   const chartsDom = ref(null)
   onMounted(() => {
-    console.log(chartsDom.value, 'charts.value==')
     initCharts(chartsDom.value)
   })
 
@@ -93,7 +91,7 @@
     echarts.registerMap('dongguan', china)
     charts.setOption(option)
     charts.on('click', function (e) {
-      console.log(e, 'e====')
+      console.log(e, e.event.target, 'e====')
       //取消鼠标移入地图区域高亮
       // charts.dispatchAction({
       //   type: 'legendUnSelect'
