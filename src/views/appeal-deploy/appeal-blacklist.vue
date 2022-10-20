@@ -51,9 +51,8 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="80px"
-          :index="indexMethod"
-          type="index"
+          width="290px"
+          prop="id"
           label="序号">
         </el-table-column>
         <el-table-column
@@ -130,7 +129,7 @@
   const loading = ref(false)
 
   // 分页对象
-  const { pagination, indexMethod } = usePagination()
+  const { pagination } = usePagination()
 
   // 搜索条件
   const conditionForm = reactive({

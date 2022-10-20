@@ -54,7 +54,7 @@
         <el-table-column
           prop="name"
           label="企业名称"
-          width="230">
+          width="250">
         </el-table-column>
         <el-table-column
           prop="deputyPerson"
