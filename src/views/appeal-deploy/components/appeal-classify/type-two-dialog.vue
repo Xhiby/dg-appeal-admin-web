@@ -123,7 +123,7 @@
     ],
     appealSignLimitTime: [
       { required: true, message: '请选择类型名称', trigger: 'blur' },
-      { type: 'number', message: '评价时限格式为30以内的字数' },
+      { type: 'number', message: '签收时限格式为30以内的字数' },
       {
         pattern: /^([12][0-9]|30|[1-9])$/,
         message: '请输入30以内正整数',
@@ -132,10 +132,10 @@
     ],
     appealHandleLimitTime: [
       { required: true, message: '请选择类型名称', trigger: 'blur' },
-      { type: 'number', message: '评价时限格式为30以内的字数' },
+      { type: 'number', message: '请输入正整数' },
       {
-        pattern: /^([12][0-9]|30|[1-9])$/,
-        message: '请输入30以内正整数',
+        pattern: /^[1-7]$/,
+        message: '请填写7个工作日以内的时限',
         trigger: 'blur'
       }
     ]

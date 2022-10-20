@@ -33,17 +33,6 @@
               </el-col>
               <el-col :span="3">
                 <el-form-item prop="childCategoryCode">
-                  <!-- <el-select
-                    v-model="logForm.childCategoryCode"
-                    placeholder="诉求分类">
-                    <el-option
-                      v-for="(item, index) in appealTypeList"
-                      :key="index"
-                      :label="item.categoryName"
-                      :value="item.categoryCode">
-                    </el-option>
-                  </el-select> -->
-
                   <el-cascader
                     v-model="logForm.childCategoryCode"
                     :options="appealTypeList"
@@ -280,11 +269,7 @@
       .getCategoryList()
       .then((res) => {
         if (res.data.code === 0) {
-          console.log(res.data.data)
-
-          // appealTypeList.value = convertCategoryList(res.data.data)
-
-          console.log(convertCategoryList(res.data.data))
+          appealTypeList.value = convertCategoryList(res.data.data)
         } else {
           ElMessage.error(res.data.msg)
         }
@@ -293,23 +278,26 @@
       .finally(() => {})
   }
   // 转换诉求分类列表
-  // 参考深拷贝
   const convertCategoryList = (data) => {
-    if (data.children) {
-      return convertCategoryList(data.children)
-    }
-    const res = [{}]
+    console.log('data', data)
+    const res = []
 
-    for (let i in data) {
+    for (const i in data) {
       res[i] = {}
       res[i].label = data[i].categoryName
       res[i].value = data[i].categoryCode
+
+      if (data[i].children !== []) {
+        res[i].children = convertCategoryList(data[i].children)
+      }
     }
 
     return res
   }
+  // 级联选择器change事件
   const handleChange = (value) => {
-    console.log(value)
+    // 选择后默认为一级和二级的ID 改为仅需要二级ID
+    logForm.childCategoryCode = value[1]
   }
   // 重置
   const onReset = () => {
