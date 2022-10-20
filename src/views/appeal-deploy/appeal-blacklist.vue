@@ -51,7 +51,7 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="100px"
+          width="80px"
           :index="indexMethod"
           type="index"
           label="序号">
