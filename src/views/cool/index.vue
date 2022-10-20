@@ -16,7 +16,7 @@
       <cumulative-appeals></cumulative-appeals>
     </div>
     <div class="item item_5">
-      <big-sreen-map></big-sreen-map>
+      <!-- <big-sreen-map></big-sreen-map> -->
     </div>
     <div class="item item_6">
       <key-appeals></key-appeals>
@@ -37,12 +37,40 @@
 <script setup>
   import DepData from './component/dep-data.vue'
   import AppealsClassification from './component/appeals-classification.vue'
-  import BigSreenMap from './component/big-sreen-map.vue'
+  // import BigSreenMap from './component/big-sreen-map.vue'
   import CumulativeAppeals from './component/cumulative-appeals.vue'
   import KeyAppeals from './component/key-appeals.vue'
   import AppealStatistics from './component/appeal-statistics.vue'
   import QuantityStatistics from './component/quantity-statistics.vue'
   import SatisfactionStatistics from './component/satisfaction-statistics.vue'
+  import * as apis from '@/apis/index'
+  import { ElMessage } from 'element-plus'
+  import { ref, onMounted } from 'vue'
+
+  onMounted(() => {
+    initData(0)
+  })
+  // 表格加载图标
+  const loading = ref(false)
+  const initData = (streetId) => {
+    loading.value = true
+
+    apis
+      .getGovernmentOverview({ streetId })
+      .then((res) => {
+        if (res.data.code === 0) {
+          console.log(res.data, 'res.data==')
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
 </script>
 
 <style lang="scss" scoped>
