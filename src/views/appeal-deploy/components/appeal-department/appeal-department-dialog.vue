@@ -98,6 +98,7 @@
 
   const formData = ref({
     street: '',
+    streetId: 0,
     principal: '',
     principalId: ''
   })
@@ -122,11 +123,13 @@
   // 打开的回调
   const onOpen = () => {
     if ($isEdit.value) {
-      formData.value = JSON.parse(JSON.stringify(dialogData.value))
+      formData.value = { ...dialogData.value }
     }
 
-    console.log(formData.value)
-    // 调用接口获取 serviceList
+    // 获取服务专员列表
+    // 如果每次获取的列表不变 则方法放在onMounted
+    // 否则放在onOpen
+    getGovernmentServiceList()
   }
 
   // 确定
@@ -179,6 +182,20 @@
       .finally(() => {
         sureLoading.value = false
       })
+  }
+
+  // 获取服务专员列表
+  const getGovernmentServiceList = () => {
+    apis
+      .getGovernmentServiceList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          serviceList.value = res.data.data
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
   }
 
   // 选择服务专员事件

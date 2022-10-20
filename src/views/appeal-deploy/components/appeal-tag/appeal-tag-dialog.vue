@@ -92,8 +92,7 @@
   // 打开的回调
   const onOpen = () => {
     if ($isEdit.value) {
-      // 传递标签
-      formData.value = JSON.parse(JSON.stringify(dialogData.value))
+      formData.value = { ...dialogData.value }
     }
   }
 
@@ -139,10 +138,7 @@
   const updateGovernmentLabel = () => {
     sureLoading.value = true
     apis
-      .updateGovernmentLabel({
-        id: '',
-        labelName: ''
-      })
+      .updateGovernmentLabel({ ...formData.value })
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('修改成功')

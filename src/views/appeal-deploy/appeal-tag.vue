@@ -51,8 +51,7 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          :index="indexMethod"
-          type="index"
+          prop="id"
           label="ID">
         </el-table-column>
         <el-table-column
@@ -112,16 +111,13 @@
   const isShowDialog = ref(false)
 
   // 传入弹窗的数据
-  const dialogData = ref({
-    // 标签名称
-    labelName: ''
-  })
+  const dialogData = ref({})
 
   // 表格加载图标
   const loading = ref(false)
 
   // 分页对象
-  const { pagination, indexMethod } = usePagination()
+  const { pagination } = usePagination()
 
   // 搜索条件
   const conditionForm = reactive({
