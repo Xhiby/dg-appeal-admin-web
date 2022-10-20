@@ -30,8 +30,14 @@
           label="已完结"
           name="5">
         </el-tab-pane>
+        <el-tab-pane
+          label="失效"
+          name="6">
+        </el-tab-pane>
       </el-tabs>
-      <div class="form-search tw-w-full tw-mt-[15px]">
+      <div
+        v-if="activeAppealCategory === '1'"
+        class="form-search tw-w-full tw-mt-[15px]">
         <el-form
           ref="formSearchRef"
           label-position="left"
@@ -40,8 +46,8 @@
           :inline="true"
           :model="formSearchData">
           <el-row :gutter="8">
-            <el-col :span="4">
-              <el-form-item>
+            <el-col :span="8">
+              <el-form-item label="评价搜索:">
                 <el-input
                   v-model="formSearchData.keyword"
                   class="tw-w-full"
@@ -49,8 +55,8 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="4">
-              <el-form-item>
+            <el-col :span="8">
+              <el-form-item label="所属街镇:">
                 <el-select
                   v-model="formSearchData.street"
                   class="tw-w-full"
@@ -75,8 +81,8 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="4">
-              <el-form-item>
+            <el-col :span="8">
+              <el-form-item label="请求来源:">
                 <el-select
                   v-model="formSearchData.appealSource"
                   class="tw-w-full"
@@ -103,7 +109,7 @@
             </el-col>
           </el-row>
           <el-row :gutter="8">
-            <el-col :span="4">
+            <el-col :span="8">
               <el-form-item label="诉求分类:">
                 <el-select
                   v-model="formSearchData.categoryChildCode"
@@ -129,8 +135,19 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="4">
+            <el-col :span="8">
               <el-form-item label="更新时间:">
+                <el-date-picker
+                  v-model="formSearchData.updateTime"
+                  type="date"
+                  class="tw-w-full"
+                  value-format="YYYY-MM-DD"
+                  placeholder="请选择上架时间">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="提交时间:">
                 <el-date-picker
                   v-model="formSearchData.submitTime"
                   type="date"
@@ -141,21 +158,15 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="4">
-            <el-col :span="8">
-              <el-form-item label="提交时间:">
-                <el-date-picker
-                  v-model="formSearchData.updateDate"
-                  type="date"
-                  class="tw-w-full"
-                  value-format="YYYY-MM-DD"
-                  placeholder="请选择上架时间">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
+          <el-row :gutter="8">
             <el-col :span="8">
               <el-form-item>
-                <el-button @click="handleReset"> 重置 </el-button>
+                <el-button
+                  type="primary"
+                  plain
+                  @click="handleReset">
+                  重置
+                </el-button>
                 <el-button
                   type="primary"
                   @click="handleSearch">
@@ -277,7 +288,7 @@
               查看
             </el-button>
             <el-button
-              class="tw-text-[14px] tw-text-[#57D3A2]"
+              class="tw-text-[14px] tw-text-[#F56C6C]"
               link
               size="small"
               @click="handleDeleteAppeal(scope.row)">
@@ -308,7 +319,6 @@
   import { useRouter } from 'vue-router'
   import { onMounted, reactive, ref, toRaw } from 'vue'
   import { getAppeals } from '@/apis/appeal-crud'
-  import { useCommonStore } from '@/stores/common'
 
   const loading = ref(false)
   const containerRef = ref(null)
@@ -317,25 +327,29 @@
   const router = useRouter()
   const { height: containerHeight } = useElementSize(containerRef)
   const { height: headerHeight } = useElementSize(headerRef)
-  const commonStore = useCommonStore()
   const appealTableData = ref([])
   const activeAppealCategory = ref('1')
   const formSearchData = reactive({
+    // 评价搜索
     keyword: '',
+    // 所属街镇
     street: '',
+    // 请求来源
     appealSource: '',
-    appealStatus: '',
+    // 诉求分类
     categoryChildCode: '',
-    departmentCode: '',
+    //更新时间
+    updateTime: '',
+    // 提交时间
     submitTime: ''
   })
   const paginator = reactive({
     pageNum: 1,
     pages: 0,
-    pageSize: 20,
+    pageSize: 10,
     total: 0
   })
-
+  //请求列表数据
   const _getAppealTableData = async () => {
     loading.value = true
     const { data: resp } = await getAppeals({
@@ -356,14 +370,18 @@
     await _getAppealTableData()
   })
 
-  const handleAppealCategoryChange = () => {}
+  const handleAppealCategoryChange = (e) => {
+    console.log(e)
+  }
+  const handleStreetChange = () => {}
+  // 重置formData
   const handleReset = async () => {
     formSearchData.keyword = ''
     formSearchData.street = ''
     formSearchData.updateDate = ''
     paginator.pageNum = 1
     paginator.pages = 0
-    paginator.pageSize = 20
+    paginator.pageSize = 10
     paginator.total = 0
     await _getAppealTableData()
   }
@@ -377,17 +395,11 @@
     await _getAppealTableData()
   }
   const handleSearch = () => {}
-  const handleProxyCommit = () => {
-    router.push({
-      name: 'CreateProxyAppeal',
-      query: {}
-    })
-  }
   const handleExport = () => {}
   const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
     router.push({
-      name: 'AppealDetails',
+      name: 'AppealLeaderDetail',
       query: {
         sid: row.id
       }
