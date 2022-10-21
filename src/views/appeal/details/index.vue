@@ -370,10 +370,11 @@
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async () => {
+      }).then(async (value) => {
         loading.value = true
         const resp = await signAppeal({
           appealId: route.query.sid,
+          handleContent: value,
           isSign: signFlag ? 1 : -1
         })
         loading.value = false
@@ -419,7 +420,7 @@
       .catch(() => {
         ElMessage({
           type: 'info',
-          message: 'Delete canceled'
+          message: ''
         })
       })
   }

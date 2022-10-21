@@ -337,7 +337,7 @@
     appealSource: '',
     appealStatus: '',
     categoryChildCode: '',
-    departmentCode: '',
+    departmentId: '',
     updatedTime: '',
     submitTime: ''
   })
@@ -439,7 +439,7 @@
     formSearchData.appealLabelCode = ''
     formSearchData.appealStatus = ''
     formSearchData.categoryChildCode = ''
-    formSearchData.departmentCode = ''
+    formSearchData.departmentId = ''
     formSearchData.updatedTime = ''
     formSearchData.submitTime = ''
     formSearchData.streetId = ''
