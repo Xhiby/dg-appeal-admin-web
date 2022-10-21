@@ -65,3 +65,15 @@ export const editAppeal = (params) => put(`/api/v1/government/appeal/bzbHandle`,
  * @id id
  */
 export const getAllDepartment = (params) => get(`/api/v1/government/department/getAll`, params)
+
+/**
+ * 诉求签收
+ * @id id
+ */
+export const signAppeal = (params) => put(`/api/v1/government/appeal/signAppeal`, params)
+
+/**
+ *  标记诉求
+ * @id id
+ */
+export const markAppeal = (params) => put(`/api/v1/government/appeal/sign`, params)

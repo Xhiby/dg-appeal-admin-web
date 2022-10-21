@@ -46,8 +46,8 @@
                 </template>
                 <template #title>
                   <div class="tw-flex tw-items-center tw-justify-between tw-mb-[10px]">
-                    <span class="tw-text-[16px] tw-font-bold tw-text-[#303133] tw-text-[16px]"> {{ record.departmentName }} {{ record.handler }} {{ record.handlerPhone }} </span>
-                    <span class="tw-text-[16px] tw-font-semibold tw-text-[#909399] tw-text-[16px]">{{ record.handleTime }}</span>
+                    <span class="tw-text-[16px] tw-font-bold tw-text-[#303133]"> {{ record.departmentName }} {{ record.handler }} {{ record.handlerPhone }} </span>
+                    <span class="tw-text-[16px] tw-font-semibold tw-text-[#909399]">{{ record.handleTime }}</span>
                   </div>
                 </template>
                 <template #description>
@@ -166,12 +166,14 @@
               class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
               <el-button
                 class="tw-w-[60px] tw-mt-[15px]"
-                type="primary">
+                type="primary"
+                @click="handleSignInOrNot(true)">
                 签收
               </el-button>
               <el-button
                 class="tw-w-[60px] tw-mt-[15px]"
-                type="primary">
+                type="primary"
+                @click="handleSignInOrNot(false)">
                 退回
               </el-button>
               <el-button
@@ -232,6 +234,11 @@
       @close="showTaskHandleByMyselfDialog = false"
       @confirm="handleTaskHandleByMyself">
     </task-handle-by-myself>
+    <mark-task
+      :show="showMarkTaskDialog"
+      @close="showMarkTaskDialog = false"
+      @confirm="handleMarkTask">
+    </mark-task>
   </div>
 </template>
 
@@ -239,16 +246,18 @@
   import Breadcrumb from '@/components/breadcrumb/index.vue'
   import { useRoute, useRouter } from 'vue-router'
   import { ref, onMounted } from 'vue'
-  import { getAppealDetail, splitAppeal, editAppeal } from '@/apis/appeal-crud'
+  import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal } from '@/apis/appeal-crud'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import { handleTypes } from '@/config/global-var'
   import SplitTaskDialog from './dialogs/SplitTask.vue'
   import EditTask from './dialogs/EditTask.vue'
   import ForwardTask from './dialogs/ForwardTask.vue'
-  import TaskHandleByMyself from './dialogs/TaskHandleByMeself.vue'
+  import TaskHandleByMyself from './dialogs/TaskHandleByMyself.vue'
+  import MarkTask from './dialogs/MarkTask.vue'
 
   const textarea = ref('')
   const loading = ref(false)
+  const showMarkTaskDialog = ref(false)
   const showTaskHandleByMyselfDialog = ref(false)
   const showTaskDialog = ref(false)
   const showEditDialog = ref(false)
@@ -301,6 +310,79 @@
       })
       .catch((err) => console.log(err))
       .finally(() => {})
+  }
+
+  const handleMarkTask = async (taskPayload) => {
+    loading.value = true
+    const resp = await markAppeal({
+      appealId: route.query.sid,
+      ...taskPayload
+    })
+    loading.value = false
+    if (resp.data.code === 0) {
+      ElMessage.success('标记诉求成功！')
+      showEditDialog.value = false
+      await router.push({
+        name: 'AppealManager',
+        query: {}
+      })
+    } else {
+      ElMessage.error('标记诉求失败！' + resp.data.msg)
+    }
+  }
+
+  const handleSignInOrNot = (signFlag) => {
+    if (signFlag) {
+      ElMessageBox.confirm('签收诉求后，您需要在指定时限内处理完成！请确认您的操作', '签收诉求', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        loading.value = true
+        const resp = await signAppeal({
+          appealId: route.query.sid,
+          isSign: signFlag ? 1 : -1
+        })
+        loading.value = false
+        loading.value = false
+        if (resp.data.code === 0) {
+          ElMessage.success('诉求签收成功！')
+          showEditDialog.value = false
+          await router.push({
+            name: 'AppealManager',
+            query: {}
+          })
+        } else {
+          ElMessage.error('诉求签收失败！' + resp.data.msg)
+        }
+      })
+    } else {
+      ElMessageBox.prompt('', '退回诉求', {
+        inputType: 'textarea',
+        inputPlaceholder: '请填写退回诉求的原因!',
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        loading.value = true
+        const resp = await signAppeal({
+          appealId: route.query.sid,
+          isSign: signFlag ? 1 : -1
+        })
+        loading.value = false
+        loading.value = false
+        if (resp.data.code === 0) {
+          ElMessage.success('诉求退回成功！')
+          showEditDialog.value = false
+          await router.push({
+            name: 'AppealManager',
+            query: {}
+          })
+        } else {
+          ElMessage.error('诉求退回失败！' + resp.data.msg)
+        }
+      })
+    }
   }
 
   const handleCompleteAppeal = () => {
