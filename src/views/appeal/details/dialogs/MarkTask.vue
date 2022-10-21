@@ -62,7 +62,7 @@
   const sureLoading = ref(false)
   const serviceForm = reactive({
     appealSign: '有效，但短期无法解决',
-    isTop: ''
+    isTop: 0
   })
   const formRules = reactive({
     appealSign: [{ required: true, message: '请确认处理情况', trigger: 'blur' }],
@@ -79,7 +79,7 @@
     serviceFormRef.value.validate((valid) => {
       if (valid) {
         const appealPayload = toRaw(serviceForm)
-        delete appealPayload.departmentType
+        appealPayload.isTop = appealPayload.isTop ? 1 : 0
         emit('confirm', appealPayload)
       }
     })
