@@ -1,6 +1,6 @@
 <template>
   <div class="appeals">
-    <cool-title title="累计处理诉求量(虎门)"></cool-title>
+    <cool-title :title="`累计处理诉求量(${cityInfo.name})`"></cool-title>
     <div class="cards">
       <dl class="card-box">
         <dt>累计接受述求总量</dt>
@@ -22,6 +22,13 @@ const props = defineProps({
   appealsBase: {
     type: Object,
     default: {}
+  },
+  cityInfo: {
+    type: Object,
+    default: {
+      name: '全市',
+      value: 0
+    }
   }
 })
 

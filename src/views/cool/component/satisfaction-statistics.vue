@@ -1,15 +1,15 @@
 <template>
   <div class="box">
-    <CoolTitle title="满意度统计（虎门）"></CoolTitle>
+    <CoolTitle :title="`满意度统计(${cityInfo.name})`"></CoolTitle>
     <div class="chart-box">
       <div class="chart">
         <v-chart :option="options">
         </v-chart>
       </div>
       <ul class="percentage">
-        <li>非常满意 {{percentageBase.veryPleased}}%</li>
-        <li>满意 {{percentageBase.pleased}}%</li>
-        <li>不满意 {{percentageBase.notPleased}}%</li>
+        <li>非常满意 <span>{{percentageBase.veryPleased}}%</span></li>
+        <li>满意 <span>{{percentageBase.pleased}}%</span></li>
+        <li>不满意 <span>{{percentageBase.notPleased}}%</span></li>
       </ul>
     </div>
 
@@ -30,6 +30,13 @@ const props = defineProps({
   percentageBase: {
     type: Object,
     default: {}
+  },
+  cityInfo: {
+    type: Object,
+    default: {
+      name: '全市',
+      value: 0
+    }
   }
 })
 
@@ -90,17 +97,24 @@ const options = computed(() => {
   display: flex;
 
   .chart {
-    width: 85%;
+    width: 60%;
   }
 
   .percentage {
+    flex: 1;
     margin-top: 18%;
     color: #fff;
     line-height: 2.5rem;
 
-    dd {
-      color: #29F1FA;
-      font-size: 2rem;
+    li {
+      display: flex;
+      justify-content: space-between;
+
+      span {
+        color: #29F1FA;
+        font-size: 2rem;
+      }
+
     }
   }
 }

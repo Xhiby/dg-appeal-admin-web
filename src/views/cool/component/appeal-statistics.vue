@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <CoolTitle title="诉求统计（虎门）"></CoolTitle>
+    <CoolTitle :title="`诉求统计(${cityInfo.name})`"></CoolTitle>
     <div class="chart-box">
       <div class="chart">
         <v-chart :option="options">
@@ -11,7 +11,6 @@
         <dd>{{statisticsBase.allAppealNum}}</dd>
       </dl>
     </div>
-
   </div>
 </template>
 
@@ -29,6 +28,13 @@ const props = defineProps({
   statisticsBase: {
     type: Object,
     default: {}
+  },
+  cityInfo: {
+    type: Object,
+    default: {
+      name: '全市',
+      value: 0
+    }
   }
 })
 
