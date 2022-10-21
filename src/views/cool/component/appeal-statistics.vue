@@ -1,77 +1,104 @@
 <template>
-  <div>
+  <div class="box">
     <CoolTitle title="诉求统计（虎门）"></CoolTitle>
-    <v-chart
-      class="chart"
-      :option="option">
-    </v-chart>
+    <div class="chart-box">
+      <div class="chart">
+        <v-chart :option="options">
+        </v-chart>
+      </div>
+      <dl class="total">
+        <dt>诉求总量</dt>
+        <dd>{{statisticsBase.allAppealNum}}</dd>
+      </dl>
+    </div>
+
   </div>
 </template>
 
-<script>
-  import { use } from 'echarts/core'
-  import { CanvasRenderer } from 'echarts/renderers'
-  import { PieChart } from 'echarts/charts'
-  import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
-  import VChart, { THEME_KEY } from 'vue-echarts'
-  import { ref, defineComponent } from 'vue'
+<script setup>
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { PieChart } from 'echarts/charts'
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import VChart, { THEME_KEY } from 'vue-echarts'
+import { ref, defineComponent,computed } from 'vue'
 
-  use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
+use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
 
-  export default defineComponent({
-    name: 'HelloWorld',
-    components: {
-      VChart
-    },
-    provide: {
-      [THEME_KEY]: 'dark'
-    },
-    setup() {
-      const option = ref({
-        title: {
-          text: 'Traffic Sources',
-          left: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left',
-          data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines']
-        },
-        series: [
-          {
-            name: 'Traffic Sources',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: [
-              { value: 335, name: 'Direct' },
-              { value: 310, name: 'Email' },
-              { value: 234, name: 'Ad Networks' },
-              { value: 135, name: 'Video Ads' },
-              { value: 1548, name: 'Search Engines' }
-            ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
-      })
+const props = defineProps({
+  statisticsBase: {
+    type: Object,
+    default: {}
+  }
+})
 
-      return { option }
+const option = {
+  tooltip: {
+    trigger: 'item',
+    formatter: '{a} <br/>{b} : {c} ({d}%)'
+  },
+  legend: {
+    orient: 'vertical',
+    bottom: 'bottom',
+    left: 'left',
+    data: ['已处理', '待处理'],
+    textStyle: {
+      color: '#fff'
     }
-  })
+  },
+  series: [
+    {
+      // name: 'Traffic Sources',
+      type: 'pie',
+      radius: '65%',
+      center: ['40%', '50%'],
+      label: {
+        show: true
+      },
+      data: [
+        { value: props.statisticsBase.processed, name: '已处理' },
+        { value:  props.statisticsBase.pending, name: '待处理' }
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+}
+
+const options = computed(() => {
+  option.series[0].data[0].value = props.statisticsBase.processed
+  option.series[0].data[1].value = props.statisticsBase.pending
+  return { ...option }
+})
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.box {
+  height: 100%;
+}
+
+.chart-box {
+  height: 90%;
+  display: flex;
+
   .chart {
-    height: 30vh;
+    width: 85%;
   }
-</style>
+
+  .total {
+    margin-top: 18%;
+    color: #fff;
+    line-height: 2.5rem;
+
+    dd {
+      color: #29F1FA;
+      font-size: 2rem;
+    }
+  }
+}
+</style> 

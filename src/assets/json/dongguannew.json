@@ -320,7 +320,7 @@
       "properties": {
         "id": "6781",
         "level": "street",
-        "name": "虎门港管委会"
+        "name": "虎门"
       }
     },
     {
@@ -5052,7 +5052,7 @@
       "properties": {
         "id": "6785",
         "level": "street",
-        "name": "东城街道"
+        "name": "东城"
       }
     },
     {
@@ -5747,7 +5747,7 @@
       "properties": {
         "id": "6786",
         "level": "street",
-        "name": "南城街道"
+        "name": "南城"
       }
     },
     {
@@ -9077,7 +9077,7 @@
       "properties": {
         "id": "6787",
         "level": "street",
-        "name": "大岭山镇"
+        "name": "大岭山"
       }
     },
     {
@@ -11423,7 +11423,7 @@
       "properties": {
         "id": "14170",
         "level": "street",
-        "name": "寮步镇"
+        "name": "寮步"
       }
     },
     {
@@ -15441,7 +15441,7 @@
       "properties": {
         "id": "14184",
         "level": "street",
-        "name": "常平镇"
+        "name": "常平"
       }
     },
     {
@@ -21755,7 +21755,7 @@
       "properties": {
         "id": "18559",
         "level": "street",
-        "name": "大朗镇"
+        "name": "大朗"
       }
     },
     {
@@ -23973,7 +23973,7 @@
       "properties": {
         "id": "18564",
         "level": "street",
-        "name": "桥头镇"
+        "name": "桥头"
       }
     },
     {
@@ -26303,7 +26303,7 @@
       "properties": {
         "id": "18565",
         "level": "street",
-        "name": "横沥镇"
+        "name": "横沥"
       }
     },
     {
@@ -30197,7 +30197,7 @@
       "properties": {
         "id": "25355",
         "level": "street",
-        "name": "莞城街道"
+        "name": "莞城"
       }
     },
     {
@@ -31775,7 +31775,7 @@
       "properties": {
         "id": "25356",
         "level": "street",
-        "name": "松山湖管委会"
+        "name": "松山湖"
       }
     },
     {
@@ -38521,7 +38521,7 @@
       "properties": {
         "id": "25367",
         "level": "street",
-        "name": "塘厦镇"
+        "name": "塘厦"
       }
     },
     {
@@ -39987,7 +39987,7 @@
       "properties": {
         "id": "25370",
         "level": "street",
-        "name": "东坑镇"
+        "name": "东坑"
       }
     },
     {
@@ -41397,7 +41397,7 @@
       "properties": {
         "id": "25371",
         "level": "street",
-        "name": "中堂镇"
+        "name": "中堂"
       }
     },
     {
@@ -43407,7 +43407,7 @@
       "properties": {
         "id": "25376",
         "level": "street",
-        "name": "厚街镇"
+        "name": "厚街"
       }
     },
     {
@@ -44477,7 +44477,7 @@
       "properties": {
         "id": "25377",
         "level": "street",
-        "name": "石碣镇"
+        "name": "石碣"
       }
     },
     {
@@ -45567,7 +45567,7 @@
       "properties": {
         "id": "25378",
         "level": "street",
-        "name": "石龙镇"
+        "name": "石龙"
       }
     },
     {
@@ -47025,7 +47025,7 @@
       "properties": {
         "id": "25379",
         "level": "street",
-        "name": "茶山镇"
+        "name": "茶山"
       }
     },
     {
@@ -47839,7 +47839,7 @@
       "properties": {
         "id": "25387",
         "level": "street",
-        "name": "沙田镇"
+        "name": "沙田"
       }
     },
     {
@@ -48393,7 +48393,7 @@
       "properties": {
         "id": "25388",
         "level": "street",
-        "name": "洪梅镇"
+        "name": "洪梅"
       }
     },
     {
@@ -49163,7 +49163,7 @@
       "properties": {
         "id": "25390",
         "level": "street",
-        "name": "石排镇"
+        "name": "石排"
       }
     },
     {
@@ -50049,7 +50049,7 @@
       "properties": {
         "id": "25391",
         "level": "street",
-        "name": "望牛墩镇"
+        "name": "望牛墩"
       }
     },
     {
@@ -50999,7 +50999,7 @@
       "properties": {
         "id": "25394",
         "level": "street",
-        "name": "道滘镇"
+        "name": "道滘"
       }
     },
     {
@@ -51773,7 +51773,7 @@
       "properties": {
         "id": "25395",
         "level": "street",
-        "name": "高埗镇"
+        "name": "高埗"
       }
     },
     {
@@ -54387,7 +54387,7 @@
       "properties": {
         "id": "37636",
         "level": "street",
-        "name": "企石镇"
+        "name": "企石"
       }
     },
     {
@@ -57585,7 +57585,7 @@
       "properties": {
         "id": "37637",
         "level": "street",
-        "name": "凤岗镇"
+        "name": "凤岗"
       }
     },
     {
@@ -59847,7 +59847,7 @@
       "properties": {
         "id": "37638",
         "level": "street",
-        "name": "清溪镇"
+        "name": "清溪"
       }
     },
     {
@@ -65053,7 +65053,7 @@
       "properties": {
         "id": "37639",
         "level": "street",
-        "name": "黄江镇"
+        "name": "黄江"
       }
     },
     {
@@ -67527,7 +67527,7 @@
       "properties": {
         "id": "37640",
         "level": "street",
-        "name": "虎门镇"
+        "name": "虎门"
       }
     },
     {
@@ -69985,7 +69985,7 @@
       "properties": {
         "id": "37641",
         "level": "street",
-        "name": "长安镇"
+        "name": "长安"
       }
     },
     {
@@ -74723,7 +74723,7 @@
       "properties": {
         "id": "37642",
         "level": "street",
-        "name": "樟木头镇"
+        "name": "樟木头"
       }
     },
     {
@@ -78417,7 +78417,7 @@
       "properties": {
         "id": "38396",
         "level": "street",
-        "name": "谢岗镇"
+        "name": "谢岗"
       }
     }
   ]

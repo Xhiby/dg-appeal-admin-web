@@ -1,77 +1,87 @@
 <template>
-  <div>
+  <div class="box">
     <CoolTitle title="处理数量统计（虎门）"></CoolTitle>
-    <v-chart
-      class="chart"
-      :option="option">
+    <v-chart class="chart" :option="options">
     </v-chart>
   </div>
 </template>
 
-<script>
-  import { use } from 'echarts/core'
-  import { CanvasRenderer } from 'echarts/renderers'
-  import { PieChart } from 'echarts/charts'
-  import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
-  import VChart, { THEME_KEY } from 'vue-echarts'
-  import { ref, defineComponent } from 'vue'
+<script setup>
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { PieChart } from 'echarts/charts'
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import { ref, toRefs, computed } from 'vue'
 
-  use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
+use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
 
-  export default defineComponent({
-    name: 'HelloWorld',
-    components: {
-      VChart
-    },
-    provide: {
-      [THEME_KEY]: 'dark'
-    },
-    setup() {
-      const option = ref({
-        title: {
-          text: 'Traffic Sources',
-          left: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left',
-          data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines']
-        },
-        series: [
-          {
-            name: 'Traffic Sources',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: [
-              { value: 335, name: 'Direct' },
-              { value: 310, name: 'Email' },
-              { value: 234, name: 'Ad Networks' },
-              { value: 135, name: 'Video Ads' },
-              { value: 1548, name: 'Search Engines' }
-            ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
-      })
+const props = defineProps({
+  tableDataVo: {
+    type: Object,
+    default: {}
+  }
+})
 
-      return { option }
+const dataX = ref(props.tableDataVo.dataX)
+const dataY = ref(props.tableDataVo.dataY)
+
+const option = {
+  tooltip: {
+    trigger: 'item',
+    formatter: '{a} <br/>{b} : {c}'
+  },
+  xAxis: {
+    type: 'category',
+    splitLine: { show: false },
+    data: dataX
+  },
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+  },
+  yAxis: {
+    type: 'log',
+    // name: 'y',
+    minorSplitLine: {
+      show: true
     }
-  })
+  },
+  series: [
+    {
+      name: 'Log1/2',
+      type: 'line',
+      data: dataY,
+      itemStyle: {
+        normal: {
+          color: '##FFD15C', //折线点的颜色
+          borderColor: '#FFD15C', //拐点边框颜色
+          borderWidth: 2 //拐点边框大小
+        }
+      },
+      lineStyle: {
+        color: ' ##FFD15C' //折线的颜色
+      }
+    }
+  ]
+}
+
+const options = computed(() => {
+  console.log(props.tableDataVo.dataX, props.tableDataVo, 'option,dataX===')
+  option.xAxis.data = props.tableDataVo.dataX
+  option.series[0].data = props.tableDataVo.dataY
+  return { ...option }
+})
+
+
 </script>
 
-<style scoped>
-  .chart {
-    height: 30vh;
-  }
+<style lang="scss" scoped>
+.box {
+  height: 100%;
+}
+.chart {
+  height: 60%;
+}
 </style>

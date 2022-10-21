@@ -132,4 +132,4 @@ export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList'
  * 获取可视化统计数据
  * @param {*} data
  */
-export const getGovernmentOverview = (data) => get('/api/v1/government/overview', data)
+export const getGovernmentOverview = (url, data) => get(url, data)

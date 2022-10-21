@@ -1,77 +1,107 @@
 <template>
-  <div>
+  <div class="box">
     <CoolTitle title="满意度统计（虎门）"></CoolTitle>
-    <v-chart
-      class="chart"
-      :option="option">
-    </v-chart>
+    <div class="chart-box">
+      <div class="chart">
+        <v-chart :option="options">
+        </v-chart>
+      </div>
+      <ul class="percentage">
+        <li>非常满意 {{percentageBase.veryPleased}}%</li>
+        <li>满意 {{percentageBase.pleased}}%</li>
+        <li>不满意 {{percentageBase.notPleased}}%</li>
+      </ul>
+    </div>
+
   </div>
 </template>
 
-<script>
-  import { use } from 'echarts/core'
-  import { CanvasRenderer } from 'echarts/renderers'
-  import { PieChart } from 'echarts/charts'
-  import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
-  import VChart, { THEME_KEY } from 'vue-echarts'
-  import { ref, defineComponent } from 'vue'
+<script setup>
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { PieChart } from 'echarts/charts'
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import VChart, { THEME_KEY } from 'vue-echarts'
+import { ref, defineComponent, computed } from 'vue'
 
-  use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
+use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
 
-  export default defineComponent({
-    name: 'HelloWorld',
-    components: {
-      VChart
-    },
-    provide: {
-      [THEME_KEY]: 'dark'
-    },
-    setup() {
-      const option = ref({
-        title: {
-          text: 'Traffic Sources',
-          left: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left',
-          data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines']
-        },
-        series: [
-          {
-            name: 'Traffic Sources',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: [
-              { value: 335, name: 'Direct' },
-              { value: 310, name: 'Email' },
-              { value: 234, name: 'Ad Networks' },
-              { value: 135, name: 'Video Ads' },
-              { value: 1548, name: 'Search Engines' }
-            ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
-      })
+const props = defineProps({
+  percentageBase: {
+    type: Object,
+    default: {}
+  }
+})
 
-      return { option }
+const option = {
+  tooltip: {
+    trigger: 'item',
+    formatter: '{a} <br/>{b} : {c} ({d}%)'
+  },
+  legend: {
+    orient: 'vertical',
+    bottom: 'bottom',
+    left: 'left',
+    data: ['非常满意', '满意', '不满意'],
+    textStyle: {
+      color: '#fff'
     }
-  })
+  },
+  series: [
+    {
+      // name: 'Traffic Sources',
+      type: 'pie',
+      radius: '65%',
+      center: ['40%', '50%'],
+      label: {
+        show: false
+      },
+      data: [
+        { value: props.percentageBase.veryPleased, name: '非常满意' },
+        { value: props.percentageBase.pleased, name: '满意' },
+        { value: props.percentageBase.notPleased, name: '不满意' }
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+}
+
+const options = computed(() => {
+  option.series[0].data[0].value = props.percentageBase.veryPleased
+  option.series[0].data[1].value = props.percentageBase.pleased
+  option.series[0].data[2].value = props.percentageBase.notPleased
+  return { ...option }
+})
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.box {
+  height: 100%;
+}
+
+.chart-box {
+  height: 80%;
+  display: flex;
+
   .chart {
-    height: 30vh;
+    width: 85%;
   }
-</style>
+
+  .percentage {
+    margin-top: 18%;
+    color: #fff;
+    line-height: 2.5rem;
+
+    dd {
+      color: #29F1FA;
+      font-size: 2rem;
+    }
+  }
+}
+</style> 
