@@ -340,7 +340,7 @@
       .exportWorkLog()
       .then((res) => {
         if (res.data.code === 0) {
-          window.open(res.data.data)
+          window.open(res.data.data.downloadUrl)
         } else {
           ElMessage.error('导出失败')
         }
