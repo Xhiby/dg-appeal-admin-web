@@ -12,31 +12,31 @@
         @tab-change="handleAppealCategoryChange">
         <el-tab-pane
           label="全部"
-          name="1">
+          name="">
         </el-tab-pane>
         <el-tab-pane
           label="待处理"
-          name="2">
+          name="0">
         </el-tab-pane>
         <el-tab-pane
           label="推进中"
-          name="3">
+          name="1">
         </el-tab-pane>
         <el-tab-pane
           label="待评价"
-          name="4">
+          name="2">
         </el-tab-pane>
         <el-tab-pane
           label="已完结"
-          name="5">
+          name="3">
         </el-tab-pane>
         <el-tab-pane
           label="失效"
-          name="6">
+          name="-1">
         </el-tab-pane>
       </el-tabs>
       <div
-        v-if="activeAppealCategory === '1'"
+        v-if="activeAppealCategory === ''"
         class="form-search tw-w-full tw-mt-[15px]">
         <el-form
           ref="formSearchRef"
@@ -320,7 +320,7 @@
   const { height: containerHeight } = useElementSize(containerRef)
   const { height: headerHeight } = useElementSize(headerRef)
   const appealTableData = ref([])
-  const activeAppealCategory = ref('1')
+  const activeAppealCategory = ref('')
   const formSearchData = reactive({
     // 评价搜索
     keyword: '',
@@ -337,14 +337,8 @@
     updateStartTime: '',
     updateEndTime: '',
     submitStartTime: '',
-    submitEndTime: ''
-  })
-  //诉求标签编号
-  watch(currentLeader, () => {
-    handleReset()
-    formSearchRef.value.resetFields()
-    // 重置form信息 调用接口获取数据
-    _getAppealTableData()
+    submitEndTime: '',
+    appealStatus: ''
   })
   const paginator = reactive({
     pageNum: 1,
@@ -377,10 +371,12 @@
   onMounted(async () => {
     getStreetList()
     appealTypeList()
+    await _getAppealTableData()
   })
 
   const handleAppealCategoryChange = (e) => {
     console.log(e)
+    // handleSearch()
   }
   const handleStreetChange = () => {}
   const handleReset = async () => {
@@ -389,6 +385,7 @@
     paginator.pageSize = 10
     paginator.total = 0
     formSearchRef.value.resetFields()
+    _getAppealTableData()
   }
   const handleSizeChange = async (currentSize) => {
     paginator.pageSize = currentSize
@@ -400,14 +397,15 @@
     await _getAppealTableData()
   }
   const handleSearch = () => {
+    paginator.pageNum = 1
+    paginator.pageSize = 10
     _getAppealTableData()
   }
   const handleExport = () => {}
   const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
-    console.log(row)
     router.push({
-      name: 'AppealLeaderDetail',
+      name: 'AppealDetails',
       query: {
         sid: row.id
       }
@@ -467,6 +465,18 @@
     formSearchData.submitStartTime = arr[0]
     formSearchData.submitEndTime = arr[1]
   }
+  //诉求标签编号
+  watch(currentLeader, () => {
+    paginator.pageNum = 1
+    paginator.pages = 0
+    paginator.pageSize = 10
+    paginator.total = 0
+    for (const i in formSearchData) {
+      formSearchData[i] = ''
+    }
+    // 重置form信息 调用接口获取数据
+    _getAppealTableData()
+  })
 </script>
 
 <style lang="scss" scoped></style>

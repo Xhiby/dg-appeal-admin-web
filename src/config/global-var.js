@@ -214,6 +214,85 @@ export const appealSourceList = [
 ]
 
 /**
+<<<<<<< HEAD
+=======
+ * 诉求状态
+ */
+export const appealStatus = {
+  /**
+   * 提交
+   */
+  submitted: 0,
+  /**
+   * 签收
+   */
+  signed: 1,
+  /**
+   * 接单
+   */
+  received: 2,
+  /**
+   * 推进中
+   */
+  pushing: 3,
+  /**
+   * 待评价
+   */
+  pendingFeedback: 4,
+  /**
+   * 已完成
+   */
+  completed: 5,
+  /**
+   * 已退回
+   */
+  returned: -1,
+  /**
+   * 拆分作废
+   */
+  rejected: -2
+}
+
+/**
+ * 需求状态下拉选项
+ */
+export const appealStatusOptions = [
+  {
+    label: '已提交',
+    value: appealStatus.submitted
+  },
+  {
+    label: '已签收',
+    value: appealStatus.signed
+  },
+  {
+    label: '已接单',
+    value: appealStatus.received
+  },
+  {
+    label: '推进中',
+    value: appealStatus.pushing
+  },
+  {
+    label: '待评价',
+    value: appealStatus.pendingFeedback
+  },
+  {
+    label: '已完成',
+    value: appealStatus.completed
+  },
+  {
+    label: '已退回',
+    value: appealStatus.returned
+  },
+  {
+    label: '拆分作废',
+    value: appealStatus.rejected
+  }
+]
+
+/**
+>>>>>>> 3bd863f56185626a20632a5366943f603eb6ff48
  * 操作类型
  */
 export const handleTypes = {
