@@ -117,7 +117,7 @@
 
     apis
       .createGovernmentLabel({
-        labelName: formData.value.dialogData
+        labelName: formData.value.labelName
       })
       .then((res) => {
         if (res.data.code === 0) {

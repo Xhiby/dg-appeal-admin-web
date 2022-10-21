@@ -37,6 +37,7 @@
                     v-model="logForm.childCategoryCode"
                     :options="appealTypeList"
                     placeholder="诉求分类"
+                    :show-all-levels="false"
                     @change="handleChange">
                   </el-cascader>
                 </el-form-item>
@@ -95,6 +96,7 @@
               label="诉求主题">
             </el-table-column>
             <el-table-column
+              show-overflow-tooltip
               prop="appealChildCategoryName"
               label="诉求分类">
             </el-table-column>

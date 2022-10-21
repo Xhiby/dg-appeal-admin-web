@@ -20,7 +20,7 @@
               <el-input
                 v-model="conditionForm.keyword"
                 class="search-input"
-                placeholder="请输入单位名称搜索">
+                placeholder="请输入企业名称搜索">
               </el-input>
             </el-form-item>
           </el-col>
