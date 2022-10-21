@@ -1,25 +1,26 @@
 <template>
   <div class="big-screen-box">
     <CoolTitle :title="`镇街部门数据(${cityInfo.name})`"></CoolTitle>
-    <el-table size="small" :data="departmentList" header-row-class-name="cool-header-row-class-name"
-      row-class-name="cool-row-class-name" class="cool-table">
-      <el-table-column prop="index" label="序号" width="80">
-        <template #default="scope">
-          <span class="table-index">{{ scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="departName" label="镇街部门数据" width="180">
-      </el-table-column>
-      <el-table-column prop="number" label="受理量">
-      </el-table-column>
-      <el-table-column prop="percent" label="满意率" :formatter="formatter">
-      </el-table-column>
-    </el-table>
+    <div class="cool-table">
+      <el-table size="small" :data="departmentList" header-row-class-name="cool-header-row-class-name"
+        row-class-name="cool-row-class-name" height="100%" :row-style="{backgroundColor: '#09192b'}">
+        <el-table-column prop="index" label="序号" width="80">
+          <template #default="scope">
+            <span class="table-index">{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="departName" label="镇街部门数据" width="180">
+        </el-table-column>
+        <el-table-column prop="number" label="受理量">
+        </el-table-column>
+        <el-table-column prop="percent" label="满意率" :formatter="formatter">
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script setup>
 import CoolTitle from '@/components/cool-title.vue'
-
 
 const props = defineProps({
   departmentList: {
@@ -49,8 +50,12 @@ const formatter = (row, column) => {
 </script>
 <style lang="scss">
 .big-screen-box {
+  height: 100%;
+
+
   .cool-table {
     margin-top: 8px;
+    height: 85%;
   }
 
   .cool-header-row-class-name {
@@ -70,9 +75,7 @@ const formatter = (row, column) => {
     }
   }
 
-  // .cool-row-class-name :hover {
-  //   background-color: #09192b;
-  // }
+ 
   .el-table--border::after,
   .el-table--border::before,
   .el-table--border .el-table__inner-wrapper::after,
@@ -82,6 +85,7 @@ const formatter = (row, column) => {
 
   .el-table {
     --el-table-border-color: #09192b;
+    background-color: #09192b;
   }
 
   .table-index {

@@ -7,9 +7,9 @@
         </v-chart>
       </div>
       <ul class="percentage">
-        <li>非常满意 {{percentageBase.veryPleased}}%</li>
-        <li>满意 {{percentageBase.pleased}}%</li>
-        <li>不满意 {{percentageBase.notPleased}}%</li>
+        <li>非常满意 <span>{{percentageBase.veryPleased}}%</span></li>
+        <li>满意 <span>{{percentageBase.pleased}}%</span></li>
+        <li>不满意 <span>{{percentageBase.notPleased}}%</span></li>
       </ul>
     </div>
 
@@ -101,13 +101,20 @@ const options = computed(() => {
   }
 
   .percentage {
+    flex: 1;
     margin-top: 18%;
     color: #fff;
     line-height: 2.5rem;
 
-    dd {
-      color: #29F1FA;
-      font-size: 2rem;
+    li {
+      display: flex;
+      justify-content: space-between;
+
+      span {
+        color: #29F1FA;
+        font-size: 2rem;
+      }
+
     }
   }
 }

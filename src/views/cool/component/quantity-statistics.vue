@@ -39,36 +39,43 @@ const option = {
   },
   xAxis: {
     type: 'category',
-    splitLine: { show: false },
-    data: dataX
+    data: dataX,
+    splitLine: {
+      show: false
+    }
   },
   grid: {
     left: '3%',
+    top: '8%',
     right: '4%',
     bottom: '3%',
     containLabel: true
   },
   yAxis: {
     type: 'log',
-    // name: 'y',
-    minorSplitLine: {
-      show: true
+    splitLine: { //网格线
+      lineStyle: {
+        type: 'dashed', //设置网格线类型 dotted：虚线 solid:实线
+        color: '#3F4F5E',//刻度线的颜色
+      },
+      show: true //隐藏或显示
     }
   },
   series: [
     {
       name: 'Log1/2',
       type: 'line',
+      smooth: true,
       data: dataY,
       itemStyle: {
         normal: {
-          color: '##FFD15C', //折线点的颜色
+          color: '#FFD15C', //折线点的颜色
           borderColor: '#FFD15C', //拐点边框颜色
           borderWidth: 2 //拐点边框大小
         }
       },
       lineStyle: {
-        color: ' ##FFD15C' //折线的颜色
+        color: ' #FFD15C' //折线的颜色
       }
     }
   ]
@@ -88,7 +95,8 @@ const options = computed(() => {
 .box {
   height: 100%;
 }
+
 .chart {
-  height: 60%;
+  height: 90%;
 }
 </style>

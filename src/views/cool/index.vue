@@ -1,5 +1,5 @@
 <template>
-  <div class="cool_Photo" v-loading="loading">
+  <div class="cool_Photo">
     <div class="item item_1">
       <img src="@/assets/images/cool/sqtj.png" />
       <top-time></top-time>
@@ -154,16 +154,6 @@ const cityChange = (cityData) => {
       color: #fff;
       top: 25px;
       right: 20px;
-
-      .date {
-        color: #45a2ff;
-      }
-
-      .week {
-        color: #45a2ff;
-        margin-left: 8px;
-        margin-right: 8px;
-      }
     }
   }
 
