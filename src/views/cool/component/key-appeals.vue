@@ -1,6 +1,6 @@
 <template>
   <div class="appeals">
-    <cool-title title="重点诉求(虎门)"></cool-title>
+    <cool-title :title="`重点诉求(${cityInfo.name})`"></cool-title>
     <div class="cards">
       <div class="card-box">
         <el-icon class="icon" color="#29F1FA">
@@ -40,6 +40,13 @@ const props = defineProps({
   percentBase: {
     type: Object,
     default: {}
+  },
+  cityInfo: {
+    type: Object,
+    default: {
+      name: '全市',
+      value: 0
+    }
   }
 })
 </script>

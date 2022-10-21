@@ -2,39 +2,40 @@
   <div class="cool_Photo" v-loading="loading">
     <div class="item item_1">
       <img src="@/assets/images/cool/sqtj.png" />
-      <span class="time"> <span class="date">2022.09.27</span> <span class="week">星期二</span> 18:32:16 </span>
+      <top-time></top-time>
     </div>
 
     <div class="item item_2">
-      <DepData :departmentList="departmentList"></DepData>
+      <DepData :departmentList="departmentList" :cityInfo="cityInfo"></DepData>
     </div>
     <div class="item item_3">
-      <appeals-classification :apealList="apealList"></appeals-classification>
+      <appeals-classification :apealList="apealList" :cityInfo="cityInfo"></appeals-classification>
     </div>
 
     <div class="item item_4">
-      <cumulative-appeals :appealsBase="appealsBase"></cumulative-appeals>
+      <cumulative-appeals :appealsBase="appealsBase" :cityInfo="cityInfo"></cumulative-appeals>
     </div>
     <div class="item item_5">
-      <big-sreen-map></big-sreen-map>
+      <big-sreen-map @cityChange="cityChange"></big-sreen-map>
     </div>
     <div class="item item_6">
-      <key-appeals :percentBase="percentBase"></key-appeals>
+      <key-appeals :percentBase="percentBase" :cityInfo="cityInfo"></key-appeals>
     </div>
     <div class="item item_7">
       <!-- https://zhuanlan.zhihu.com/p/342424311 -->
-      <appeal-statistics :statisticsBase="statisticsBase"></appeal-statistics>
+      <appeal-statistics :statisticsBase="statisticsBase" :cityInfo="cityInfo"></appeal-statistics>
     </div>
     <div class="item item_8">
-      <quantity-statistics :tableDataVo="tableDataVo"></quantity-statistics>
+      <quantity-statistics :tableDataVo="tableDataVo" :cityInfo="cityInfo"></quantity-statistics>
     </div>
     <div class="item item_9">
-      <satisfaction-statistics :percentageBase="percentageBase"></satisfaction-statistics>
+      <satisfaction-statistics :percentageBase="percentageBase" :cityInfo="cityInfo"></satisfaction-statistics>
     </div>
   </div>
 </template>
 
 <script setup>
+import TopTime from './component/top-time.vue'
 import DepData from './component/dep-data.vue'
 import AppealsClassification from './component/appeals-classification.vue'
 import BigSreenMap from './component/big-sreen-map.vue'
@@ -45,7 +46,7 @@ import QuantityStatistics from './component/quantity-statistics.vue'
 import SatisfactionStatistics from './component/satisfaction-statistics.vue'
 import * as apis from '@/apis/index'
 import { ElMessage } from 'element-plus'
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
 
 onMounted(() => {
   initData(0)
@@ -62,9 +63,10 @@ const percentBase = ref({})
 const statisticsBase = ref({})
 const percentageBase = ref({})
 
+const cityInfo = ref({ name: '全市', value: 0 })
+
 const initData = (id) => {
   loading.value = true
-
   apis
     .getGovernmentOverview(`/api/v1/government/overview/${id}`, {})
     .then((res) => {
@@ -98,7 +100,6 @@ const initData = (id) => {
           pleased: data.pleased,
           notPleased: data.notPleased
         }
-        console.log(percentageBase, 'percentageBase==')
 
       } else {
         ElMessage.error({ message: res.data.msg })
@@ -111,6 +112,13 @@ const initData = (id) => {
       loading.value = false
     })
 }
+
+const cityChange = (cityData) => {
+  console.log(cityData, 'cityData======cityData;;;;')
+  cityInfo.value = cityData
+  initData(cityData.value)
+}
+
 </script>
 
 <style lang="scss" scoped>

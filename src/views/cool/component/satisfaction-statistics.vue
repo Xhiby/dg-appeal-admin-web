@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <CoolTitle title="满意度统计（虎门）"></CoolTitle>
+    <CoolTitle :title="`满意度统计(${cityInfo.name})`"></CoolTitle>
     <div class="chart-box">
       <div class="chart">
         <v-chart :option="options">
@@ -30,6 +30,13 @@ const props = defineProps({
   percentageBase: {
     type: Object,
     default: {}
+  },
+  cityInfo: {
+    type: Object,
+    default: {
+      name: '全市',
+      value: 0
+    }
   }
 })
 
@@ -90,7 +97,7 @@ const options = computed(() => {
   display: flex;
 
   .chart {
-    width: 85%;
+    width: 60%;
   }
 
   .percentage {

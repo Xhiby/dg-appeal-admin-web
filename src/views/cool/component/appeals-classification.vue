@@ -1,9 +1,8 @@
 <template>
   <div>
-    <cool-title title="述求分类(虎门)"></cool-title>
+    <cool-title :title="`述求分类(${cityInfo.name})`"></cool-title>
     <div>
       <div class="title box-flex"> <span>述求分类</span> <span>受理量</span> </div>
-
       <div class="ebox-slider" v-for="(item,index) in apealList" :key="index">
         <div class="disc box-flex"> <span>{{item.departName}}</span> <span>{{item.number}}</span> </div>
         <el-slider :model-value="item.number"></el-slider>
@@ -20,6 +19,13 @@
     apealList: {
     type: Array,
     default: []
+  },
+  cityInfo: {
+    type: Object,
+    default: {
+      name: '全市',
+      value: 0
+    }
   }
 })
 

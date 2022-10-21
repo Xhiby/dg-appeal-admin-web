@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <CoolTitle title="处理数量统计（虎门）"></CoolTitle>
+    <CoolTitle :title="`处理数量统计(${cityInfo.name})`"></CoolTitle>
     <v-chart class="chart" :option="options">
     </v-chart>
   </div>
@@ -19,6 +19,13 @@ const props = defineProps({
   tableDataVo: {
     type: Object,
     default: {}
+  },
+  cityInfo: {
+    type: Object,
+    default: {
+      name: '全市',
+      value: 0
+    }
   }
 })
 
