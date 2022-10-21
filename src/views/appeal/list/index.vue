@@ -310,9 +310,9 @@
   import { useElementSize } from '@vueuse/core'
   import { useRouter } from 'vue-router'
   import { onMounted, reactive, ref, toRaw } from 'vue'
-  import { getAppeals } from '@/apis/appeal-crud'
+  import { getAppeals, removeAppeal } from '@/apis/appeal-crud'
   import { useCommonStore } from '@/stores/common'
-  import { ElMessage } from 'element-plus'
+  import { ElMessage, ElMessageBox } from 'element-plus'
   import * as apis from '@/apis/index'
   import { getAppealsLabels } from '@/apis/appeal-crud'
   import { appealSourceList } from '@/config/global-var'
@@ -337,7 +337,7 @@
     appealSource: '',
     appealStatus: '',
     categoryChildCode: '',
-    departmentCode: '',
+    departmentId: '',
     updatedTime: '',
     submitTime: ''
   })
@@ -439,7 +439,7 @@
     formSearchData.appealLabelCode = ''
     formSearchData.appealStatus = ''
     formSearchData.categoryChildCode = ''
-    formSearchData.departmentCode = ''
+    formSearchData.departmentId = ''
     formSearchData.updatedTime = ''
     formSearchData.submitTime = ''
     formSearchData.streetId = ''
@@ -479,7 +479,22 @@
     })
   }
   const handleDeleteAppeal = (row) => {
-    console.log(row)
+    ElMessageBox.confirm('确认要删除该条诉求吗?', '注意', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(async () => {
+      const { id } = toRaw(row)
+      loading.value = true
+      const resp = await removeAppeal(id)
+      loading.value = false
+      if (resp.data.code === 0) {
+        ElMessage.success('诉求删除成功！')
+        await _getAppealTableData()
+      } else {
+        ElMessage.error('诉求删除失败！' + resp.data.msg)
+      }
+    })
   }
 </script>
 

@@ -1,4 +1,4 @@
-import { get, post, put } from './config'
+import { get, post, put, remove } from './config'
 
 /**
  * 诉求列表
@@ -61,6 +61,12 @@ export const splitAppeal = (params) => put(`/api/v1/government/appeal/signSpilt`
 export const editAppeal = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
 
 /**
+ * 领导处理诉求
+ * @id id
+ */
+export const editAppealByLeader = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
+
+/**
  * 获取所有部门
  * @id id
  */
@@ -77,3 +83,15 @@ export const signAppeal = (params) => put(`/api/v1/government/appeal/signAppeal`
  * @id id
  */
 export const markAppeal = (params) => put(`/api/v1/government/appeal/sign`, params)
+
+/**
+ *  诉求阶段性总结
+ * @id id
+ */
+export const progressSummary = (params) => put(`/api/v1/government/appeal/summary`, params)
+
+/**
+ *  删除诉求
+ * @id id
+ */
+export const removeAppeal = (id) => remove(`/api/v1/government/appeal/delete/${id}`)

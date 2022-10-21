@@ -29,11 +29,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          prop="departmentCode"
+          prop="departmentId"
           label="单位名称">
           <el-select
             v-if="serviceForm.departmentType === '0'"
-            v-model="serviceForm.departmentCode"
+            v-model="serviceForm.departmentId"
             style="width: 326px"
             placeholder="请选择部门">
             <el-option
@@ -45,14 +45,14 @@
           </el-select>
           <el-select
             v-if="serviceForm.departmentType === '1'"
-            v-model="serviceForm.departmentCode"
+            v-model="serviceForm.departmentId"
             style="width: 326px"
             placeholder="请选择部门">
             <el-option
               v-for="item in departmentsByCity"
-              :key="item.departmentCode"
-              :label="item.departmentName"
-              :value="item.departmentCode">
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -103,12 +103,12 @@
   const departmentsByCity = ref([])
   const serviceForm = reactive({
     departmentType: '1',
-    departmentCode: '',
+    departmentId: '',
     handleContent: ''
   })
   const formRules = reactive({
     departmentType: [{ required: true, message: '请选择部门类型', trigger: 'blur' }],
-    departmentCode: [{ required: true, message: '请选择部门', trigger: 'blur' }],
+    departmentId: [{ required: true, message: '请选择部门', trigger: 'blur' }],
     handleContent: [{ required: true, message: '请输入回复内容', trigger: 'blur' }]
   })
 

@@ -376,13 +376,12 @@
   const handleSearch = () => {
     _getAppealTableData()
   }
-  const handleExport = () => {}
-  const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
     router.push({
-      name: 'AppealLeaderDetail',
+      name: 'AppealDetails',
       query: {
-        sid: row.id
+        sid: row.id,
+        type: 'leader'
       }
     })
   }

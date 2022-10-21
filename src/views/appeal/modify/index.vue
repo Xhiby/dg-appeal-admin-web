@@ -312,7 +312,7 @@
     btnLoading.value = true
     applyAppeal(postPayload)
       .then((res) => {
-        loading.value = false
+        btnLoading.value = false
         if (res.data.code === 0) {
           ElMessage.success({ message: '代理诉求提交成功！' })
           setTimeout(() => {

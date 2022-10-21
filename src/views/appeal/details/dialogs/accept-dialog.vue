@@ -4,7 +4,7 @@
       v-model="$show"
       title="确认接单"
       width="30%">
-      <span>接受诉求后，您需要在****时限内处理完成！请确认您的操作</span>
+      <span>接受诉求后，您需要在指定时限内处理完成！请确认您的操作</span>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="$show = false">取消</el-button>
@@ -28,7 +28,7 @@
       default: false
     }
   })
-  const emit = defineEmits(['update:show', 'onReload'])
+  const emit = defineEmits(['update:show', 'confirm'])
   const { show } = toRefs(props)
   // 控制弹窗显示
   const $show = computed({
@@ -39,9 +39,8 @@
       emit('update:show', val)
     }
   })
-  const submit = () => {
-    console.log(123)
-    emit('onReload')
+  const submit = async () => {
+    emit('confirm', [])
     $show.value = false
   }
 </script>
