@@ -23,7 +23,7 @@
         </el-steps>
         <div class="tw-flex tw-items-center tw-bg-[#fdf6ec] tw-w-full tw-h-65px tw-px-[18px] tw-py-[8px] tw-font-bold tw-mt-[30px]">
           <span class="tw-mr-[10px]">处理期限: </span>
-          <span class="tw-text-[#f56c6c] tw-text-[18px] tw-text-[18px]"> {{ appealDetail.handleLimitTime ? appealDetail.handleLimitTime : '--' }} </span>
+          <span class="tw-text-[#f56c6c] tw-text-[18px] tw-text-[18px]"> {{ limitedDate }} </span>
           <span class="tw-ml-[20px]">剩余</span>
           <span class="tw-text-[#f56c6c] tw-text-[28px] tw-px-[5px]">{{ limitedDays }}</span>
           <span>个工作日</span>
@@ -271,6 +271,7 @@
   const appealProcesses = ref([])
   const appealRecords = ref([])
   const limitedDays = ref('')
+  const limitedDate = ref('')
   const handleTypesMapper = {
     0: '提交',
     1: '签收',
@@ -299,12 +300,15 @@
           switch (appealDetailVo.appealStatus) {
             case handleTypes.submit:
               limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '--'
+              limitedDate.value = appealDetail.value.handleLimitTime ? appealDetail.value.handleLimitTime : '--'
               break
             case handleTypes.sign:
               limitedDays.value = appealDetail.value.hasOrderDays ? appealDetail.value.hasOrderDays : '--'
+              limitedDate.value = appealDetail.value.orderLimitTime ? appealDetail.value.orderLimitTime : '--'
               break
             case handleTypes.complete:
               limitedDays.value = appealDetail.value.hasEvaluateDays ? appealDetail.value.hasEvaluateDays : '--'
+              limitedDate.value = appealDetail.value.evaluateLimitTime ? appealDetail.value.evaluateLimitTime : '--'
               break
           }
         } else {
