@@ -213,7 +213,8 @@
               </el-button>
               <el-button
                 class="tw-w-[60px] tw-mt-[15px]"
-                type="primary">
+                type="primary"
+                @click="showMarkTaskDialog = true">
                 标记
               </el-button>
             </div>
