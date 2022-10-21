@@ -10,9 +10,9 @@
       <div class="tw-flex tw-items-start tw-justify-between tw-flex-col">
         <span class="tw-text-[18px] tw-text-[#303133] tw-font-medium tw-mb-[30px]">诉求进度</span>
         <el-steps
-          :active="appealDetail.appealStatus"
+          :active="appealProcesses.length"
           finish-status="success"
-          process-status="process"
+          process-status="wait"
           class="tw-min-w-[70vw]">
           <el-step
             v-for="process in appealProcesses"
@@ -298,17 +298,22 @@
           appealProcesses.value = appealHandleProcesses
           appealRecords.value = appealHandleRecords
           switch (appealDetailVo.appealStatus) {
-            case handleTypes.submit:
+            case 1:
               limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '--'
               limitedDate.value = appealDetail.value.handleLimitTime ? appealDetail.value.handleLimitTime : '--'
               break
-            case handleTypes.sign:
+            case 0:
               limitedDays.value = appealDetail.value.hasOrderDays ? appealDetail.value.hasOrderDays : '--'
               limitedDate.value = appealDetail.value.orderLimitTime ? appealDetail.value.orderLimitTime : '--'
               break
-            case handleTypes.complete:
+            case 2:
               limitedDays.value = appealDetail.value.hasEvaluateDays ? appealDetail.value.hasEvaluateDays : '--'
               limitedDate.value = appealDetail.value.evaluateLimitTime ? appealDetail.value.evaluateLimitTime : '--'
+              break
+            case 3:
+            case -1:
+              limitedDays.value = '--'
+              limitedDate.value = '--'
               break
           }
         } else {
@@ -370,7 +375,7 @@
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async (value) => {
+      }).then(async ({ value }) => {
         loading.value = true
         const resp = await signAppeal({
           appealId: route.query.sid,
