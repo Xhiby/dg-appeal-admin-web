@@ -337,8 +337,11 @@
     apis
       .exportWorkLog()
       .then((res) => {
-        console.log(res)
-        apis.downloadFile(res, '日志管理')
+        if (res.data.code === 0) {
+          window.open(res.data.data)
+        } else {
+          ElMessage.error('导出失败')
+        }
       })
       .catch((err) => console.log(err))
       .finally(() => {})

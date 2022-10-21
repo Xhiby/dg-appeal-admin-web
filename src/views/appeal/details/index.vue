@@ -507,12 +507,13 @@
   }
 
   const showFile = () => {
-    router.push({
+    const routeData = router.resolve({
       name: 'print',
       query: {
         sid: route.query.sid
       }
     })
+    window.open(routeData.href, '_blank')
   }
 </script>
 

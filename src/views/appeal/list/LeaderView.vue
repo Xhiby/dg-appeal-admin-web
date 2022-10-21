@@ -354,7 +354,7 @@
   const _getAppealTableData = async () => {
     loading.value = true
     const { data: resp } = await getAppeals({
-      appealLabelCode: currentLeader.value,
+      // appealLabelCode: currentLeader.value,
       ...toRaw(formSearchData),
       ...toRaw(paginator)
     })

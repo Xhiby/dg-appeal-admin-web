@@ -182,16 +182,6 @@
   const barOptionRight = ref({})
   const timeOutOptions = ref({})
 
-  const mockbarOptionLeft = reactive({
-    dataX: ['A', 'B', 'C', 'D', 'E'],
-    dataFormate: [12, 35, 61, 21, 34]
-  })
-
-  const mockbarOptionRight = reactive({
-    dataX: ['带', '带', '大', '师', '兄'],
-    dataFormate: [60, 55, 34, 57, 98]
-  })
-
   const options = reactive([
     {
       label: '倍增计划',
@@ -212,6 +202,7 @@
   const onChangeTime = (timeArray) => {
     formData.startdate = timeArray[0]
     formData.enddate = timeArray[1]
+    getAppealComputed()
   }
   const getAppealComputed = () => {
     apis

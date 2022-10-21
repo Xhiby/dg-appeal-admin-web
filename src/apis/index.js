@@ -138,7 +138,7 @@ export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList'
  * 工作日志导出excel
  * @param {*} data
  */
-export const exportWorkLog = (data) => get('/api/v1/government/workLog/export', data, { responseType: 'blob' })
+export const exportWorkLog = (data) => get('/api/v1/government/workLog/getUrl', data)
 
 /**
  * 批量修改日志
@@ -197,3 +197,9 @@ export const getLeaderList = () => get('/api/v1/government/label/getAllLabel')
  * @param {*} data
  */
 export const getGovernmentOverview = (url, data) => get(url, data)
+
+/**
+ *
+ */
+
+export const exportDetailTable = (data) => get(`/api/v1/government/appeal/detailTable`, data)
