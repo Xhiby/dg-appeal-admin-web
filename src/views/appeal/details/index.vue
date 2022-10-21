@@ -23,7 +23,7 @@
         </el-steps>
         <div class="tw-flex tw-items-center tw-bg-[#fdf6ec] tw-w-full tw-h-65px tw-px-[18px] tw-py-[8px] tw-font-bold tw-mt-[30px]">
           <span class="tw-mr-[10px]">处理期限: </span>
-          <span class="tw-text-[#f56c6c] tw-text-[18px] tw-text-[18px]"> {{ appealDetail.handleLimitTime ? appealDetail.handleLimitTime : '暂无信息' }} </span>
+          <span class="tw-text-[#f56c6c] tw-text-[18px] tw-text-[18px]"> {{ appealDetail.handleLimitTime ? appealDetail.handleLimitTime : '--' }} </span>
           <span class="tw-ml-[20px]">剩余</span>
           <span class="tw-text-[#f56c6c] tw-text-[28px] tw-px-[5px]">{{ limitedDays }}</span>
           <span>个工作日</span>
@@ -66,14 +66,15 @@
                       </span>
                     </el-descriptions-item>
                     <el-descriptions-item
-                      v-if="record.attachment"
+                      v-if="record.enclosure !== null && record.enclosure !== undefined"
                       label="相关附件:">
                       <el-link
+                        v-for="attachment in record.enclosure"
+                        :key="attachment.id"
                         type="primary"
-                        :href="record.attachment">
-                        {{ record.attachmentName }}
+                        :href="attachment.downloadUrl">
+                        {{ attachment.originName }}
                       </el-link>
-                      {{ record.attachment }}
                     </el-descriptions-item>
                   </el-descriptions>
                 </template>
@@ -297,13 +298,13 @@
           appealRecords.value = appealHandleRecords
           switch (appealDetailVo.appealStatus) {
             case handleTypes.submit:
-              limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '暂无信息'
+              limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '--'
               break
             case handleTypes.sign:
-              limitedDays.value = appealDetail.value.hasOrderDays ? appealDetail.value.hasOrderDays : '暂无信息'
+              limitedDays.value = appealDetail.value.hasOrderDays ? appealDetail.value.hasOrderDays : '--'
               break
             case handleTypes.complete:
-              limitedDays.value = appealDetail.value.hasEvaluateDays ? appealDetail.value.hasEvaluateDays : '暂无信息'
+              limitedDays.value = appealDetail.value.hasEvaluateDays ? appealDetail.value.hasEvaluateDays : '--'
               break
           }
         } else {
