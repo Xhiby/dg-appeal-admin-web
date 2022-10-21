@@ -286,9 +286,15 @@
       @confirm="handleBackToCityByLeader">
     </city-back-dialog>
     <!-- 街道转办 -->
-    <street-dialog v-model:show="showStreetDialog"> </street-dialog>
+    <street-dialog
+      v-model:show="showStreetDialog"
+      @confirm="handleTransferToStreet">
+    </street-dialog>
     <!-- 回复 -->
-    <reply-dialog v-model:show="showReplyDialog"> </reply-dialog>
+    <reply-dialog
+      v-model:show="showReplyDialog"
+      @confirm="handleReplyByLeader">
+    </reply-dialog>
   </div>
 </template>
 
@@ -378,10 +384,40 @@
       .finally(() => {})
   }
 
+  const handleReplyByLeader = async (replyPayload) => {
+    loading.value = true
+    const resp = await editAppealByLeader({
+      appealId: route.query.sid,
+      handleType: 4,
+      ...replyPayload
+    })
+    loading.value = false
+    if (resp.data.code === 0) {
+      ElMessage.success('回复成功！')
+    } else {
+      ElMessage.error('回复失败！' + resp.data.msg)
+    }
+  }
+
+  const handleTransferToStreet = async (transferPayload) => {
+    loading.value = true
+    const resp = await editAppealByLeader({
+      appealId: route.query.sid,
+      handleType: 3,
+      ...transferPayload
+    })
+    loading.value = false
+    if (resp.data.code === 0) {
+      ElMessage.success('街道转办成功！')
+    } else {
+      ElMessage.error('街道转办失败！' + resp.data.msg)
+    }
+  }
+
   const handleBackToCityByLeader = async () => {
     loading.value = true
     const resp = await editAppealByLeader({
-      appealId: route.query.id,
+      appealId: route.query.sid,
       handleType: 2
     })
     loading.value = false
@@ -395,7 +431,7 @@
   const handleLeaderTakeOrder = async () => {
     loading.value = true
     const resp = await editAppealByLeader({
-      appealId: route.query.id,
+      appealId: route.query.sid,
       handleType: 1
     })
     loading.value = false
