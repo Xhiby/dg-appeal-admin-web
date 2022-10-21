@@ -408,7 +408,8 @@
     router.push({
       name: 'AppealDetails',
       query: {
-        sid: row.id
+        sid: row.id,
+        type: 'leader'
       }
     })
   }
