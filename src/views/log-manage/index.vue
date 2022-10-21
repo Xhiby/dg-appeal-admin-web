@@ -283,7 +283,7 @@
       res[i].label = data[i].categoryName
       res[i].value = data[i].categoryCode
 
-      if (data[i].children.length !== 0) {
+      if (data[i].children !== []) {
         res[i].children = convertCategoryList(data[i].children)
       }
     }
