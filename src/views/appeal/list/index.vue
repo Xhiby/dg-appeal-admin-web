@@ -12,27 +12,27 @@
         @tab-change="handleAppealCategoryChange">
         <el-tab-pane
           label="全部"
-          name="1">
+          name="">
         </el-tab-pane>
         <el-tab-pane
           label="待处理"
-          name="2">
+          name="0">
         </el-tab-pane>
         <el-tab-pane
           label="推进中"
-          name="3">
+          name="1">
         </el-tab-pane>
         <el-tab-pane
           label="待评价"
-          name="4">
+          name="2">
         </el-tab-pane>
         <el-tab-pane
           label="已完结"
-          name="5">
+          name="3">
         </el-tab-pane>
         <el-tab-pane
           label="失效"
-          name="6">
+          name="-1">
         </el-tab-pane>
       </el-tabs>
       <div class="form-search tw-w-full tw-mt-[15px]">
@@ -314,7 +314,8 @@
   import { useCommonStore } from '@/stores/common'
   import { ElMessage } from 'element-plus'
   import * as apis from '@/apis/index'
-  import { getAppealsLabels } from '@/apis/appeal-crud' 
+  import { getAppealsLabels } from '@/apis/appeal-crud'
+  import { appealSourceList } from '@/config/global-var'
 
   const loading = ref(false)
   const containerRef = ref(null)
@@ -328,7 +329,7 @@
   const streetList = ref([])
   const appealList = ref([])
   const appealsLabels = ref([])
-  const activeAppealCategory = ref('1')
+  const activeAppealCategory = ref('')
   const formSearchData = reactive({
     keyword: '',
     streetId: '',
@@ -428,12 +429,21 @@
     // 选择后默认为一级和二级的ID 改为仅需要二级ID
     formSearchData.categoryChildCode = value[1]
   }
-  const handleAppealCategoryChange = () => {}
+  const handleAppealCategoryChange = (tabName) => {
+    formSearchData.appealStatus = tabName
+    _getAppealTableData()
+  }
   const handleStreetChange = () => {}
   const handleReset = async () => {
     formSearchData.keyword = ''
-    formSearchData.street = ''
-    formSearchData.updateDate = ''
+    formSearchData.appealLabelCode = ''
+    formSearchData.appealStatus = ''
+    formSearchData.categoryChildCode = ''
+    formSearchData.departmentCode = ''
+    formSearchData.updatedTime = ''
+    formSearchData.submitTime = ''
+    formSearchData.streetId = ''
+    formSearchData.appealSource = ''
     paginator.pageNum = 1
     paginator.pages = 0
     paginator.pageSize = 20
@@ -449,7 +459,9 @@
     paginator.pageNum = current
     await _getAppealTableData()
   }
-  const handleSearch = () => {}
+  const handleSearch = async () => {
+    await _getAppealTableData()
+  }
   const handleProxyCommit = () => {
     router.push({
       name: 'CreateProxyAppeal',
