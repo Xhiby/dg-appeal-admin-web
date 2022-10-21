@@ -207,3 +207,212 @@ export const appealSourceList = [
     label: '企业市长直通车'
   }
 ]
+
+/**
+ * 诉求状态
+ */
+export const appealStatus = {
+  /**
+   * 提交
+   */
+  submitted: 0,
+  /**
+   * 签收
+   */
+  signed: 1,
+  /**
+   * 接单
+   */
+  received: 2,
+  /**
+   * 推进中
+   */
+  pushing: 3,
+  /**
+   * 待评价
+   */
+  pendingFeedback: 4,
+  /**
+   * 已完成
+   */
+  completed: 5,
+  /**
+   * 已退回
+   */
+  returned: -1,
+  /**
+   * 拆分作废
+   */
+  rejected: -2
+}
+
+/**
+ * 需求状态下拉选项
+ */
+export const appealStatusOptions = [
+  {
+    label: '已提交',
+    value: appealStatus.submitted
+  },
+  {
+    label: '已签收',
+    value: appealStatus.signed
+  },
+  {
+    label: '已接单',
+    value: appealStatus.received
+  },
+  {
+    label: '推进中',
+    value: appealStatus.pushing
+  },
+  {
+    label: '待评价',
+    value: appealStatus.pendingFeedback
+  },
+  {
+    label: '已完成',
+    value: appealStatus.completed
+  },
+  {
+    label: '已退回',
+    value: appealStatus.returned
+  },
+  {
+    label: '拆分作废',
+    value: appealStatus.rejected
+  }
+]
+
+/**
+ * 操作类型
+ */
+export const handleTypes = {
+  /**
+   * 诉求拆分
+   */
+  split: -2,
+  /**
+   * 诉求驳回
+   */
+  reject: -1,
+  /**
+   * 诉求提交
+   */
+  submit: 0,
+  /**
+   * 诉求签收（倍增办）
+   */
+  sign: 1,
+  /**
+   * 诉求转办（倍增办转办给处理部门，处理部门相互转办）
+   */
+  relay: 2,
+  /**
+   * 诉求接单（处理部门）
+   */
+  accept: 3,
+  /**
+   * 诉求回复（倍增办自办，处理部门进行回复）
+   */
+  reply: 4,
+  /**
+   * 企业提交内容
+   */
+  companySubmit: 5,
+  /**
+   * 诉求分类和标签修改
+   */
+  edit: 6,
+  /**
+   * 诉求办结
+   */
+  complete: 7,
+  /**
+   * 诉求评价
+   */
+  feedback: 8,
+  /**
+   * 处理部门退回市倍增办
+   */
+  returnHigh: 9
+}
+
+/**
+ * 不同的操作类型显示不同的内容项
+ */
+export const handleTypesComOptions = {
+  [handleTypes.submit]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString'
+  ],
+  [handleTypes.sign]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString',
+    // 内容
+    'handleContent'
+  ],
+  [handleTypes.relay]: [
+    // 操作
+    'recordLabel',
+    // 内容
+    'handleContent'
+  ],
+  [handleTypes.reply]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString',
+    // 内容
+    'handleContent',
+    // 附件
+    'enclosure'
+  ],
+  [handleTypes.complete]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString'
+  ],
+  [handleTypes.complete]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString'
+  ],
+  [handleTypes.reject]: [
+    // 操作
+    'recordLabel',
+    // 内容
+    'handleContent'
+  ],
+  [handleTypes.split]: ['recordLabel'],
+  [handleTypes.accept]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString',
+    // 内容
+    'handleContent'
+  ],
+  [handleTypes.returnHigh]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString',
+    // 内容
+    'handleContent'
+  ],
+  [handleTypes.relay]: [
+    // 操作
+    'recordLabel',
+    // 状态
+    'appealStatusString',
+    // 内容
+    'handleContent'
+  ]
+}

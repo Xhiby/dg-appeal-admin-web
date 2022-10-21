@@ -289,7 +289,6 @@
   import { storeToRefs } from 'pinia'
   import { appealSourceList } from '@/config/global-var'
 
-  
   const loading = ref(false)
   const containerRef = ref(null)
   const headerRef = ref(null)
