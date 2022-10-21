@@ -50,9 +50,9 @@
             placeholder="请选择部门">
             <el-option
               v-for="item in departmentsByCity"
-              :key="item.departmentId"
-              :label="item.departmentName"
-              :value="item.departmentId">
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>

@@ -92,7 +92,7 @@
               <el-descriptions-item
                 label="工单编号:"
                 width="40px">
-                {{ appealDetail.id }}
+                {{ appealDetail.appealCode }}
               </el-descriptions-item>
               <el-descriptions-item
                 label="处理状态:"
@@ -151,14 +151,15 @@
             <div class="tw-flex tw-flex-col">
               <span class="tw-mb-[10px]">阶段性总结</span>
               <el-input
-                v-model="textarea"
+                v-model="summary"
                 :rows="4"
                 type="textarea"
                 placeholder="请输入阶段性总结">
               </el-input>
               <el-button
                 class="tw-w-[60px] tw-mt-[15px]"
-                type="primary">
+                type="primary"
+                @click="handleProgressSummary">
                 提交
               </el-button>
             </div>
@@ -248,8 +249,8 @@
 <script setup>
   import Breadcrumb from '@/components/breadcrumb/index.vue'
   import { useRoute, useRouter } from 'vue-router'
-  import { ref, onMounted } from 'vue'
-  import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal } from '@/apis/appeal-crud'
+  import { ref, onMounted, toRaw } from 'vue'
+  import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal, progressSummary } from '@/apis/appeal-crud'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import { handleTypes } from '@/config/global-var'
   import SplitTaskDialog from './dialogs/SplitTask.vue'
@@ -258,7 +259,7 @@
   import TaskHandleByMyself from './dialogs/TaskHandleByMyself.vue'
   import MarkTask from './dialogs/MarkTask.vue'
 
-  const textarea = ref('')
+  const summary = ref('')
   const loading = ref(false)
   const showMarkTaskDialog = ref(false)
   const showTaskHandleByMyselfDialog = ref(false)
@@ -322,6 +323,23 @@
       })
       .catch((err) => console.log(err))
       .finally(() => {})
+  }
+
+  const handleProgressSummary = async () => {
+    const summaryContent = toRaw(summary.value)
+    if (!summaryContent) {
+      ElMessage.error('请填入阶段性总结内容!')
+      return
+    }
+    const resp = await progressSummary({
+      id: route.query.sid,
+      summaryContent: summaryContent
+    })
+    if (resp.data.code === 0) {
+      ElMessage.success('阶段性总结提交成功！')
+    } else {
+      ElMessage.error('阶段性总结提交失败！' + resp.data.msg)
+    }
   }
 
   const handleMarkTask = async (taskPayload) => {
