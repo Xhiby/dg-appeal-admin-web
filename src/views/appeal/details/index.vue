@@ -300,12 +300,12 @@
           appealRecords.value = appealHandleRecords
           switch (appealDetailVo.appealStatus) {
             case 1:
-              limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '--'
-              limitedDate.value = appealDetail.value.handleLimitTime ? appealDetail.value.handleLimitTime : '--'
-              break
-            case 0:
               limitedDays.value = appealDetail.value.hasOrderDays ? appealDetail.value.hasOrderDays : '--'
               limitedDate.value = appealDetail.value.orderLimitTime ? appealDetail.value.orderLimitTime : '--'
+              break
+            case 0:
+              limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '--'
+              limitedDate.value = appealDetail.value.handleLimitTime ? appealDetail.value.handleLimitTime : '--'
               break
             case 2:
               limitedDays.value = appealDetail.value.hasEvaluateDays ? appealDetail.value.hasEvaluateDays : '--'
