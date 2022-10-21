@@ -14,24 +14,24 @@
           <el-form-item
             label="回复"
             prop="reply">
-            <el-radio-group v-model="formData.reply">
+            <el-radio-group v-model="formData.applyObject">
               <el-radio label="1">企业</el-radio>
-              <el-radio label="2">市信增办</el-radio>
+              <el-radio label="0">市信增办</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
             label="状态"
             prop="status">
-            <el-radio-group v-model="formData.status">
+            <el-radio-group v-model="formData.handleStatus">
               <el-radio label="1">办结</el-radio>
-              <el-radio label="2">推进中</el-radio>
+              <el-radio label="0">推进中</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
             label="内容"
             prop="text">
             <el-input
-              v-model="formData.text"
+              v-model="formData.handleType"
               type="textarea"
               :rows="4">
             </el-input>
@@ -40,7 +40,7 @@
             label="附件"
             prop="fileList">
             <el-upload
-              v-model:file-list="formData.fileList"
+              v-model:file-list="formData.mediaInfos"
               class="upload-demo"
               :action="`${fileUrl}/api/v1/common/files/uploads`"
               multiple
@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-  import { computed, reactive, toRefs, ref } from 'vue'
+import { computed, reactive, toRefs, ref, toRaw } from 'vue'
   import { ElMessageBox, ElMessage } from 'element-plus'
   const fileUrl = import.meta.env.VITE_API_BASE_URL
   const props = defineProps({
@@ -79,7 +79,7 @@
       default: false
     }
   })
-  const emit = defineEmits(['update:show', 'onReload'])
+  const emit = defineEmits(['update:show', 'confirm'])
   const { show } = toRefs(props)
   // 控制弹窗显示
   const $show = computed({
@@ -92,10 +92,10 @@
   })
 
   const formData = reactive({
-    reply: '1',
-    status: '1',
-    text: '',
-    fileList: []
+    applyObject: '1',
+    handleStatus: '1',
+    handleContent: '',
+    mediaInfos: []
   })
   const formRef = ref(null)
 
@@ -122,7 +122,12 @@
     formRef.value.resetFields()
   }
   const submit = () => {
-    emit('onReload')
+    formRef.value.validate((valid) => {
+      if (valid) {
+        const appealPayload = toRaw(formData)
+        emit('confirm', appealPayload)
+      }
+    })
     $show.value = false
   }
 </script>

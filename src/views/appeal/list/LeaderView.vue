@@ -12,42 +12,45 @@
         @tab-change="handleAppealCategoryChange">
         <el-tab-pane
           label="全部"
-          name="1">
+          name="">
         </el-tab-pane>
         <el-tab-pane
           label="待处理"
-          name="2">
+          name="0">
         </el-tab-pane>
         <el-tab-pane
           label="推进中"
-          name="3">
+          name="1">
         </el-tab-pane>
         <el-tab-pane
           label="待评价"
-          name="4">
+          name="2">
         </el-tab-pane>
         <el-tab-pane
           label="已完结"
-          name="5">
+          name="3">
         </el-tab-pane>
         <el-tab-pane
           label="失效"
-          name="6">
+          name="-1">
         </el-tab-pane>
       </el-tabs>
       <div
-        v-if="activeAppealCategory === '1'"
+        v-if="activeAppealCategory === ''"
         class="form-search tw-w-full tw-mt-[15px]">
         <el-form
           ref="formSearchRef"
           label-position="left"
           label-width="90px"
           class="my-el-form-item-flex tw-mb-[12px]"
+          size="default"
           :inline="true"
           :model="formSearchData">
           <el-row :gutter="8">
             <el-col :span="8">
-              <el-form-item label="评价搜索:">
+              <el-form-item
+                label="评价搜索:"
+                prop="keyword">
                 <el-input
                   v-model="formSearchData.keyword"
                   class="tw-w-full"
@@ -56,7 +59,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="所属街镇:">
+              <el-form-item
+                label="所属街镇:"
+                prop="streetId">
                 <el-select
                   v-model="formSearchData.streetId"
                   class="tw-w-full"
@@ -72,7 +77,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="请求来源:">
+              <el-form-item
+                label="请求来源:"
+                prop="appealSource">
                 <el-select
                   v-model="formSearchData.appealSource"
                   class="tw-w-full"
@@ -90,7 +97,9 @@
           </el-row>
           <el-row :gutter="8">
             <el-col :span="8">
-              <el-form-item label="诉求分类:">
+              <el-form-item
+                label="诉求分类:"
+                prop="categoryChildCode">
                 <el-cascader
                   v-model="formSearchData.categoryChildCode"
                   class="tw-flex-1"
@@ -101,24 +110,36 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="更新时间:">
+              <el-form-item
+                label="更新时间:"
+                prop="updatedTime">
                 <el-date-picker
                   v-model="formSearchData.updatedTime"
-                  type="date"
+                  type="daterange"
                   class="tw-w-full"
+                  range-separator="至"
                   value-format="YYYY-MM-DD"
-                  placeholder="请选择更新时间">
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  placeholder="请选择更新时间"
+                  @change="onUpdateChange">
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="提交时间:">
+              <el-form-item
+                label="提交时间:"
+                prop="submitTime">
                 <el-date-picker
                   v-model="formSearchData.submitTime"
-                  type="date"
+                  type="daterange"
                   class="tw-w-full"
+                  range-separator="至"
                   value-format="YYYY-MM-DD"
-                  placeholder="请选择提交时间">
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  placeholder="请选择提交时间"
+                  @change="onSubmitChange">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -289,7 +310,6 @@
   import { storeToRefs } from 'pinia'
   import { appealSourceList } from '@/config/global-var'
 
-  
   const loading = ref(false)
   const containerRef = ref(null)
   const headerRef = ref(null)
@@ -300,7 +320,7 @@
   const { height: containerHeight } = useElementSize(containerRef)
   const { height: headerHeight } = useElementSize(headerRef)
   const appealTableData = ref([])
-  const activeAppealCategory = ref('1')
+  const activeAppealCategory = ref('')
   const formSearchData = reactive({
     // 评价搜索
     keyword: '',
@@ -313,14 +333,12 @@
     //更新时间
     updatedTime: '',
     // 提交时间
-    submitTime: ''
-  })
-  //诉求标签编号
-  watch(currentLeader, () => {
-    handleReset()
-    formSearchRef.value.resetFields()
-    // 重置form信息 调用接口获取数据
-    _getAppealTableData()
+    submitTime: '',
+    updateStartTime: '',
+    updateEndTime: '',
+    submitStartTime: '',
+    submitEndTime: '',
+    appealStatus: ''
   })
   const paginator = reactive({
     pageNum: 1,
@@ -336,7 +354,7 @@
   const _getAppealTableData = async () => {
     loading.value = true
     const { data: resp } = await getAppeals({
-      appealLabelCode: currentLeader.value,
+      // appealLabelCode: currentLeader.value,
       ...toRaw(formSearchData),
       ...toRaw(paginator)
     })
@@ -353,10 +371,15 @@
   onMounted(async () => {
     getStreetList()
     appealTypeList()
+    await _getAppealTableData()
   })
 
   const handleAppealCategoryChange = (e) => {
-    console.log(e)
+    for (const i in formSearchData) {
+      formSearchData[i] = ''
+    }
+    formSearchData.appealStatus = e
+    _getAppealTableData()
   }
   const handleStreetChange = () => {}
   const handleReset = async () => {
@@ -364,6 +387,8 @@
     paginator.pages = 0
     paginator.pageSize = 10
     paginator.total = 0
+    formSearchRef.value.resetFields()
+    _getAppealTableData()
   }
   const handleSizeChange = async (currentSize) => {
     paginator.pageSize = currentSize
@@ -375,15 +400,16 @@
     await _getAppealTableData()
   }
   const handleSearch = () => {
+    paginator.pageNum = 1
+    paginator.pageSize = 10
     _getAppealTableData()
   }
-  const handleExport = () => {}
-  const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
     router.push({
-      name: 'AppealLeaderDetail',
+      name: 'AppealDetails',
       query: {
-        sid: row.id
+        sid: row.id,
+        type: 'leader'
       }
     })
   }
@@ -433,6 +459,27 @@
     // 选择后默认为一级和二级的ID 改为仅需要二级ID
     formSearchData.categoryChildCode = value[1]
   }
+  const onUpdateChange = (arr) => {
+    formSearchData.updateStartTime = arr[0]
+    formSearchData.updateEndTime = arr[1]
+  }
+  const onSubmitChange = (arr) => {
+    formSearchData.submitStartTime = arr[0]
+    formSearchData.submitEndTime = arr[1]
+  }
+  //诉求标签编号
+  watch(currentLeader, () => {
+    paginator.pageNum = 1
+    paginator.pages = 0
+    paginator.pageSize = 10
+    paginator.total = 0
+    activeAppealCategory.value = ''
+    for (const i in formSearchData) {
+      formSearchData[i] = ''
+    }
+    // 重置form信息 调用接口获取数据
+    _getAppealTableData()
+  })
 </script>
 
 <style lang="scss" scoped></style>

@@ -47,3 +47,14 @@ export const useMockTableData = (obj = {}, count = 10) => {
 export const onBack = (router) => {
   window.history.length > 1 ? router.go(-1) : router.replace('/')
 }
+
+
+/**
+ *  departmentName 部门
+ *  handler 操作员
+ *  handlerPhone 手机
+ *  recordLabel 操作
+ *  content 内容
+ *  appealStatusString 状态
+ *  enclosure附件
+ */

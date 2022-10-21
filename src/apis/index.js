@@ -95,7 +95,7 @@ export const removeGovernmentLabel = (id) => remove(`/api/v1/government/label/de
  * 修改诉求标签
  * @param {*} data
  */
-export const updateGovernmentLabel = (data) => put('/api/v1/government/label/update1', data)
+export const updateGovernmentLabel = (data) => put('/api/v1/government/label/update', data)
 
 /**
  * 获取诉求标签列表
@@ -138,7 +138,7 @@ export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList'
  * 工作日志导出excel
  * @param {*} data
  */
-export const exportWorkLog = (data) => get('/api/v1/government/workLog/export', data, { responseType: 'blob' })
+export const exportWorkLog = (data) => get('/api/v1/government/workLog/getUrl', data)
 
 /**
  * 批量修改日志
@@ -197,3 +197,9 @@ export const getLeaderList = () => get('/api/v1/government/label/getAllLabel')
  * @param {*} data
  */
 export const getGovernmentOverview = (url, data) => get(url, data)
+
+/**
+ *
+ */
+
+export const exportDetailTable = (data) => get(`/api/v1/government/appeal/detailTable`, data)

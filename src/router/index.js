@@ -74,6 +74,11 @@ const router = createRouter({
     {
       path: '/log-manage',
       component: () => import('../views/log-manage/index.vue')
+    },
+    {
+      name: 'print',
+      path: '/print',
+      component: () => import('../views/print/index.vue')
     }
   ]
 })

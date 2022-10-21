@@ -11,45 +11,66 @@
           <el-form
             ref="FormRef"
             class="my-el-form-item-flex"
-            size="large"
+            size="default"
             :inline="true"
+            label-width="90px"
+            label-position="left"
             :model="logForm">
             <el-row :gutter="2">
-              <el-col :span="4">
-                <el-form-item prop="keyword">
+              <el-col :span="8">
+                <el-form-item
+                  label="关键字搜索:"
+                  prop="keyword">
                   <el-input
                     v-model="logForm.keyword"
                     placeholder="请输入诉求主题/企业名称/诉求编号">
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item prop="transactors">
+              <el-col :span="8">
+                <el-form-item
+                  label="办理人:"
+                  prop="transactors">
                   <el-input
                     v-model="logForm.transactors"
                     placeholder="办理人">
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="3">
-                <el-form-item prop="childCategoryCode">
+              <el-col :span="8">
+                <el-form-item
+                  prop="childCategoryCode"
+                  label="诉求分类:">
                   <el-cascader
                     v-model="logForm.childCategoryCode"
+                    class="tw-flex-1"
                     :options="appealTypeList"
                     placeholder="诉求分类"
+                    :show-all-levels="false"
                     @change="handleChange">
                   </el-cascader>
                 </el-form-item>
               </el-col>
-              <el-col :span="4">
-                <el-form-item prop="updateAt">
-                  <el-input
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item
+                  prop="updateAt"
+                  label="更新时间:">
+                  <el-date-picker
                     v-model="logForm.updateAt"
-                    placeholder="更新时间">
-                  </el-input>
+                    type="daterange"
+                    class="tw-w-full"
+                    range-separator="至"
+                    value-format="YYYY-MM-DD"
+                    start-placeholder="开始时间"
+                    end-placeholder="结束时间"
+                    placeholder="请选择更新时间"
+                    @change="onUpdateChange">
+                  </el-date-picker>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item>
                   <el-button @click="onReset"> 重置 </el-button>
                   <el-button
@@ -95,6 +116,7 @@
               label="诉求主题">
             </el-table-column>
             <el-table-column
+              show-overflow-tooltip
               prop="appealChildCategoryName"
               label="诉求分类">
             </el-table-column>
@@ -191,7 +213,9 @@
     keyword: '',
     transactors: '',
     childCategoryCode: '',
-    updateAt: ''
+    updateAt: [],
+    startTime: '',
+    endTime: ''
   })
   const FormRef = ref(null)
   // 表格数据
@@ -283,7 +307,7 @@
       res[i].label = data[i].categoryName
       res[i].value = data[i].categoryCode
 
-      if (data[i].children.length !== 0) {
+      if (data[i].children !== []) {
         res[i].children = convertCategoryList(data[i].children)
       }
     }
@@ -297,6 +321,8 @@
   }
   // 重置
   const onReset = () => {
+    logForm.startTime = ''
+    logForm.endTime = ''
     FormRef.value.resetFields()
     pagination.pageNum = 1
     getWorkLogList()
@@ -313,11 +339,19 @@
     apis
       .exportWorkLog()
       .then((res) => {
-        console.log(res)
-        apis.downloadFile(res, '日志管理')
+        if (res.data.code === 0) {
+          window.open(res.data.data.downloadUrl)
+        } else {
+          ElMessage.error('导出失败')
+        }
       })
       .catch((err) => console.log(err))
       .finally(() => {})
+  }
+
+  const onUpdateChange = (arr) => {
+    logForm.startTime = arr[0]
+    logForm.endTime = arr[1]
   }
 </script>
 
@@ -330,7 +364,7 @@
     overflow: auto;
 
     .tab_pane_content {
-      margin-top: 33px;
+      margin-top: 20px;
       border-top: 1px solid #dcdfe6;
 
       .button {

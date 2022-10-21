@@ -117,7 +117,7 @@
 
     apis
       .createGovernmentLabel({
-        labelName: formData.value.dialogData
+        labelName: formData.value.labelName
       })
       .then((res) => {
         if (res.data.code === 0) {
@@ -138,7 +138,8 @@
   const updateGovernmentLabel = () => {
     sureLoading.value = true
     apis
-      .updateGovernmentLabel({ ...formData.value })
+      // 此处labelId为标签的Id
+      .updateGovernmentLabel({ ...formData.value, labelId: formData.value.id })
       .then((res) => {
         if (res.data.code === 0) {
           ElMessage.success('修改成功')

@@ -1,4 +1,4 @@
-import { get, post } from './config'
+import { get, post, put, remove } from './config'
 
 /**
  * 诉求列表
@@ -34,7 +34,7 @@ export const applyAppeal = (params) => post(`/api/v1/government/appeal/add`, par
  * 代理诉求企业列表
  * @param params
  */
-export const getAppealsOrgan = (params) => get(`/api/v1/organization/appeal/list`, params)
+export const getAppealsOrgan = (params) => get(`/api/v1/government/org/list`, params)
 
 /**
  * 代理诉求详情
@@ -47,3 +47,51 @@ export const getAppealsDetails = (sid) => get(`/api/v1/government/appeal/detail/
  * @id id
  */
 export const getAppealDetail = (id) => get(`/api/v1/government/appeal/detail/${id}`)
+
+/**
+ * 拆分诉求
+ * @id id
+ */
+export const splitAppeal = (params) => put(`/api/v1/government/appeal/signSpilt`, params)
+
+/**
+ * 编辑诉求
+ * @id id
+ */
+export const editAppeal = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
+
+/**
+ * 领导处理诉求
+ * @id id
+ */
+export const editAppealByLeader = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
+
+/**
+ * 获取所有部门
+ * @id id
+ */
+export const getAllDepartment = (params) => get(`/api/v1/government/department/getAll`, params)
+
+/**
+ * 诉求签收
+ * @id id
+ */
+export const signAppeal = (params) => put(`/api/v1/government/appeal/signAppeal`, params)
+
+/**
+ *  标记诉求
+ * @id id
+ */
+export const markAppeal = (params) => put(`/api/v1/government/appeal/sign`, params)
+
+/**
+ *  诉求阶段性总结
+ * @id id
+ */
+export const progressSummary = (params) => put(`/api/v1/government/appeal/summary`, params)
+
+/**
+ *  删除诉求
+ * @id id
+ */
+export const removeAppeal = (id) => remove(`/api/v1/government/appeal/delete/${id}`)

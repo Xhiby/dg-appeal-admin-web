@@ -12,27 +12,27 @@
         @tab-change="handleAppealCategoryChange">
         <el-tab-pane
           label="全部"
-          name="1">
+          name="">
         </el-tab-pane>
         <el-tab-pane
           label="待处理"
-          name="2">
+          name="0">
         </el-tab-pane>
         <el-tab-pane
           label="推进中"
-          name="3">
+          name="1">
         </el-tab-pane>
         <el-tab-pane
           label="待评价"
-          name="4">
+          name="2">
         </el-tab-pane>
         <el-tab-pane
           label="已完结"
-          name="5">
+          name="3">
         </el-tab-pane>
         <el-tab-pane
           label="失效"
-          name="6">
+          name="-1">
         </el-tab-pane>
       </el-tabs>
       <div class="form-search tw-w-full tw-mt-[15px]">
@@ -56,25 +56,15 @@
             <el-col :span="8">
               <el-form-item label="所属街镇:">
                 <el-select
-                  v-model="formSearchData.street"
+                  v-model="formSearchData.streetId"
                   class="tw-w-full"
                   placeholder="请选择所属街镇"
                   @change="handleStreetChange">
                   <el-option
-                    label="近7天"
-                    value="1">
-                  </el-option>
-                  <el-option
-                    label="1个月"
-                    value="2">
-                  </el-option>
-                  <el-option
-                    label="3个月"
-                    value="3">
-                  </el-option>
-                  <el-option
-                    label="1年"
-                    value="4">
+                    v-for="item in streetList"
+                    :key="item.streetId"
+                    :label="item.street"
+                    :value="item.streetId">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -87,20 +77,10 @@
                   placeholder="请选择请求来源"
                   @change="handleStreetChange">
                   <el-option
-                    label="近7天"
-                    value="1">
-                  </el-option>
-                  <el-option
-                    label="1个月"
-                    value="2">
-                  </el-option>
-                  <el-option
-                    label="3个月"
-                    value="3">
-                  </el-option>
-                  <el-option
-                    label="1年"
-                    value="4">
+                    v-for="(item, index) in appealSourceList"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.label">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -108,53 +88,27 @@
           </el-row>
           <el-row :gutter="8">
             <el-col :span="8">
-              <el-form-item label="需求分类:">
-                <el-select
+              <el-form-item label="诉求分类:">
+                <el-cascader
                   v-model="formSearchData.categoryChildCode"
-                  class="tw-w-full"
-                  placeholder="请选择所属街镇"
-                  @change="handleStreetChange">
-                  <el-option
-                    label="近7天"
-                    value="1">
-                  </el-option>
-                  <el-option
-                    label="1个月"
-                    value="2">
-                  </el-option>
-                  <el-option
-                    label="3个月"
-                    value="3">
-                  </el-option>
-                  <el-option
-                    label="1年"
-                    value="4">
-                  </el-option>
-                </el-select>
+                  class="tw-flex-1"
+                  :options="appealList"
+                  :show-all-levels="false"
+                  @change="handleChange">
+                </el-cascader>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="市领导关注:">
                 <el-select
-                  v-model="formSearchData.appealSource"
-                  class="tw-w-full"
-                  placeholder="请选择请求来源"
-                  @change="handleStreetChange">
+                  v-model="formSearchData.appealLabelCode"
+                  class="tw-flex-1"
+                  placeholder="请选择领导标签">
                   <el-option
-                    label="近7天"
-                    value="1">
-                  </el-option>
-                  <el-option
-                    label="1个月"
-                    value="2">
-                  </el-option>
-                  <el-option
-                    label="3个月"
-                    value="3">
-                  </el-option>
-                  <el-option
-                    label="1年"
-                    value="4">
+                    v-for="item in appealsLabels"
+                    :key="item.labelCode"
+                    :label="item.labelName"
+                    :value="item.labelCode">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -162,7 +116,7 @@
             <el-col :span="8">
               <el-form-item label="更新时间:">
                 <el-date-picker
-                  v-model="formSearchData.submitTime"
+                  v-model="formSearchData.updatedTime"
                   type="date"
                   class="tw-w-full"
                   value-format="YYYY-MM-DD"
@@ -175,7 +129,7 @@
             <el-col :span="8">
               <el-form-item label="提交时间:">
                 <el-date-picker
-                  v-model="formSearchData.updateDate"
+                  v-model="formSearchData.submitTime"
                   type="date"
                   class="tw-w-full"
                   value-format="YYYY-MM-DD"
@@ -356,8 +310,12 @@
   import { useElementSize } from '@vueuse/core'
   import { useRouter } from 'vue-router'
   import { onMounted, reactive, ref, toRaw } from 'vue'
-  import { getAppeals } from '@/apis/appeal-crud'
+  import { getAppeals, removeAppeal } from '@/apis/appeal-crud'
   import { useCommonStore } from '@/stores/common'
+  import { ElMessage, ElMessageBox } from 'element-plus'
+  import * as apis from '@/apis/index'
+  import { getAppealsLabels } from '@/apis/appeal-crud'
+  import { appealSourceList } from '@/config/global-var'
 
   const loading = ref(false)
   const containerRef = ref(null)
@@ -368,14 +326,19 @@
   const { height: headerHeight } = useElementSize(headerRef)
   const commonStore = useCommonStore()
   const appealTableData = ref([])
-  const activeAppealCategory = ref('1')
+  const streetList = ref([])
+  const appealList = ref([])
+  const appealsLabels = ref([])
+  const activeAppealCategory = ref('')
   const formSearchData = reactive({
     keyword: '',
-    street: '',
+    streetId: '',
+    appealLabelCode: '',
     appealSource: '',
     appealStatus: '',
     categoryChildCode: '',
-    departmentCode: '',
+    departmentId: '',
+    updatedTime: '',
     submitTime: ''
   })
   const paginator = reactive({
@@ -401,16 +364,86 @@
     }
   }
 
+  const fetchAppealsLabels = () => {
+    loading.value = true
+    getAppealsLabels()
+      .then((res) => {
+        loading.value = false
+        if (res.data.code === 0) {
+          appealsLabels.value = res.data.data
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getStreetList = () => {
+    apis
+      .getStreetList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          streetList.value = res.data.data
+        }
+      })
+      .catch((err) => console.log(err))
+  }
+
+  const appealTypeList = () => {
+    apis
+      .getCategoryList()
+      .then((res) => {
+        if (res.data.code === 0) {
+          appealList.value = convertCategoryList(res.data.data)
+        }
+      })
+      .catch((err) => console.log(err))
+  }
+
+  const convertCategoryList = (data) => {
+    const res = []
+
+    for (const i in data) {
+      res[i] = {}
+      res[i].label = data[i].categoryName
+      res[i].value = data[i].categoryCode
+
+      if (data[i].children !== []) {
+        res[i].children = convertCategoryList(data[i].children)
+      }
+    }
+
+    return res
+  }
+
   onMounted(async () => {
+    getStreetList()
+    appealTypeList()
+    fetchAppealsLabels()
     await _getAppealTableData()
   })
 
-  const handleAppealCategoryChange = () => {}
+  const handleChange = (value) => {
+    // 选择后默认为一级和二级的ID 改为仅需要二级ID
+    formSearchData.categoryChildCode = value[1]
+  }
+  const handleAppealCategoryChange = (tabName) => {
+    formSearchData.appealStatus = tabName
+    _getAppealTableData()
+  }
   const handleStreetChange = () => {}
   const handleReset = async () => {
     formSearchData.keyword = ''
-    formSearchData.street = ''
-    formSearchData.updateDate = ''
+    formSearchData.appealLabelCode = ''
+    formSearchData.appealStatus = ''
+    formSearchData.categoryChildCode = ''
+    formSearchData.departmentId = ''
+    formSearchData.updatedTime = ''
+    formSearchData.submitTime = ''
+    formSearchData.streetId = ''
+    formSearchData.appealSource = ''
     paginator.pageNum = 1
     paginator.pages = 0
     paginator.pageSize = 20
@@ -426,7 +459,9 @@
     paginator.pageNum = current
     await _getAppealTableData()
   }
-  const handleSearch = () => {}
+  const handleSearch = async () => {
+    await _getAppealTableData()
+  }
   const handleProxyCommit = () => {
     router.push({
       name: 'CreateProxyAppeal',
@@ -444,7 +479,22 @@
     })
   }
   const handleDeleteAppeal = (row) => {
-    console.log(row)
+    ElMessageBox.confirm('确认要删除该条诉求吗?', '注意', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(async () => {
+      const { id } = toRaw(row)
+      loading.value = true
+      const resp = await removeAppeal(id)
+      loading.value = false
+      if (resp.data.code === 0) {
+        ElMessage.success('诉求删除成功！')
+        await _getAppealTableData()
+      } else {
+        ElMessage.error('诉求删除失败！' + resp.data.msg)
+      }
+    })
   }
 </script>
 
