@@ -8,7 +8,14 @@
     </Breadcrumb>
     <div class="dga-details-container">
       <div class="tw-flex tw-items-start tw-justify-between tw-flex-col">
-        <span class="tw-text-[18px] tw-text-[#303133] tw-font-medium tw-mb-[30px]">诉求进度</span>
+        <div class="tw-w-full tw-flex tw-justify-between">
+          <span class="tw-text-[18px] tw-text-[#303133] tw-font-medium tw-mb-[30px]">诉求进度</span>
+          <el-button
+            class="tw-mr-[50px]"
+            @click="showFile">
+            呈批表
+          </el-button>
+        </div>
         <el-steps
           :active="appealDetail.appealStatus"
           finish-status="success"
@@ -489,6 +496,15 @@
     } else {
       ElMessage.error('诉求拆分请求失败！' + resp.data.msg)
     }
+  }
+
+  const showFile = () => {
+    router.push({
+      name: 'print',
+      query: {
+        sid: route.query.sid
+      }
+    })
   }
 </script>
 

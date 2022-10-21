@@ -375,8 +375,11 @@
   })
 
   const handleAppealCategoryChange = (e) => {
-    console.log(e)
-    // handleSearch()
+    for (const i in formSearchData) {
+      formSearchData[i] = ''
+    }
+    formSearchData.appealStatus = e
+    _getAppealTableData()
   }
   const handleStreetChange = () => {}
   const handleReset = async () => {
@@ -401,8 +404,6 @@
     paginator.pageSize = 10
     _getAppealTableData()
   }
-  const handleExport = () => {}
-  const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
     router.push({
       name: 'AppealDetails',
@@ -471,6 +472,7 @@
     paginator.pages = 0
     paginator.pageSize = 10
     paginator.total = 0
+    activeAppealCategory.value = ''
     for (const i in formSearchData) {
       formSearchData[i] = ''
     }
