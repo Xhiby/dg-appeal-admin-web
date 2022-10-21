@@ -310,7 +310,7 @@
   import { useElementSize } from '@vueuse/core'
   import { useRouter } from 'vue-router'
   import { onMounted, reactive, ref, toRaw } from 'vue'
-  import { getAppeals } from '@/apis/appeal-crud'
+  import { getAppeals, removeAppeal } from '@/apis/appeal-crud'
   import { useCommonStore } from '@/stores/common'
   import { ElMessage } from 'element-plus'
   import * as apis from '@/apis/index'
@@ -478,8 +478,15 @@
       }
     })
   }
-  const handleDeleteAppeal = (row) => {
-    console.log(row)
+  const handleDeleteAppeal = async (row) => {
+    const { id } = toRaw(row)
+    const resp = await removeAppeal(id)
+    if (resp.data.code === 0) {
+      ElMessage.success('诉求删除成功！')
+      await _getAppealTableData()
+    } else {
+      ElMessage.error('诉求删除失败！' + resp.data.msg)
+    }
   }
 </script>
 
