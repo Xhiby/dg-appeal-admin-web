@@ -191,3 +191,9 @@ export const getAppealComputed = (data) => get('/api/v1/government/overview/coun
  * 获取所有领导标签
  */
 export const getLeaderList = () => get('/api/v1/government/label/getAllLabel')
+
+/**
+ * 获取可视化统计数据
+ * @param {*} data
+ */
+export const getGovernmentOverview = (url, data) => get(url, data)
