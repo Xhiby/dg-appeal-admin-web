@@ -60,8 +60,7 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          width="280px"
-          prop="id"
+          prop="childCategoryCode"
           label="ID">
         </el-table-column>
         <el-table-column

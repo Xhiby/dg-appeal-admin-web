@@ -95,7 +95,7 @@ export const removeGovernmentLabel = (id) => remove(`/api/v1/government/label/de
  * 修改诉求标签
  * @param {*} data
  */
-export const updateGovernmentLabel = (data) => put('/api/v1/government/label/update1', data)
+export const updateGovernmentLabel = (data) => put('/api/v1/government/label/update', data)
 
 /**
  * 获取诉求标签列表

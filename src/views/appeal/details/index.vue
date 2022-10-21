@@ -30,7 +30,7 @@
         </el-steps>
         <div class="tw-flex tw-items-center tw-bg-[#fdf6ec] tw-w-full tw-h-65px tw-px-[18px] tw-py-[8px] tw-font-bold tw-mt-[30px]">
           <span class="tw-mr-[10px]">处理期限: </span>
-          <span class="tw-text-[#f56c6c] tw-text-[18px] tw-text-[18px]"> {{ appealDetail.handleLimitTime ? appealDetail.handleLimitTime : '暂无信息' }} </span>
+          <span class="tw-text-[#f56c6c] tw-text-[18px] tw-text-[18px]"> {{ limitedDate }} </span>
           <span class="tw-ml-[20px]">剩余</span>
           <span class="tw-text-[#f56c6c] tw-text-[28px] tw-px-[5px]">{{ limitedDays }}</span>
           <span>个工作日</span>
@@ -73,14 +73,15 @@
                       </span>
                     </el-descriptions-item>
                     <el-descriptions-item
-                      v-if="record.attachment"
+                      v-if="record.enclosure !== null && record.enclosure !== undefined"
                       label="相关附件:">
                       <el-link
+                        v-for="attachment in record.enclosure"
+                        :key="attachment.id"
                         type="primary"
-                        :href="record.attachment">
-                        {{ record.attachmentName }}
+                        :href="attachment.downloadUrl">
+                        {{ attachment.originName }}
                       </el-link>
-                      {{ record.attachment }}
                     </el-descriptions-item>
                   </el-descriptions>
                 </template>
@@ -147,6 +148,7 @@
               </el-descriptions-item>
             </el-descriptions>
             <el-button
+              v-if="appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
               class="tw-w-[60px] tw-mt-[15px]"
               type="primary"
               @click="showEditDialog = true">
@@ -191,7 +193,7 @@
               </el-button>
             </div>
             <div
-              v-if="appealDetail.appealStatus >= 1"
+              v-if="appealDetail.appealStatus >= 1 && appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
               class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
               <el-button
                 class="tw-w-[60px] tw-mt-[15px]"
@@ -276,6 +278,7 @@
   const appealProcesses = ref([])
   const appealRecords = ref([])
   const limitedDays = ref('')
+  const limitedDate = ref('')
   const handleTypesMapper = {
     0: '提交',
     1: '签收',
@@ -303,13 +306,16 @@
           appealRecords.value = appealHandleRecords
           switch (appealDetailVo.appealStatus) {
             case handleTypes.submit:
-              limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '暂无信息'
+              limitedDays.value = appealDetail.value.hasHandleDays ? appealDetail.value.hasHandleDays : '--'
+              limitedDate.value = appealDetail.value.handleLimitTime ? appealDetail.value.handleLimitTime : '--'
               break
             case handleTypes.sign:
-              limitedDays.value = appealDetail.value.hasOrderDays ? appealDetail.value.hasOrderDays : '暂无信息'
+              limitedDays.value = appealDetail.value.hasOrderDays ? appealDetail.value.hasOrderDays : '--'
+              limitedDate.value = appealDetail.value.orderLimitTime ? appealDetail.value.orderLimitTime : '--'
               break
             case handleTypes.complete:
-              limitedDays.value = appealDetail.value.hasEvaluateDays ? appealDetail.value.hasEvaluateDays : '暂无信息'
+              limitedDays.value = appealDetail.value.hasEvaluateDays ? appealDetail.value.hasEvaluateDays : '--'
+              limitedDate.value = appealDetail.value.evaluateLimitTime ? appealDetail.value.evaluateLimitTime : '--'
               break
           }
         } else {
@@ -371,10 +377,11 @@
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async () => {
+      }).then(async (value) => {
         loading.value = true
         const resp = await signAppeal({
           appealId: route.query.sid,
+          handleContent: value,
           isSign: signFlag ? 1 : -1
         })
         loading.value = false
@@ -420,7 +427,7 @@
       .catch(() => {
         ElMessage({
           type: 'info',
-          message: 'Delete canceled'
+          message: ''
         })
       })
   }

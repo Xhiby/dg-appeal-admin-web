@@ -51,7 +51,7 @@
         header-cell-class-name="my-el-table-header-cell-name"
         style="width: 100%">
         <el-table-column
-          prop="id"
+          prop="departmentCode"
           label="ID">
         </el-table-column>
         <el-table-column
