@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <el-dialog
       v-model="$show"
       title="街道办理"
@@ -16,19 +16,25 @@
           label-width="150px"
           label-position="left">
           <el-form-item
-            prop="transfer"
+            prop="departmentId"
             label="转办单位">
-            <el-input
-              v-model="formData.transfer"
-              style="width: 100%"
-              placeholder="请输入">
-            </el-input>
+            <el-select
+              v-model="formData.departmentId"
+              style="width: 326px"
+              placeholder="请选择单位">
+              <el-option
+                v-for="item in departments"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item
-            prop="content"
+            prop="handleContent"
             label="内容">
             <el-input
-              v-model="formData.content"
+              v-model="formData.handleContent"
               type="textarea"
               :rows="4"
               style="width: 100%"
@@ -52,7 +58,9 @@
 </template>
 
 <script setup>
-  import { computed, toRefs, ref, reactive } from 'vue'
+import { computed, toRefs, ref, reactive, onMounted, toRaw } from 'vue'
+  import { getAllDepartment } from '@/apis/appeal-crud'
+  import { ElMessage } from 'element-plus'
 
   const props = defineProps({
     show: {
@@ -60,7 +68,9 @@
       default: false
     }
   })
-  const emit = defineEmits(['update:show', 'onReload'])
+  const emit = defineEmits(['update:show', 'confirm'])
+  const loading = ref(false)
+  const departments = ref([])
   const { show } = toRefs(props)
   // 控制弹窗显示
   const $show = computed({
@@ -73,21 +83,47 @@
   })
 
   const formData = ref({
-    transfer: '',
-    content: ''
+    departmentId: '',
+    handleContent: ''
   })
   const formRef = ref(null)
 
   const rules = reactive({
-    transfer: [{ required: true, message: '请输入转办单位', trigger: 'blur' }],
-    content: [{ required: true, message: '请输入内容', trigger: 'blur' }]
+    departmentId: [{ required: true, message: '请选择转办单位', trigger: 'blur' }],
+    handleContent: [{ required: true, message: '请输入转办内容', trigger: 'blur' }]
   })
+
+  const fetchAllDepartmentByType = () => {
+    loading.value = true
+    getAllDepartment({ departmentType: 1 })
+      .then((res) => {
+        loading.value = false
+        if (res.data.code === 0) {
+          departments.value = res.data.data
+        } else {
+          ElMessage.error({ message: res.data.msg })
+        }
+      })
+      .catch((err) => {
+        loading.value = false
+        console.log(err)
+      })
+  }
+
+  onMounted(async () => {
+    await fetchAllDepartmentByType()
+  })
+
   const open = () => {
     formRef.value.resetFields()
   }
   const submit = () => {
-    console.log(123)
-    emit('onReload')
+    formRef.value.validate((valid) => {
+      if (valid) {
+        const appealPayload = toRaw(formData.value)
+        emit('confirm', appealPayload)
+      }
+    })
     $show.value = false
   }
 </script>
