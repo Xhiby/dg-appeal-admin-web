@@ -140,6 +140,7 @@
               </el-descriptions-item>
             </el-descriptions>
             <el-button
+              v-if="appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
               class="tw-w-[60px] tw-mt-[15px]"
               type="primary"
               @click="showEditDialog = true">
@@ -184,7 +185,7 @@
               </el-button>
             </div>
             <div
-              v-if="appealDetail.appealStatus >= 1"
+              v-if="appealDetail.appealStatus >= 1 && appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
               class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
               <el-button
                 class="tw-w-[60px] tw-mt-[15px]"
