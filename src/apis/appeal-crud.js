@@ -61,6 +61,12 @@ export const splitAppeal = (params) => put(`/api/v1/government/appeal/signSpilt`
 export const editAppeal = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
 
 /**
+ * 领导处理诉求
+ * @id id
+ */
+export const editAppealByLeader = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
+
+/**
  * 获取所有部门
  * @id id
  */

@@ -28,7 +28,7 @@
       default: false
     }
   })
-  const emit = defineEmits(['update:show', 'onReload'])
+  const emit = defineEmits(['update:show', 'confirm'])
   const { show } = toRefs(props)
   // 控制弹窗显示
   const $show = computed({
@@ -40,8 +40,7 @@
     }
   })
   const submit = () => {
-    console.log(123)
-    emit('onReload')
+    emit('confirm', [])
     $show.value = false
   }
 </script>
