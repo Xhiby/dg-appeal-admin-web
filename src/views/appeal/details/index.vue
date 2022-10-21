@@ -141,14 +141,16 @@
               </el-descriptions-item>
             </el-descriptions>
             <el-button
-              v-if="appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
+              v-if="!leaderView && appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
               class="tw-w-[60px] tw-mt-[15px]"
               type="primary"
               @click="showEditDialog = true">
               编辑
             </el-button>
             <el-divider></el-divider>
-            <div class="tw-flex tw-flex-col">
+            <div
+              v-if="!leaderView"
+              class="tw-flex tw-flex-col">
               <span class="tw-mb-[10px]">阶段性总结</span>
               <el-input
                 v-model="summary"
@@ -164,55 +166,85 @@
               </el-button>
             </div>
             <el-divider></el-divider>
-            <div
-              v-if="appealDetail.appealStatus === 0"
-              class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
-              <el-button
-                class="tw-w-[60px] tw-mt-[15px]"
-                type="primary"
-                @click="handleSignInOrNot(true)">
-                签收
-              </el-button>
-              <el-button
-                class="tw-w-[60px] tw-mt-[15px]"
-                type="primary"
-                @click="handleSignInOrNot(false)">
-                退回
-              </el-button>
-              <el-button
-                class="tw-w-[60px] tw-mt-[15px]"
-                type="primary"
-                @click="showTaskDialog = true">
-                拆分
-              </el-button>
+            <div v-if="leaderView">
+              <div class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
+                <el-button
+                  class="tw-mt-[15px]"
+                  type="primary"
+                  @click="showAcceptTaskDialog = true">
+                  接单
+                </el-button>
+                <el-button
+                  class="tw-mt-[15px]"
+                  type="primary"
+                  @click="showCityDialog = true">
+                  转回市信增办
+                </el-button>
+                <el-button
+                  class="tw-mt-[15px]"
+                  type="primary"
+                  @click="showStreetDialog = true">
+                  街道部门转办
+                </el-button>
+                <el-button
+                  class="tw-mt-[15px]"
+                  type="primary"
+                  @click="showReplyDialog = true">
+                  办理回复
+                </el-button>
+              </div>
             </div>
-            <div
-              v-if="appealDetail.appealStatus >= 1 && appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
-              class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
-              <el-button
-                class="tw-w-[60px] tw-mt-[15px]"
-                type="primary"
-                @click="showForwardDialog = true">
-                转办
-              </el-button>
-              <el-button
-                class="tw-w-[60px] tw-mt-[15px]"
-                type="primary"
-                @click="showTaskHandleByMyselfDialog = true">
-                自办
-              </el-button>
-              <el-button
-                class="tw-w-[60px] tw-mt-[15px]"
-                type="primary"
-                @click="handleCompleteAppeal">
-                完结
-              </el-button>
-              <el-button
-                class="tw-w-[60px] tw-mt-[15px]"
-                type="primary"
-                @click="showMarkTaskDialog = true">
-                标记
-              </el-button>
+            <div v-else>
+              <div
+                v-if="appealDetail.appealStatus === 0"
+                class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
+                <el-button
+                  class="tw-w-[60px] tw-mt-[15px]"
+                  type="primary"
+                  @click="handleSignInOrNot(true)">
+                  签收
+                </el-button>
+                <el-button
+                  class="tw-w-[60px] tw-mt-[15px]"
+                  type="primary"
+                  @click="handleSignInOrNot(false)">
+                  退回
+                </el-button>
+                <el-button
+                  class="tw-w-[60px] tw-mt-[15px]"
+                  type="primary"
+                  @click="showTaskDialog = true">
+                  拆分
+                </el-button>
+              </div>
+              <div
+                v-if="appealDetail.appealStatus >= 1 && appealDetail.appealStatus !== 3 && appealDetail.appealStatus !== -1"
+                class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
+                <el-button
+                  class="tw-w-[60px] tw-mt-[15px]"
+                  type="primary"
+                  @click="showForwardDialog = true">
+                  转办
+                </el-button>
+                <el-button
+                  class="tw-w-[60px] tw-mt-[15px]"
+                  type="primary"
+                  @click="showTaskHandleByMyselfDialog = true">
+                  自办
+                </el-button>
+                <el-button
+                  class="tw-w-[60px] tw-mt-[15px]"
+                  type="primary"
+                  @click="handleCompleteAppeal">
+                  完结
+                </el-button>
+                <el-button
+                  class="tw-w-[60px] tw-mt-[15px]"
+                  type="primary"
+                  @click="showMarkTaskDialog = true">
+                  标记
+                </el-button>
+              </div>
             </div>
           </div>
         </div>
@@ -243,6 +275,20 @@
       @close="showMarkTaskDialog = false"
       @confirm="handleMarkTask">
     </mark-task>
+    <!-- 确认接单 -->
+    <accept-dialog
+      v-model:show="showAcceptTaskDialog"
+      @confirm="handleLeaderTakeOrder">
+    </accept-dialog>
+    <!-- 确认转回市倍增办 -->
+    <city-back-dialog
+      v-model:show="showCityDialog"
+      @confirm="handleBackToCityByLeader">
+    </city-back-dialog>
+    <!-- 街道转办 -->
+    <street-dialog v-model:show="showStreetDialog"> </street-dialog>
+    <!-- 回复 -->
+    <reply-dialog v-model:show="showReplyDialog"> </reply-dialog>
   </div>
 </template>
 
@@ -250,10 +296,14 @@
   import Breadcrumb from '@/components/breadcrumb/index.vue'
   import { useRoute, useRouter } from 'vue-router'
   import { ref, onMounted, toRaw } from 'vue'
-  import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal, progressSummary } from '@/apis/appeal-crud'
+  import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal, progressSummary, editAppealByLeader } from '@/apis/appeal-crud'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import { handleTypes } from '@/config/global-var'
   import SplitTaskDialog from './dialogs/SplitTask.vue'
+  import AcceptDialog from './dialogs/accept-dialog.vue'
+  import CityBackDialog from './dialogs/city-back-dialog.vue'
+  import StreetDialog from './dialogs/street-dialog.vue'
+  import ReplyDialog from './dialogs/reply-dialog.vue'
   import EditTask from './dialogs/EditTask.vue'
   import ForwardTask from './dialogs/ForwardTask.vue'
   import TaskHandleByMyself from './dialogs/TaskHandleByMyself.vue'
@@ -261,11 +311,16 @@
 
   const summary = ref('')
   const loading = ref(false)
+  const leaderView = ref(false)
   const showMarkTaskDialog = ref(false)
   const showTaskHandleByMyselfDialog = ref(false)
   const showTaskDialog = ref(false)
   const showEditDialog = ref(false)
   const showForwardDialog = ref(false)
+  const showAcceptTaskDialog = ref(false)
+  const showCityDialog = ref(false)
+  const showStreetDialog = ref(false)
+  const showReplyDialog = ref(false)
   const route = useRoute()
   const router = useRouter()
   const appealDetail = ref({})
@@ -285,6 +340,7 @@
   }
 
   onMounted(() => {
+    leaderView.value = route.query.type === 'leader'
     getDetail()
   })
 
@@ -320,6 +376,34 @@
       })
       .catch((err) => console.log(err))
       .finally(() => {})
+  }
+
+  const handleBackToCityByLeader = async () => {
+    loading.value = true
+    const resp = await editAppealByLeader({
+      appealId: route.query.id,
+      handleType: 2
+    })
+    loading.value = false
+    if (resp.data.code === 0) {
+      ElMessage.success('转回市倍增办成功！')
+    } else {
+      ElMessage.error('转回市倍增办失败！' + resp.data.msg)
+    }
+  }
+
+  const handleLeaderTakeOrder = async () => {
+    loading.value = true
+    const resp = await editAppealByLeader({
+      appealId: route.query.id,
+      handleType: 1
+    })
+    loading.value = false
+    if (resp.data.code === 0) {
+      ElMessage.success('接单成功！')
+    } else {
+      ElMessage.error('接单失败！' + resp.data.msg)
+    }
   }
 
   const handleProgressSummary = async () => {
