@@ -129,7 +129,7 @@
     // 获取服务专员列表
     // 如果每次获取的列表不变 则方法放在onMounted
     // 否则放在onOpen
-    getGovernmentServiceList()
+    // getGovernmentServiceList()
   }
 
   // 确定

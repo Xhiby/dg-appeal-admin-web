@@ -209,7 +209,10 @@
       .getCategoryChildList({ ...form, ...pagination })
       .then((res) => {
         if (res.data.code === 0) {
-          tableData.value = res.data.data.list
+          const { list, total, currentPage } = res.data.data
+          tableData.value = list
+          pagination.total = total
+          pagination.pageNum = currentPage
         } else {
           ElMessage.error(res.data.msg)
         }

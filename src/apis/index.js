@@ -52,7 +52,7 @@ export const getCategoryList = (data) => get('/api/v1/government/category/getAll
  * 创建诉求部门
  * @param {*} data
  */
-export const createGovernmentDep = (data) => post('/api/v1/government/department/add1', data)
+export const createGovernmentDep = (data) => post('/api/v1/government/department/add', data)
 
 /**
  * 删除诉求部门
@@ -64,7 +64,7 @@ export const removeGovernmentDep = (id) => remove(`/api/v1/government/department
  * 修改诉求部门
  * @param {*} data
  */
-export const updateGovernmentDep = (data) => put('/api/v1/government/department/update1', data)
+export const updateGovernmentDep = (data) => put('/api/v1/government/department/update', data)
 
 /**
  * 获取诉求部门列表
@@ -138,7 +138,7 @@ export const getWorkLogList = (data) => get('/api/v1/government/workLog/logList'
  * 工作日志导出excel
  * @param {*} data
  */
-export const exportWorkLog = (data) => get('/api/v1/government/workLog/getUrl', data)
+export const exportWorkLog = (data) => get('/api/v1/government/workLog/export', data)
 
 /**
  * 批量修改日志
