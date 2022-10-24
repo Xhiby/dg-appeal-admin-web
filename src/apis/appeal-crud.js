@@ -64,7 +64,7 @@ export const editAppeal = (params) => put(`/api/v1/government/appeal/bzbHandle`,
  * 领导处理诉求
  * @id id
  */
-export const editAppealByLeader = (params) => put(`/api/v1/government/appeal/bzbHandle`, params)
+export const editAppealByLeader = (params) => put(`/api/v1/government/appeal/otherHandle`, params)
 
 /**
  * 获取所有部门

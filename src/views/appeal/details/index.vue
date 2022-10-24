@@ -4,7 +4,7 @@
     class="page_main">
     <Breadcrumb
       class="tw-mb-[30px]"
-      :list="[{ name: '诉求列表', path: '/appeal' }, { name: '诉求详情' }]">
+      :list="[{ name: '诉求列表', path: leaderView ? '/appeal-leader-manager/list' : '/appeal' }, { name: '诉求详情' }]">
     </Breadcrumb>
     <div class="dga-details-container">
       <div class="tw-flex tw-items-start tw-justify-between tw-flex-col">
@@ -62,7 +62,7 @@
                     :column="1"
                     size="small">
                     <el-descriptions-item label="操作:">
-                      <span class="tw-text-[#E6A23C]">{{ handleTypesMapper[record.handleType] }}</span>
+                      <span class="tw-text-[#E6A23C]">{{ record.recordLabel }}</span>
                     </el-descriptions-item>
                     <el-descriptions-item label="状态:">
                       <span class="tw-text-[#E6A23C]">{{ record.appealStatusString ? record.appealStatusString : '暂无数据' }}</span>
@@ -172,7 +172,7 @@
                 提交
               </el-button>
             </div>
-            <el-divider></el-divider>
+            <el-divider v-if="!leaderView"></el-divider>
             <div v-if="leaderView">
               <div class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
                 <el-button
@@ -355,6 +355,12 @@
   onMounted(() => {
     leaderView.value = route.query.type === 'leader'
     getDetail()
+    setTimeout(() => {
+      const emptyTA = document.querySelector('body textarea')
+      if (emptyTA && leaderView.value) {
+        emptyTA.parentElement.removeChild(emptyTA)
+      }
+    }, 1000)
   })
 
   const getDetail = () => {

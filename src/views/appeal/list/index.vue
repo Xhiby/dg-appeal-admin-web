@@ -185,11 +185,15 @@
           label="编号"
           width="120px">
           <template #default="scope">
-            <img
-              v-if="scope.row.timeout === 1"
-              src="../../../assets/images/appeal-list/icon_warn@2x.png"
-              class="tw-w-[14px] tw-h-[14px] tw-inline-block"
-              alt="" />
+            <el-tooltip
+              v-if="scope.row.appealSign !== null"
+              placement="right-start"
+              :content="scope.row.appealSign">
+              <img
+                src="../../../assets/images/appeal-list/icon_warn@2x.png"
+                class="tw-w-[14px] tw-h-[14px] tw-inline-block"
+                alt="" />
+            </el-tooltip>
             {{ scope.row.appealCode }}
           </template>
         </el-table-column>
