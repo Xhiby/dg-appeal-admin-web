@@ -174,7 +174,7 @@ export const downloadFile = (data, fileName) => {
 /**
  * 获取概览数据
  */
-export const getAppealSurvey = () => get('/api/v1/government/appeal/appeal/survey')
+export const getAppealSurvey = () => get('/api/v1/government/appeal/survey')
 
 /**
  * 获取街道
