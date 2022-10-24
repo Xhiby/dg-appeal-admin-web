@@ -21,8 +21,8 @@ export default function getOptions(
     },
     legend: {
       orient: 'vertical',
-      top: '20%',
-      right: '10%'
+      top: '5%',
+      right: '5%'
     },
     grid: {
       containLabel: false
