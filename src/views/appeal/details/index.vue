@@ -172,7 +172,7 @@
                 提交
               </el-button>
             </div>
-            <el-divider></el-divider>
+            <el-divider v-if="!leaderView"></el-divider>
             <div v-if="leaderView">
               <div class="tw-flex tw-justify-between tw-items-center tw-w-[150px] tw-flex-nowrap">
                 <el-button
@@ -355,6 +355,12 @@
   onMounted(() => {
     leaderView.value = route.query.type === 'leader'
     getDetail()
+    setTimeout(() => {
+      const emptyTA = document.querySelector('body textarea')
+      if (emptyTA && leaderView.value) {
+        emptyTA.parentElement.removeChild(emptyTA)
+      }
+    }, 1000)
   })
 
   const getDetail = () => {
