@@ -31,7 +31,7 @@
             label="内容"
             prop="text">
             <el-input
-              v-model="formData.handleType"
+              v-model="formData.handleContent"
               type="textarea"
               :rows="4">
             </el-input>
