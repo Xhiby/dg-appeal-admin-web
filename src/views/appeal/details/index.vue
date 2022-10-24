@@ -62,7 +62,7 @@
                     :column="1"
                     size="small">
                     <el-descriptions-item label="操作:">
-                      <span class="tw-text-[#E6A23C]">{{ handleTypesMapper[record.recordLabel] }}</span>
+                      <span class="tw-text-[#E6A23C]">{{ record.recordLabel }}</span>
                     </el-descriptions-item>
                     <el-descriptions-item label="状态:">
                       <span class="tw-text-[#E6A23C]">{{ record.appealStatusString ? record.appealStatusString : '暂无数据' }}</span>
