@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, toRefs, ref, toRaw } from 'vue'
+  import { computed, reactive, toRefs, ref, toRaw } from 'vue'
   import { ElMessageBox, ElMessage } from 'element-plus'
   const fileUrl = import.meta.env.VITE_API_BASE_URL
   const props = defineProps({
