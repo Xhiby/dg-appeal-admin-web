@@ -11,7 +11,7 @@ configMap:
   env:
     ENV_DEF:  VITE_API_BASE_URL VITE_IS_OPEN_MENU
     VITE_API_BASE_URL: http://dg-appeal-svc.youpin-k8s.net
-    VITE_IS_OPEN_MENU: '0'
+    VITE_IS_OPEN_MENU: 1
 resources:
   limits:
     cpu: 50m
