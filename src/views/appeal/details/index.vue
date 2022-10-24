@@ -477,7 +477,7 @@
       ElMessage.success('标记诉求成功！')
       showEditDialog.value = false
       await router.push({
-        name: 'AppealManager',
+        name: leaderView.value ? 'AppealListForLeader' : 'AppealManager',
         query: {}
       })
     } else {
@@ -503,7 +503,7 @@
           ElMessage.success('诉求签收成功！')
           showEditDialog.value = false
           await router.push({
-            name: 'AppealManager',
+            name: leaderView.value ? 'AppealListForLeader' : 'AppealManager',
             query: {}
           })
         } else {
@@ -530,7 +530,7 @@
           ElMessage.success('诉求退回成功！')
           showEditDialog.value = false
           await router.push({
-            name: 'AppealManager',
+            name: leaderView.value ? 'AppealListForLeader' : 'AppealManager',
             query: {}
           })
         } else {
@@ -557,7 +557,7 @@
           ElMessage.success('诉求完结成功！')
           showEditDialog.value = false
           await router.push({
-            name: 'AppealManager',
+            name: leaderView.value ? 'AppealListForLeader' : 'AppealManager',
             query: {}
           })
         } else {
@@ -584,7 +584,7 @@
       ElMessage.success('诉求自办成功！')
       showEditDialog.value = false
       await router.push({
-        name: 'AppealManager',
+        name: leaderView.value ? 'AppealListForLeader' : 'AppealManager',
         query: {}
       })
     } else {
@@ -604,7 +604,7 @@
       ElMessage.success('诉求转发成功！')
       showEditDialog.value = false
       await router.push({
-        name: 'AppealManager',
+        name: leaderView.value ? 'AppealListForLeader' : 'AppealManager',
         query: {}
       })
     } else {
@@ -638,7 +638,7 @@
       ElMessage.success('诉求拆分请求成功！')
       showTaskDialog.value = false
       await router.push({
-        name: 'AppealManager',
+        name: leaderView.value ? 'AppealListForLeader' : 'AppealManager',
         query: {}
       })
     } else {
