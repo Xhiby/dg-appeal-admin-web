@@ -4,7 +4,7 @@
     class="page_main">
     <Breadcrumb
       class="tw-mb-[30px]"
-      :list="[{ name: '诉求列表', path: '/appeal' }, { name: '诉求详情' }]">
+      :list="[{ name: '诉求列表', path: leaderView ? '/appeal-leader-manager/list' : '/appeal' }, { name: '诉求详情' }]">
     </Breadcrumb>
     <div class="dga-details-container">
       <div class="tw-flex tw-items-start tw-justify-between tw-flex-col">
