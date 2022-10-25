@@ -341,20 +341,12 @@
   const appealRecords = ref([])
   const limitedDays = ref('')
   const limitedDate = ref('')
-  const handleTypesMapper = {
-    0: '提交',
-    1: '签收',
-    2: '接单',
-    3: '推进中',
-    4: '待评价',
-    5: '已完成',
-    '-1': '已退回',
-    '-2': '拆分作废'
-  }
 
   onMounted(() => {
     leaderView.value = route.query.type === 'leader'
     getDetail()
+    // 修复element textarea组件在v-if为false的状态下仍然会动态计算高度，
+    // 导致页面出现多余的textarea的问题，临时修复为动态删除.
     setTimeout(() => {
       const emptyTA = document.querySelector('body textarea')
       if (emptyTA && leaderView.value) {
