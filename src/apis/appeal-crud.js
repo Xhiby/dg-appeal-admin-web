@@ -95,3 +95,9 @@ export const progressSummary = (params) => put(`/api/v1/government/appeal/summar
  * @id id
  */
 export const removeAppeal = (id) => remove(`/api/v1/government/appeal/delete/${id}`)
+
+/**
+ *  日志增加
+ * @id id
+ */
+export const commitWorkLog = (params) => put(`/api/v1/government/workLog/create`, params)

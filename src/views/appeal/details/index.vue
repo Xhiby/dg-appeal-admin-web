@@ -54,7 +54,16 @@
                 <template #title>
                   <div class="tw-flex tw-items-center tw-justify-between tw-mb-[10px]">
                     <span class="tw-text-[16px] tw-font-bold tw-text-[#303133]"> {{ record.departmentName }} {{ record.handler }} {{ record.handlerPhone }} </span>
-                    <span class="tw-text-[16px] tw-font-semibold tw-text-[#909399]">{{ record.handleTime }}</span>
+                    <div>
+                      <el-button
+                        v-if="record.handleType === 4 && record.departmentId === 1250"
+                        size="small"
+                        class="tw-mr-[15px]"
+                        @click="handleCommitWorkLog">
+                        工作日志
+                      </el-button>
+                      <span class="tw-text-[16px] tw-font-semibold tw-text-[#909399]">{{ record.handleTime }}</span>
+                    </div>
                   </div>
                 </template>
                 <template #description>
@@ -309,7 +318,7 @@
   import Breadcrumb from '@/components/breadcrumb/index.vue'
   import { useRoute, useRouter } from 'vue-router'
   import { ref, onMounted, toRaw } from 'vue'
-  import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal, progressSummary, editAppealByLeader } from '@/apis/appeal-crud'
+  import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal, progressSummary, editAppealByLeader, commitWorkLog } from '@/apis/appeal-crud'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import { handleTypes } from '@/config/global-var'
   import SplitTaskDialog from './dialogs/SplitTask.vue'
@@ -387,6 +396,29 @@
       })
       .catch((err) => console.log(err))
       .finally(() => {})
+  }
+
+  const handleCommitWorkLog = async () => {
+    ElMessageBox.prompt('', '工作日志', {
+      inputType: 'textarea',
+      inputPlaceholder: '请填写工作日志!',
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      customClass: 'dg-commit-log',
+      type: 'warning'
+    }).then(async ({ value }) => {
+      loading.value = true
+      const resp = await commitWorkLog({
+        appealCode: route.query.sid,
+        logContent: value
+      })
+      loading.value = false
+      if (resp.data.code === 0) {
+        ElMessage.success('工作日志提交成功！')
+      } else {
+        ElMessage.error('工作日志提交失败！' + resp.data.msg)
+      }
+    })
   }
 
   const handleReplyByLeader = async (replyPayload) => {
@@ -659,6 +691,11 @@
   .el-step__head.is-success {
     .el-step__line {
       background-color: var(--el-color-success);
+    }
+  }
+  .dg-commit-log {
+    .el-textarea__inner {
+      height: 220px;
     }
   }
 </style>
