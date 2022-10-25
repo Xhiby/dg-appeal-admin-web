@@ -62,10 +62,10 @@
                     :column="1"
                     size="small">
                     <el-descriptions-item label="操作:">
-                      <span class="tw-text-[#E6A23C]">{{ record.recordLabel }}</span>
+                      <span class="tw-text-[#E6A23C]">{{ record.recordLabel ? record.recordLabel : '--' }}</span>
                     </el-descriptions-item>
                     <el-descriptions-item label="状态:">
-                      <span class="tw-text-[#E6A23C]">{{ record.appealStatusString ? record.appealStatusString : '暂无数据' }}</span>
+                      <span class="tw-text-[#E6A23C]">{{ record.appealStatusString ? record.appealStatusString : '--' }}</span>
                     </el-descriptions-item>
                     <el-descriptions-item label="内容:">
                       <span class="tw-text-[#606266]">
@@ -522,7 +522,6 @@
           handleContent: value,
           isSign: signFlag ? 1 : -1
         })
-        loading.value = false
         loading.value = false
         if (resp.data.code === 0) {
           ElMessage.success('诉求退回成功！')
