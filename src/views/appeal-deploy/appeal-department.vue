@@ -6,13 +6,15 @@
         ref="formRef"
         class="my-el-form-item-flex"
         :inline="true"
-        :model="conditionForm">
+        :model="conditionForm"
+        @submit.prevent>
         <el-row>
           <el-col :span="5">
             <el-form-item prop="departmentName">
               <el-input
                 v-model="conditionForm.departmentName"
-                placeholder="请输入部门名称搜索">
+                placeholder="请输入部门名称搜索"
+                @keyup.enter="onSearch()">
               </el-input>
             </el-form-item>
           </el-col>

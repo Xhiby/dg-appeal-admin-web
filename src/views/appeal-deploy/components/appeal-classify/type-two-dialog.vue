@@ -110,10 +110,10 @@
   })
   // 必填项
   const rules = reactive({
-    categoryCode: [{ required: true, message: '请输入评价时限', trigger: 'change' }],
+    categoryCode: [{ required: true, message: '请选择诉求分类', trigger: 'change' }],
     childCategoryName: [{ required: true, message: '请选择类型名称', trigger: 'blur' }],
     appealEvaluateLimitTime: [
-      { required: true, message: '请选择类型名称', trigger: 'blur' },
+      { required: true, message: '请输入评价时限', trigger: 'blur' },
       { type: 'number', message: '评价时限格式为30以内的字数' },
       {
         pattern: /^([12][0-9]|30|[1-9])$/,

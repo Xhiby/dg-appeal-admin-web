@@ -62,7 +62,7 @@
                     type="daterange"
                     class="tw-w-full"
                     range-separator="至"
-                    value-format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD HH:mm:ss"
                     start-placeholder="开始时间"
                     end-placeholder="结束时间"
                     placeholder="请选择更新时间"

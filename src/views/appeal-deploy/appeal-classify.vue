@@ -6,13 +6,15 @@
         ref="formRef"
         class="my-el-form-item-flex"
         :inline="true"
-        :model="form">
+        :model="form"
+        @submit.prevent>
         <el-row>
           <el-col :span="5">
             <el-form-item prop="childCategoryName">
               <el-input
                 v-model="form.childCategoryName"
-                placeholder="请输入子类名称搜索">
+                placeholder="请输入子类名称搜索"
+                @keyup.enter="onSearch()">
               </el-input>
             </el-form-item>
           </el-col>

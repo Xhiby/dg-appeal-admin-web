@@ -98,7 +98,7 @@
 
   const formData = ref({
     street: '',
-    streetId: 0,
+    streetId: '',
     principal: '',
     principalId: ''
   })
@@ -122,8 +122,10 @@
 
   // 打开的回调
   const onOpen = () => {
+    resetForm()
     if ($isEdit.value) {
-      formData.value = { ...dialogData.value }
+      const cloneData = JSON.parse(JSON.stringify(dialogData.value))
+      DataChange(cloneData)
     }
 
     // 获取服务专员列表
@@ -212,6 +214,19 @@
   }
   const closeDialog = () => {
     $show.value = false
+  }
+  //重置表单
+  const resetForm = () => {
+    formData.value.street = ''
+    formData.value.streetId = ''
+    formData.value.principal = ''
+    formData.value.principalId = ''
+  }
+  const DataChange = (cloneData) => {
+    formData.value.street = cloneData.street
+    formData.value.streetId = cloneData.streetId
+    formData.value.principal = cloneData.principal
+    formData.value.principalId = cloneData.principalId
   }
 </script>
 
