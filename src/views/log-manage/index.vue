@@ -337,10 +337,10 @@
   }
   const exportLog = () => {
     apis
-      .exportWorkLog()
+      .exportWorkLog({ ...logForm })
       .then((res) => {
         if (res.data.code === 0) {
-          window.open(res.data.data.downloadUrl)
+          window.open(res.data.data.url)
         } else {
           ElMessage.error('导出失败')
         }

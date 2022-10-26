@@ -199,7 +199,14 @@ export const getLeaderList = () => get('/api/v1/government/label/getAllLabel')
 export const getGovernmentOverview = (url, data) => get(url, data)
 
 /**
- *
+ * 打印呈批表
+ * @param {*} data
  */
 
 export const exportDetailTable = (data) => get(`/api/v1/government/appeal/detailTable`, data)
+
+/**
+ * 诉求统计导出excel文件
+ * @param {*} data
+ */
+export const exportDashboard = (data) => get('/api/v1/government/overview/export', data)

@@ -30,7 +30,13 @@
               </el-option>
             </el-select>
           </el-col>
-          <el-col :span="2"><el-button type="primary"> 导出 </el-button></el-col>
+          <el-col :span="2">
+            <el-button
+              type="primary"
+              @click="exportDashBoard">
+              导出
+            </el-button>
+          </el-col>
         </el-row>
       </el-form>
     </div>
@@ -176,7 +182,7 @@
   import getTimeOutOptions from './barTimeOutOptions'
   import { onMounted, reactive, ref } from 'vue'
   import * as apis from '@/apis/index'
-
+  import { ElMessage } from 'element-plus'
   const pieOption = ref({})
   const barOptionLeft = ref({})
   const barOptionRight = ref({})
@@ -221,6 +227,19 @@
         barOptionRight.value = getBarOption(finishStreetPercent.dataX, finishStreetPercent.dataY)
         timeOutOptions.value = getTimeOutOptions(outTimeCount.dataX, outTimeCount.dataY)
       })
+  }
+  const exportDashBoard = () => {
+    apis
+      .exportDashboard({ ...formData })
+      .then((res) => {
+        if (res.data.code === 0) {
+          window.open(res.data.data.url)
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {})
   }
 </script>
 
