@@ -5,7 +5,7 @@
       :key="index"
       class="progress_item"
       :style="getStatusInfo(index).style">
-      <p class="progress_item_name">{{ item.processLabel }}</p>
+      <p class="progress_item_name">{{ item.processLabel || '--' }}</p>
       <img
         class="progress_item_icon"
         :src="getStatusInfo(index).icon"
