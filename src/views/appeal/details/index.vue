@@ -16,18 +16,10 @@
             呈批表
           </el-button>
         </div>
-        <el-steps
-          :active="appealProcesses.length"
-          finish-status="success"
-          process-status="wait"
-          class="tw-min-w-[70vw]">
-          <el-step
-            v-for="process in appealProcesses"
-            :key="process.appealCode"
-            :title="`${process.departmentName} ${process.processLabel}`"
-            :description="process.createdAt">
-          </el-step>
-        </el-steps>
+        <d-progress
+          :active="appealProcesses.length - 1"
+          :progress-list="appealProcesses">
+        </d-progress>
         <div class="tw-flex tw-items-center tw-bg-[#fdf6ec] tw-w-full tw-h-65px tw-px-[18px] tw-py-[8px] tw-font-bold tw-mt-[30px]">
           <span class="tw-mr-[10px]">处理期限: </span>
           <span class="tw-text-[#f56c6c] tw-text-[18px] tw-text-[18px]"> {{ limitedDate }} </span>
@@ -194,7 +186,7 @@
                   class="tw-mt-[15px]"
                   type="primary"
                   @click="showCityDialog = true">
-                  转回市信增办
+                  转回市倍增办
                 </el-button>
                 <el-button
                   class="tw-mt-[15px]"
@@ -321,6 +313,7 @@
   import { getAppealDetail, splitAppeal, editAppeal, signAppeal, markAppeal, progressSummary, editAppealByLeader, commitWorkLog } from '@/apis/appeal-crud'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import { handleTypes } from '@/config/global-var'
+  import DProgress from './components/DProgress.vue'
   import SplitTaskDialog from './dialogs/SplitTask.vue'
   import AcceptDialog from './dialogs/accept-dialog.vue'
   import CityBackDialog from './dialogs/city-back-dialog.vue'
@@ -409,7 +402,7 @@
     }).then(async ({ value }) => {
       loading.value = true
       const resp = await commitWorkLog({
-        appealCode: route.query.sid,
+        appealCode: appealDetail.value.appealCode,
         logContent: value
       })
       loading.value = false
