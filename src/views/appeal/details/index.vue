@@ -402,7 +402,7 @@
     }).then(async ({ value }) => {
       loading.value = true
       const resp = await commitWorkLog({
-        appealCode: route.query.sid,
+        appealCode: appealDetail.value.appealCode,
         logContent: value
       })
       loading.value = false
