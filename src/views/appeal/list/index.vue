@@ -186,7 +186,7 @@
           width="120px">
           <template #default="scope">
             <el-tooltip
-              v-if="scope.row.appealSign !== null"
+              v-if="scope.row.appealStatus !== -1 && scope.row.appealStatus !== 3 && scope.row.appealSign !== null"
               placement="right-start"
               :content="scope.row.appealSign">
               <img
