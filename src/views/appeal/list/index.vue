@@ -472,7 +472,18 @@
       query: {}
     })
   }
-  const handleExport = () => {}
+  const handleExport = () => {
+    apis
+      .exportAppealList({ ...formSearchData })
+      .then((res) => {
+        if (res.data.code === 0) {
+          window.open(res.data.data.url)
+        } else {
+          ElMessage.error('导出失败')
+        }
+      })
+      .catch((err) => console.log(err))
+  }
   const handleGenerateReport = () => {}
   const handleShowAppealDetails = (row) => {
     router.push({

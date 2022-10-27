@@ -225,7 +225,7 @@
             <div
               v-if="scope.row.appealStatus === -1"
               class="tw-text-[14px] tw-text-[#FF8F00]">
-              失效
+              已失效
             </div>
             <div
               v-if="scope.row.appealStatus === 0"
@@ -238,12 +238,12 @@
               推进中
             </div>
             <div
-              v-if="scope.row.appealStatus === 3"
+              v-if="scope.row.appealStatus === 2"
               class="tw-text-[14px] tw-text-[#57D3A2]">
               待评价
             </div>
             <div
-              v-if="scope.row.appealStatus === 4"
+              v-if="scope.row.appealStatus === 3"
               class="tw-text-[14px] tw-text-[#57D3A2]">
               已完结
             </div>

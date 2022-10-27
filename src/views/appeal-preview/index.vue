@@ -30,7 +30,11 @@
               <div class="tittle">
                 <p>领导关注</p>
               </div>
-              <div class="number tw-text-[#409EFF]">{{ formData.leaderAttentionCount }}</div>
+              <div
+                class="number tw-text-[#409EFF]"
+                @click="skip('/appeal-leader-manager')">
+                {{ formData.leaderAttentionCount }}
+              </div>
             </div>
           </div>
         </el-col>
@@ -58,7 +62,11 @@
               <div class="tittle">
                 <p>推进中诉求</p>
               </div>
-              <div class="number tw-text-[#E6A23C]">{{ formData.pushCount }}</div>
+              <div
+                class="number tw-text-[#E6A23C]"
+                @click="skip('/appeal')">
+                {{ formData.pushCount }}
+              </div>
             </div>
           </div>
         </el-col>
@@ -86,7 +94,11 @@
               <div class="tittle">
                 <p>超时诉求</p>
               </div>
-              <div class="number tw-text-[#F56C6C]">{{ formData.thisMonthCreateCount }}</div>
+              <div
+                class="number tw-text-[#F56C6C]"
+                @click="skip('/appeal')">
+                {{ formData.thisMonthCreateCount }}
+              </div>
             </div>
           </div>
         </el-col>
@@ -114,7 +126,11 @@
               <div class="tittle">
                 <p>本月新增诉求</p>
               </div>
-              <div class="number tw-text-[#67C23A]">{{ formData.timeoutCount }}</div>
+              <div
+                class="number tw-text-[#67C23A]"
+                @click="skip('/appeal')">
+                {{ formData.timeoutCount }}
+              </div>
             </div>
           </div>
         </el-col>
@@ -217,6 +233,7 @@
           }
 
           .number {
+            cursor: pointer;
             display: flex;
             width: 100%;
             height: 97px;

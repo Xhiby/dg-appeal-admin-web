@@ -210,3 +210,8 @@ export const exportDetailTable = (data) => get(`/api/v1/government/appeal/detail
  * @param {*} data
  */
 export const exportDashboard = (data) => get('/api/v1/government/overview/export', data)
+
+/**
+ * 市倍增办列表导出
+ */
+export const exportAppealList = (data) => get('/api/v1/government/appeal/export', data)
