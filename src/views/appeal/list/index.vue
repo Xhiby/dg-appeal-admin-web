@@ -439,6 +439,7 @@
   }
   const handleStreetChange = () => {}
   const handleReset = async () => {
+    activeAppealCategory.value = ''
     formSearchData.keyword = ''
     formSearchData.appealLabelCode = ''
     formSearchData.appealStatus = ''
