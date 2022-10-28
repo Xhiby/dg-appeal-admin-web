@@ -49,7 +49,7 @@
           <el-row :gutter="8">
             <el-col :span="8">
               <el-form-item
-                label="评价搜索:"
+                label="关键字搜索:"
                 prop="keyword">
                 <el-input
                   v-model="formSearchData.keyword"

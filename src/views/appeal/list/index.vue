@@ -45,7 +45,7 @@
           :model="formSearchData">
           <el-row :gutter="8">
             <el-col :span="8">
-              <el-form-item label="评价搜索:">
+              <el-form-item label="关键字搜索:">
                 <el-input
                   v-model="formSearchData.keyword"
                   class="tw-w-full"
