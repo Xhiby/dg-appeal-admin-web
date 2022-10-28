@@ -117,9 +117,12 @@
               <el-form-item label="更新时间:">
                 <el-date-picker
                   v-model="formSearchData.updatedTime"
-                  type="date"
+                  type="daterange"
                   class="tw-w-full"
+                  range-separator="至"
                   value-format="YYYY-MM-DD"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
                   placeholder="请选择更新时间">
                 </el-date-picker>
               </el-form-item>
@@ -130,9 +133,12 @@
               <el-form-item label="提交时间:">
                 <el-date-picker
                   v-model="formSearchData.submitTime"
-                  type="date"
+                  type="daterange"
                   class="tw-w-full"
+                  range-separator="至"
                   value-format="YYYY-MM-DD"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
                   placeholder="请选择提交时间">
                 </el-date-picker>
               </el-form-item>
@@ -344,8 +350,8 @@
     appealStatus: '',
     categoryChildCode: '',
     departmentId: '',
-    updatedTime: '',
-    submitTime: ''
+    updatedTime: [],
+    submitTime: []
   })
   const paginator = reactive({
     pageNum: 1,
@@ -356,8 +362,18 @@
 
   const _getAppealTableData = async () => {
     loading.value = true
+    let formData = toRaw(formSearchData)
+    formData = {
+      submitStartTime: formData.submitTime[0] || '',
+      submitEndTime: formData.submitTime[1] || '',
+      updateStartTime: formData.updatedTime[0] || '',
+      updateEndTime: formData.updatedTime[1] || '',
+      ...formData
+    }
+    delete formData.submitTime
+    delete formData.updatedTime
     const { data: resp } = await getAppeals({
-      ...toRaw(formSearchData),
+      ...formData,
       ...toRaw(paginator)
     })
     loading.value = false
@@ -447,8 +463,8 @@
     formSearchData.appealStatus = ''
     formSearchData.categoryChildCode = ''
     formSearchData.departmentId = ''
-    formSearchData.updatedTime = ''
-    formSearchData.submitTime = ''
+    formSearchData.updatedTime = []
+    formSearchData.submitTime = []
     formSearchData.streetId = ''
     formSearchData.appealSource = ''
     paginator.pageNum = 1
