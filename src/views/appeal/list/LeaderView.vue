@@ -309,6 +309,8 @@
   import * as apis from '@/apis/index'
   import { storeToRefs } from 'pinia'
   import { appealSourceList } from '@/config/global-var'
+  import { ElMessageBox, ElMessage } from 'element-plus'
+  import { removeAppeal } from '@/apis/appeal-crud'
 
   const loading = ref(false)
   const containerRef = ref(null)
@@ -354,7 +356,7 @@
   const _getAppealTableData = async () => {
     loading.value = true
     const { data: resp } = await getAppeals({
-      // appealLabelCode: currentLeader.value,
+      appealLabelCode: currentLeader.value,
       ...toRaw(formSearchData),
       ...toRaw(paginator)
     })
@@ -414,7 +416,40 @@
     })
   }
   const handleDeleteAppeal = (row) => {
-    console.log(row)
+    ElMessageBox({
+      title: '确认',
+      type: 'warning',
+      message: '确认删除？',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          instance.confirmButtonLoading = true
+          deleteAppeal(instance, done, row.id)
+        } else {
+          done()
+        }
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+  const deleteAppeal = (instance, done, id) => {
+    removeAppeal(id)
+      .then((res) => {
+        if (res.data.code === 0) {
+          ElMessage.success('删除成功')
+          done()
+          _getAppealTableData()
+        } else {
+          ElMessage.error(res.data.msg)
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        instance.confirmButtonLoading = false
+      })
   }
 
   //获取街道列表
