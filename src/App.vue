@@ -45,7 +45,7 @@
   import { computed } from 'vue'
 
   const showMenu = computed(() => {
-    return import.meta.env.VITE_IS_OPEN_MENU
+    return import.meta.env.VUE_APP_ENV === 'dev' || import.meta.env.VUE_APP_ENV === 'stage'
   })
 </script>
 
