@@ -120,7 +120,7 @@
                   type="date"
                   class="tw-w-full"
                   value-format="YYYY-MM-DD"
-                  placeholder="请选择上架时间">
+                  placeholder="请选择更新时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -133,7 +133,7 @@
                   type="date"
                   class="tw-w-full"
                   value-format="YYYY-MM-DD"
-                  placeholder="请选择上架时间">
+                  placeholder="请选择提交时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -275,21 +275,23 @@
           fixed="right"
           label="操作">
           <template #default="scope">
-            <el-button
-              class="tw-text-[14px]"
-              link
-              type="primary"
-              size="small"
-              @click="handleShowAppealDetails(scope.row)">
-              查看
-            </el-button>
-            <el-button
-              class="tw-text-[14px] tw-text-[#57D3A2]"
-              link
-              size="small"
-              @click="handleDeleteAppeal(scope.row)">
-              删除
-            </el-button>
+            <div class="tw-flex tw-flex-nowrap tw-items-center">
+              <el-button
+                class="tw-text-[14px]"
+                link
+                type="primary"
+                size="small"
+                @click="handleShowAppealDetails(scope.row)">
+                查看
+              </el-button>
+              <el-button
+                class="tw-text-[14px] tw-text-[#57D3A2]"
+                link
+                size="small"
+                @click="handleDeleteAppeal(scope.row)">
+                删除
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
