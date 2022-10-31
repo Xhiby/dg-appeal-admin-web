@@ -478,10 +478,12 @@
       ElMessage.error('请填入阶段性总结内容!')
       return
     }
+    loading.value = true
     const resp = await progressSummary({
       id: route.query.sid,
       summaryContent: summaryContent
     })
+    loading.value = false
     if (resp.data.code === 0) {
       ElMessage.success('阶段性总结提交成功！')
     } else {
@@ -520,7 +522,6 @@
           appealId: route.query.sid,
           isSign: signFlag ? 1 : -1
         })
-        loading.value = false
         loading.value = false
         if (resp.data.code === 0) {
           ElMessage.success('诉求签收成功！')
