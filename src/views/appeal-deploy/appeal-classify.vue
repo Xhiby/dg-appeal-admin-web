@@ -173,13 +173,12 @@
 
   // 点击搜索
   const onSearch = () => {
-    pagination.pageNum = 1
+    paginationReset(pagination.pageSize)
     getCategoryChildList()
   }
 
   // 点击重置
   const onReset = () => {
-    paginationReset(2)
     formRef.value.resetFields()
     onSearch()
   }

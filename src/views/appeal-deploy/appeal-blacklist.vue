@@ -132,7 +132,7 @@
   const loading = ref(false)
 
   // 分页对象
-  const { pagination, indexMethod } = usePagination()
+  const { pagination, indexMethod, paginationReset } = usePagination()
 
   // 搜索条件
   const conditionForm = reactive({
@@ -152,7 +152,7 @@
 
   // 搜索
   const onSearch = () => {
-    pagination.pageNum = 1
+    paginationReset(pagination.pageSize)
     getGovernmentBlackList()
   }
 
@@ -191,13 +191,11 @@
   //请求列表数据
   const getGovernmentBlackList = () => {
     loading.value = true
-
     apis
       .getGovernmentBlackList({ ...conditionForm, ...pagination })
       .then((res) => {
         if (res.data.code === 0) {
           const { list, total, currentPage } = res.data.data
-
           pagination.pageNum = currentPage
           pagination.total = total
           tableData.value = list
@@ -214,7 +212,6 @@
   // 将企业从诉求黑名单中删除
   const removeGovernmentBlackList = (instance, done, row) => {
     instance.confirmButtonLoading = true
-
     apis
       .removeGovernmentBlackList({ ids: row.id })
       .then((res) => {

@@ -16,8 +16,8 @@ export const usePagination = () => {
     return (pagination.pageNum - 1) * pagination.pageSize + index + 1
   }
 
-  const paginationReset = (pageNum = 1, pageSize = 10) => {
-    pagination.pageNum = pageNum
+  const paginationReset = (pageSize = 10) => {
+    pagination.pageNum = 1
     pagination.pageSize = pageSize
     pagination.total = 0
   }

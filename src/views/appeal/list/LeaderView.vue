@@ -121,8 +121,7 @@
                   value-format="YYYY-MM-DD"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
-                  placeholder="请选择更新时间"
-                  @change="onUpdateChange">
+                  placeholder="请选择更新时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -138,8 +137,7 @@
                   value-format="YYYY-MM-DD"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
-                  placeholder="请选择提交时间"
-                  @change="onSubmitChange">
+                  placeholder="请选择提交时间">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -155,7 +153,7 @@
                 </el-button>
                 <el-button
                   type="primary"
-                  @click="handleSearch">
+                  @click="onSearch">
                   查询
                 </el-button>
               </el-form-item>
@@ -284,16 +282,16 @@
         </el-table-column>
       </el-table>
       <el-pagination
-        v-model:currentPage="paginator.pageNum"
-        v-model:page-size="paginator.pageSize"
+        v-model:currentPage="pagination.pageNum"
+        v-model:page-size="pagination.pageSize"
         class="tw-mt-[20px] tw-flex tw-flex-1 tw-justify-end"
         :page-sizes="[10, 20, 50, 100]"
         :small="false"
         :background="false"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="paginator.total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange">
+        :total="pagination.total"
+        @size-change="onSearch"
+        @current-change="_getAppealTableData">
       </el-pagination>
     </div>
   </div>
@@ -311,7 +309,9 @@
   import { appealSourceList } from '@/config/global-var'
   import { ElMessageBox, ElMessage } from 'element-plus'
   import { removeAppeal } from '@/apis/appeal-crud'
+  import { usePagination } from '@/utils/hooks'
 
+  const { pagination, paginationReset } = usePagination()
   const loading = ref(false)
   const containerRef = ref(null)
   const headerRef = ref(null)
@@ -336,17 +336,7 @@
     updatedTime: '',
     // 提交时间
     submitTime: '',
-    updateStartTime: '',
-    updateEndTime: '',
-    submitStartTime: '',
-    submitEndTime: '',
     appealStatus: ''
-  })
-  const paginator = reactive({
-    pageNum: 1,
-    pages: 0,
-    pageSize: 10,
-    total: 0
   })
   // 街道列表
   const streetList = ref([])
@@ -358,15 +348,18 @@
     const { data: resp } = await getAppeals({
       appealLabelCode: currentLeader.value,
       ...toRaw(formSearchData),
-      ...toRaw(paginator)
+      ...pagination,
+      updateStartTime: formSearchData.updatedTime[0],
+      updateEndTime: formSearchData.updatedTime[1],
+      submitStartTime: formSearchData.submitTime[0],
+      submitEndTime: formSearchData.submitTime[1]
     })
     loading.value = false
     if (resp.code === 0) {
       appealTableData.value = resp.data.list
-      paginator.pageNum = resp.data.currentPage
-      paginator.pages = resp.data.lastPage
-      paginator.total = resp.data.total
-      paginator.pagesSize = resp.data.perPage
+      pagination.pageNum = resp.data.currentPage
+      pagination.total = resp.data.total
+      pagination.pageSize = resp.data.perPage
     }
   }
 
@@ -385,25 +378,8 @@
   }
   const handleStreetChange = () => {}
   const handleReset = async () => {
-    paginator.pageNum = 1
-    paginator.pages = 0
-    paginator.pageSize = 10
-    paginator.total = 0
+    paginationReset()
     formSearchRef.value.resetFields()
-    _getAppealTableData()
-  }
-  const handleSizeChange = async (currentSize) => {
-    paginator.pageSize = currentSize
-    await _getAppealTableData()
-  }
-
-  const handleCurrentChange = async (current) => {
-    paginator.pageNum = current
-    await _getAppealTableData()
-  }
-  const handleSearch = () => {
-    paginator.pageNum = 1
-    paginator.pageSize = 10
     _getAppealTableData()
   }
   const handleShowAppealDetails = (row) => {
@@ -494,20 +470,14 @@
     // 选择后默认为一级和二级的ID 改为仅需要二级ID
     formSearchData.categoryChildCode = value[1]
   }
-  const onUpdateChange = (arr) => {
-    formSearchData.updateStartTime = arr[0]
-    formSearchData.updateEndTime = arr[1]
-  }
-  const onSubmitChange = (arr) => {
-    formSearchData.submitStartTime = arr[0]
-    formSearchData.submitEndTime = arr[1]
+  // 搜索
+  const onSearch = () => {
+    paginationReset(pagination.pageSize)
+    _getAppealTableData()
   }
   //诉求标签编号
   watch(currentLeader, () => {
-    paginator.pageNum = 1
-    paginator.pages = 0
-    paginator.pageSize = 10
-    paginator.total = 0
+    paginationReset()
     activeAppealCategory.value = ''
     for (const i in formSearchData) {
       formSearchData[i] = ''
