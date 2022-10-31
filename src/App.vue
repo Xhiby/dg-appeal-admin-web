@@ -1,9 +1,9 @@
 <template>
   <el-config-provider :locale="zhCn">
     <div
-      v-if="showMenu === '1'"
+      v-if="showMenu"
       class="menu_btn">
-      <el-dropdown trigger="click">
+      <el-dropdown>
         <el-button
           type="primary"
           size="small">
@@ -45,7 +45,7 @@
   import { computed } from 'vue'
 
   const showMenu = computed(() => {
-    return import.meta.env.VUE_APP_ENV === 'dev' || import.meta.env.VUE_APP_ENV === 'stage'
+    return import.meta.env.VITE_APP_ENV === 'dev' || import.meta.env.VITE_APP_ENV === 'stage'
   })
 </script>
 

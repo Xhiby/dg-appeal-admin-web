@@ -32,7 +32,7 @@
               </div>
               <div
                 class="number tw-text-[#409EFF]"
-                @click="skip('/appeal-leader-manager')">
+                @click="skip('/appeal-leader-manager', 'leader')">
                 {{ formData.leaderAttentionCount }}
               </div>
             </div>
@@ -147,8 +147,13 @@
   import { ElMessage } from 'element-plus'
   import { onMounted } from 'vue'
   const router = useRouter()
-  const skip = (src) => {
-    router.push(src)
+  const skip = (src, command = 'nothing') => {
+    if (command === 'leader') {
+      const routerUrl = router.resolve(src)
+      window.open(routerUrl.href, '_blank')
+    } else {
+      router.push(src)
+    }
   }
   const formData = ref({})
   onMounted(() => {

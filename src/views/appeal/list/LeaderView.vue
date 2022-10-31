@@ -408,7 +408,7 @@
   }
   const handleShowAppealDetails = (row) => {
     router.push({
-      name: 'AppealDetails',
+      name: 'AppealLeaderDetail',
       query: {
         sid: row.id,
         type: 'leader'

@@ -16,9 +16,16 @@ export const usePagination = () => {
     return (pagination.pageNum - 1) * pagination.pageSize + index + 1
   }
 
+  const paginationReset = (pageNum = 1, pageSize = 10) => {
+    pagination.pageNum = pageNum
+    pagination.pageSize = pageSize
+    pagination.total = 0
+  }
+
   return {
     pagination,
-    indexMethod
+    indexMethod,
+    paginationReset
   }
 }
 
@@ -47,7 +54,6 @@ export const useMockTableData = (obj = {}, count = 10) => {
 export const onBack = (router) => {
   window.history.length > 1 ? router.go(-1) : router.replace('/')
 }
-
 
 /**
  *  departmentName 部门

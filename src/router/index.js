@@ -5,12 +5,15 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      redirect: '/appeal-preview',
       component: () => import('../views/index.vue')
     },
+    // 大屏可视化
     {
       path: '/cool',
       component: () => import('../views/cool/index.vue')
     },
+    //领导列表
     {
       name: 'AppealLeaderManager',
       path: '/appeal-leader-manager',
@@ -27,10 +30,11 @@ const router = createRouter({
         {
           name: 'AppealLeaderDetail',
           path: 'details',
-          component: () => import('@/views/appeal/details/leader-detail.vue')
+          component: () => import('@/views/appeal/details/index.vue')
         }
       ]
     },
+    //关注列表
     {
       name: 'AppealManager',
       path: '/appeal',
@@ -63,23 +67,28 @@ const router = createRouter({
         }
       ]
     },
+    //诉求配置
     {
       path: '/appeal-deploy',
       component: () => import('../views/appeal-deploy/index.vue')
     },
+    //诉求概览
     {
       path: '/appeal-preview',
       component: () => import('../views/appeal-preview/index.vue')
     },
+    //日志信息
     {
       path: '/log-manage',
       component: () => import('../views/log-manage/index.vue')
     },
+    //呈批表打印页面
     {
       name: 'print',
       path: '/print',
       component: () => import('../views/print/index.vue')
-    }
+    },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('@/views/404/index.vue') }
   ]
 })
 
