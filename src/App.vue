@@ -3,7 +3,7 @@
     <div
       v-if="showMenu"
       class="menu_btn">
-      <el-dropdown trigger="click">
+      <el-dropdown>
         <el-button
           type="primary"
           size="small">

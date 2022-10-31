@@ -24,6 +24,12 @@ const router = createRouter({
           name: 'AppealListForLeader',
           path: 'list',
           component: () => import('@/views/appeal/list/LeaderView.vue')
+        },
+        //详情
+        {
+          name: 'AppealLeaderDetail',
+          path: 'details',
+          component: () => import('@/views/appeal/details/index.vue')
         }
       ]
     },
@@ -84,10 +90,7 @@ const router = createRouter({
     // 匹配所有路由
     {
       path: '/:pathMatch(.*)*',
-      component: () => import('../views/404/index.vue'),
-      meta: {
-        title: '页面找不到'
-      }
+      component: () => import('../views/404/index.vue')
     }
   ]
 })

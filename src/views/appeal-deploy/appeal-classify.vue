@@ -138,7 +138,7 @@
   const loading = ref(false)
 
   // 分页对象
-  const { pagination } = usePagination()
+  const { pagination, paginationReset } = usePagination()
 
   // 搜索条件
   const form = reactive({
@@ -179,6 +179,7 @@
 
   // 点击重置
   const onReset = () => {
+    paginationReset(2)
     formRef.value.resetFields()
     onSearch()
   }

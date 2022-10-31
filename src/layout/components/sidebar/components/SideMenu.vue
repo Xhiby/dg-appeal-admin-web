@@ -19,7 +19,9 @@
   // import { useRouter } from 'vue-router'
   import { useCommonStore } from '@/stores/common'
   import { computed } from 'vue'
-  // const router = useRouter()
+  import { useRouter, useRoute } from 'vue-router'
+  const router = useRouter()
+  const route = useRoute()
   const commonStore = useCommonStore()
   onMounted(() => {
     getLeaderList()
@@ -27,11 +29,17 @@
   const activeLeader = computed(() => {
     return commonStore.currentLeader === '' ? commonStore.defaultLeader : commonStore.currentLeader
   })
-
+  const isDetail = computed(() => {
+    return route.path.includes('details')
+  })
   function handleMenuSelect(leaderId) {
     commonStore.$patch({
       currentLeader: leaderId
     })
+    //判断当前路由 是否是详情页
+    if (isDetail.value) {
+      router.push('/appeal-leader-manager')
+    }
   }
 
   const getLeaderList = () => {
