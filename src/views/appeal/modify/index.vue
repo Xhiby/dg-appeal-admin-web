@@ -15,7 +15,7 @@
       :model="serviceForm"
       :rules="formRules">
       <el-form-item
-        prop="organizationName"
+        prop="organization"
         label="企业">
         <el-autocomplete
           v-model="serviceForm.organization"
@@ -104,6 +104,7 @@
           multiple
           :limit="6"
           :before-upload="beforeImageUpload"
+          :on-success="handleUploadSuccess"
           :on-exceed="handleUploadExceed">
           <el-button type="primary">添加文件</el-button>
           <template #tip>
@@ -114,15 +115,16 @@
     </el-form>
     <el-row class="tw-mt-[50px]">
       <el-button
-        :loading="btnLoading"
+        :disabled="btnLoading"
         size="large"
         @click="onBack(router)">
         取消
       </el-button>
       <el-button
-        :loading="btnLoading"
+        :disabled="btnLoading"
         type="primary"
         size="large"
+        native-type="submit"
         @click="handleSubmit">
         提交
       </el-button>
@@ -137,6 +139,7 @@
   import { onBack } from '@/utils/hooks'
   import { uploadUrl } from '@/apis/index.js'
   import { ElMessage } from 'element-plus'
+  import { isArray } from '@/utils/is'
   import { getAppealsLabels, applyAppeal, getAppealsOrgan, getAllAppealCategories } from '@/apis/appeal-crud'
 
   const involveDepartment = reactive(['工业', '国土', '商务', '科技', '自然资源', '金融', '环保', '人社', '市场监督', '自然资源'].map((dept) => ({ name: dept, checked: false })))
@@ -274,15 +277,20 @@
       ElMessage.error('图片大小不能超过10MB!')
       return false
     }
+    btnLoading.value = true
     return true
   }
 
+  const handleUploadSuccess = () => {
+    btnLoading.value = false
+  }
+
   const handleSubmit = () => {
-    serviceFormRef.value.validate((valid) => {
+    serviceFormRef.value.validate((valid, fields) => {
       if (valid) {
         const appealPayload = toRaw(serviceForm)
         appealPayload.appealCategoryCode = currentSelectedParentNode.value
-        appealPayload.involveDepartment = appealPayload.involveDepartment.map((dept) => dept.name).join(',')
+        appealPayload.involveDepartment = isArray(appealPayload.involveDepartment) ? appealPayload.involveDepartment.map((dept) => dept.name).join(',') : appealPayload.involveDepartment
         appealPayload.involveDepartment = `${appealPayload.involveDepartment},${appealPayload.otherInvolveDepartment}`
         appealPayload.source = '代理请求'
         const postPayload = {
@@ -303,34 +311,36 @@
           sendAppealApplyRequest(postPayload)
         }
       } else {
+        ElMessage.error({ message: fields })
+        console.error(fields)
         return false
       }
     })
   }
-  // 发布诉求申请
+
   const sendAppealApplyRequest = async (postPayload) => {
-    btnLoading.value = true
+    loading.value = true
     applyAppeal(postPayload)
       .then((res) => {
-        btnLoading.value = false
         if (res.data.code === 0) {
           ElMessage.success({ message: '代理诉求提交成功！' })
           setTimeout(() => {
+            loading.value = false
             router.push({
               name: 'AppealList',
               query: {}
             })
-          }, 1500)
+          }, 1000)
         } else {
           ElMessage.error({ message: res.data.msg })
         }
       })
       .catch((err) => {
+        loading.value = false
         console.log(err)
       })
-    btnLoading.value = false
   }
-  // 编辑诉求请求
+
   const sendUpdateAppealRequest = () => {
     btnLoading.value = true
     btnLoading.value = false
