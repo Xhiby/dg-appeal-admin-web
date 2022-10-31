@@ -1,5 +1,5 @@
 import axios from 'axios'
-import router from '../router'
+// import router from '../router'
 
 export const baseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -7,8 +7,8 @@ axios.defaults.timeout = 30000
 
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    token && (config.headers.Authorization = 'Bearer ' + token)
+    // const token = localStorage.getItem('token')
+    // token && (config.headers.Authorization = 'Bearer ' + token)
 
     return config
   },
@@ -20,19 +20,16 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (res) => {
     if (res.status === 200) {
-      let token
-      if (res.headers && res.headers.authorization) {
-        token = res.headers.authorization
-        localStorage.setItem('token', token)
-      }
-      if (res.data.code === 10127 || res.data.code === 10126 || res.data.code === 10117) {
-        // token失效
-        localStorage.removeItem('token')
-        router.replace('/login')
-      }
-      // if (res.data.type && res.data.type === 'application/vnd.ms-excel') {
-      //   res.headers.setContentType('application/vnd.ms-excel')
+      // let token
+      // if (res.headers && res.headers.authorization) {
+      //   token = res.headers.authorization
+      //   localStorage.setItem('token', token)
       // }
+      // 登录失败或没有权限
+      if (res.data.code === 10127 || res.data.code === 10126 || res.data.code === 10117) {
+        // 发送给dg-home 进入登录界面
+        window.parent.postMessage('login', '*')
+      }
     }
     return res
   },

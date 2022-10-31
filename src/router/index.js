@@ -5,12 +5,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('../views/index.vue')
+      redirect: '/appeal-preview'
     },
+    // 大屏可视化
     {
       path: '/cool',
       component: () => import('../views/cool/index.vue')
     },
+    // 领导试图 （新开的标签页）
     {
       name: 'AppealLeaderManager',
       path: '/appeal-leader-manager',
@@ -22,15 +24,10 @@ const router = createRouter({
           name: 'AppealListForLeader',
           path: 'list',
           component: () => import('@/views/appeal/list/LeaderView.vue')
-        },
-        //详情
-        {
-          name: 'AppealLeaderDetail',
-          path: 'details',
-          component: () => import('@/views/appeal/details/leader-detail.vue')
         }
       ]
     },
+    // 普通诉求
     {
       name: 'AppealManager',
       path: '/appeal',
@@ -63,24 +60,40 @@ const router = createRouter({
         }
       ]
     },
+    // 诉求配置
     {
       path: '/appeal-deploy',
       component: () => import('../views/appeal-deploy/index.vue')
     },
+    // 概览
     {
       path: '/appeal-preview',
       component: () => import('../views/appeal-preview/index.vue')
     },
+    // 日志管理
     {
       path: '/log-manage',
       component: () => import('../views/log-manage/index.vue')
     },
+    // table打印
     {
       name: 'print',
       path: '/print',
       component: () => import('../views/print/index.vue')
+    },
+    // 匹配所有路由
+    {
+      path: '/:pathMatch(.*)*',
+      component: () => import('../views/404/index.vue'),
+      meta: {
+        title: '页面找不到'
+      }
     }
   ]
+})
+
+router.beforeEach((to) => {
+  window.parent.postMessage('load_complete', '*')
 })
 
 export default router

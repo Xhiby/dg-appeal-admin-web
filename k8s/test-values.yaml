@@ -9,8 +9,8 @@ ingress:
         - path: /
 configMap:
   env:
-    ENV_DEF:  VITE_API_BASE_URL VUE_APP_ENV
-    VITE_API_BASE_URL: http://dg-appeal-svc.youpin-k8s.net
+    ENV_DEF:  VITE_API_BASE_URL VITE_APP_ENV
+    VITE_APP_ENV: http://dg-appeal-svc.youpin-k8s.net
     VUE_APP_ENV: stage
 resources:
   limits:

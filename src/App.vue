@@ -1,7 +1,7 @@
 <template>
   <el-config-provider :locale="zhCn">
     <div
-      v-if="showMenu === '1'"
+      v-if="showMenu"
       class="menu_btn">
       <el-dropdown trigger="click">
         <el-button
@@ -44,8 +44,9 @@
   import zhCn from 'element-plus/lib/locale/lang/zh-cn'
   import { computed } from 'vue'
 
+  console.log(import.meta.env.VITE_APP_ENV)
   const showMenu = computed(() => {
-    return import.meta.env.VUE_APP_ENV === 'dev' || import.meta.env.VUE_APP_ENV === 'stage'
+    return import.meta.env.VITE_APP_ENV === 'dev' || import.meta.env.VITE_APP_ENV === 'stage'
   })
 </script>
 
