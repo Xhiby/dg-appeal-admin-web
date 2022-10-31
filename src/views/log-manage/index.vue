@@ -45,6 +45,7 @@
                     v-model="logForm.childCategoryCode"
                     class="tw-flex-1"
                     :options="appealTypeList"
+                    :props="optionProps"
                     placeholder="诉求分类"
                     :show-all-levels="false"
                     @change="handleChange">
@@ -226,6 +227,12 @@
   const toDialog = ref(null)
   //诉求分类
   const appealTypeList = ref([])
+  // 级联选择器字段
+  const optionProps = {
+    value: 'categoryCode',
+    label: 'categoryName',
+    children: 'children'
+  }
   // 标签类型
   const tagType = computed(() => {
     let info = {}
@@ -289,30 +296,13 @@
       .getCategoryList()
       .then((res) => {
         if (res.data.code === 0) {
-          appealTypeList.value = convertCategoryList(res.data.data)
+          appealTypeList.value = res.data.data
         } else {
           ElMessage.error(res.data.msg)
         }
       })
       .catch((err) => console.log(err))
       .finally(() => {})
-  }
-  // 转换诉求分类列表
-  const convertCategoryList = (data) => {
-    console.log('data', data)
-    const res = []
-
-    for (const i in data) {
-      res[i] = {}
-      res[i].label = data[i].categoryName
-      res[i].value = data[i].categoryCode
-
-      if (data[i].children !== []) {
-        res[i].children = convertCategoryList(data[i].children)
-      }
-    }
-
-    return res
   }
   // 级联选择器change事件
   const handleChange = (value) => {

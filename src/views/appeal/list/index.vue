@@ -93,6 +93,7 @@
                   v-model="formSearchData.categoryChildCode"
                   class="tw-flex-1"
                   :options="appealList"
+                  :props="optionProps"
                   :show-all-levels="false"
                   @change="handleChange">
                 </el-cascader>
@@ -340,6 +341,12 @@
   const appealTableData = ref([])
   const streetList = ref([])
   const appealList = ref([])
+  // 级联选择器字段
+  const optionProps = {
+    value: 'categoryCode',
+    label: 'categoryName',
+    children: 'children'
+  }
   const appealsLabels = ref([])
   const activeAppealCategory = ref('')
   const formSearchData = reactive({
@@ -418,26 +425,10 @@
       .getCategoryList()
       .then((res) => {
         if (res.data.code === 0) {
-          appealList.value = convertCategoryList(res.data.data)
+          appealList.value = res.data.data
         }
       })
       .catch((err) => console.log(err))
-  }
-
-  const convertCategoryList = (data) => {
-    const res = []
-
-    for (const i in data) {
-      res[i] = {}
-      res[i].label = data[i].categoryName
-      res[i].value = data[i].categoryCode
-
-      if (data[i].children !== []) {
-        res[i].children = convertCategoryList(data[i].children)
-      }
-    }
-
-    return res
   }
 
   onMounted(async () => {
